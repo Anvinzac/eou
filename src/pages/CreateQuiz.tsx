@@ -609,29 +609,70 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
               })}
             </div>
             <button onClick={() => { setCustomMode(true); setCustomCorrect(q.customCorrect || ''); }} className="mt-3 text-xs text-muted-foreground hover:text-primary flex items-center gap-1">
-              <Pencil className="h-3 w-3" /> Custom correct answer
+              <Pencil className="h-3 w-3" /> Write your own answer
             </button>
           </>
         ) : (
-          <div className="space-y-3">
-            <div>
-              <label className="text-xs font-semibold text-secondary">Your Correct Answer</label>
-              <Input
-                value={customCorrect}
-                onChange={e => validateAndSetCustomText(e.target.value, setCustomCorrect)}
-                className="rounded-xl border-secondary/30 mt-1"
-                placeholder="Type the correct answer"
-                maxLength={100}
-              />
-              <p className="mt-1 text-xs text-muted-foreground">3 distractors will be auto-selected from existing options</p>
+          <>
+            {/* Custom correct answer input */}
+            <div className="mb-3">
+              <label className="text-xs font-semibold text-secondary mb-1 block">Your Correct Answer</label>
+              <div className="flex gap-2">
+                <Input
+                  value={customCorrect}
+                  onChange={e => validateAndSetCustomText(e.target.value, setCustomCorrect)}
+                  className="rounded-xl border-secondary/30 flex-1"
+                  placeholder="Type the correct answer"
+                  maxLength={100}
+                  autoFocus
+                />
+                <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0" onClick={() => setCustomMode(false)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              {customCorrect.trim() && (
+                <Button
+                  size="sm"
+                  className="mt-2 gradient-teal text-secondary-foreground text-xs"
+                  onClick={() => {
+                    if (!customCorrect.trim()) return;
+                    // Set the custom correct answer, then let user pick distractors from options below
+                    selectCorrect(customCorrect.trim());
+                    setSelected((prev: SelectedQuestion[]) => prev.map((s: SelectedQuestion) =>
+                      s.questionId === q.questionId ? { ...s, isCustom: true, customCorrect: customCorrect.trim() } : s
+                    ));
+                    setCustomMode(false);
+                    toast.success('Custom answer set! Now pick 3 distractors below.');
+                  }}
+                >
+                  <Check className="mr-1 h-3 w-3" /> Set as correct
+                </Button>
+              )}
             </div>
-            <div className="flex gap-2">
-              <Button onClick={saveCustomCorrectOnly} size="sm" className="gradient-teal text-secondary-foreground">
-                <Shuffle className="mr-1 h-3 w-3" /> Save & Auto-fill Distractors
-              </Button>
-              <Button onClick={() => setCustomMode(false)} variant="ghost" size="sm"><X className="h-4 w-4 mr-1" /> Cancel</Button>
+
+            {/* Still show options to pick distractors */}
+            <p className="mb-2 text-xs text-muted-foreground">
+              Pick <span className="font-bold text-primary">3 distractors</span> from below
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {q.options.map(opt => {
+                const isDistractor = q.distractors.includes(opt);
+                return (
+                  <button
+                    key={opt}
+                    onClick={() => toggleDistractor(opt)}
+                    className={`rounded-xl border-2 px-3 py-2 text-sm font-medium transition-all ${
+                      isDistractor
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border hover:border-muted-foreground/30'
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
             </div>
-          </div>
+          </>
         )}
       </div>
 
