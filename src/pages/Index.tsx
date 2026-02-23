@@ -25,6 +25,22 @@ export default function Index() {
   useEffect(() => {
     async function check() {
       if (!user) { setChecking(false); return; }
+
+      // Link any draft quiz first
+      const draftToken = localStorage.getItem('quiz_draft_token');
+      const draftQuizId = localStorage.getItem('quiz_draft_id');
+      if (draftToken && draftQuizId) {
+        const { error } = await supabase
+          .from('quizzes')
+          .update({ user_id: user.id, draft_token: null })
+          .eq('id', draftQuizId)
+          .eq('draft_token', draftToken);
+        if (!error) {
+          localStorage.removeItem('quiz_draft_token');
+          localStorage.removeItem('quiz_draft_id');
+        }
+      }
+
       const { data } = await supabase
         .from('quizzes')
         .select('id')
