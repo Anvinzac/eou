@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Copy, Plus, RefreshCw, Link2, ArrowLeft, BarChart3, LogOut, Eye, Globe, Lock, Pencil, Check, User, Settings } from 'lucide-react';
+import { Copy, Plus, RefreshCw, Link2, ArrowLeft, BarChart3, LogOut, Eye, Globe, Lock, Pencil, Check, User, Settings, Minus } from 'lucide-react';
 import { generateCloudName, generateInviteCode } from '@/lib/nameGenerator';
 
 export default function Dashboard() {
@@ -187,39 +187,104 @@ export default function Dashboard() {
               
               <div className="mb-4">
                 <label className="text-sm font-medium text-muted-foreground mb-2 block">Number of invitations</label>
-                <div className="flex gap-2 mb-3">
-                  {[1, 3, 5, 10].map(n => (
+                <div className="flex gap-2 mb-3 items-center">
+                  {[1, 2, 3].map(n => (
                     <button key={n} onClick={() => { setInviteCount(n); setInviteLabels(Array(n).fill('')); }} className={`rounded-xl px-4 py-2 text-sm font-medium transition-all ${inviteCount === n ? 'gradient-coral text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
                       {n}
                     </button>
                   ))}
+                  <div className={`flex items-center gap-1 rounded-xl border transition-all ${inviteCount >= 4 ? 'border-primary bg-primary/5' : 'border-border'}`}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-l-xl"
+                      onClick={() => {
+                        const next = Math.max(4, inviteCount - 1);
+                        setInviteCount(next);
+                        setInviteLabels(prev => {
+                          const labels = [...prev];
+                          labels.length = next;
+                          return labels.map(l => l || '');
+                        });
+                      }}
+                      disabled={inviteCount < 5}
+                    >
+                      <Minus className="h-3 w-3" />
+                    </Button>
+                    <button
+                      onClick={() => { if (inviteCount < 4) { setInviteCount(4); setInviteLabels(Array(4).fill('')); } }}
+                      className={`min-w-[2rem] text-center text-sm font-medium ${inviteCount >= 4 ? 'text-primary' : 'text-muted-foreground'}`}
+                    >
+                      {inviteCount >= 4 ? inviteCount : '4+'}
+                    </button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-r-xl"
+                      onClick={() => {
+                        const next = Math.max(4, inviteCount + 1);
+                        setInviteCount(next);
+                        setInviteLabels(prev => {
+                          const labels = [...prev];
+                          while (labels.length < next) labels.push('');
+                          return labels;
+                        });
+                      }}
+                    >
+                      <Plus className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </div>
 
-                <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {Array.from({ length: inviteCount }).map((_, idx) => (
-                    <div key={idx} className="flex gap-2 items-center">
-                      <Input
-                        value={inviteLabels[idx] || ''}
-                        onChange={e => {
-                          const val = e.target.value;
-                          setInviteLabels(prev => {
-                            const next = [...prev];
-                            next[idx] = val;
-                            return next;
-                          });
-                          // Auto regenerate cloud name on initial typing
-                          if (val.length === 1) regenerateLabel(idx);
-                        }}
-                        placeholder="Type initials for cloud name..."
-                        className="rounded-xl text-sm"
-                        maxLength={30}
-                      />
-                      <Button variant="ghost" size="icon" onClick={() => regenerateLabel(idx)} title="Regenerate name">
-                        <RefreshCw className="h-4 w-4" />
-                      </Button>
+                {(() => {
+                  const PRONOUNS = ['Anh', 'Em', 'Bạn', 'Nó', 'Cô ấy', 'Hai'];
+                  return (
+                    <div className="space-y-2 max-h-60 overflow-y-auto p-1">
+                      {Array.from({ length: inviteCount }).map((_, idx) => (
+                        <div key={idx} className="space-y-1.5">
+                          <div className="flex gap-2 items-center">
+                            <Input
+                              value={inviteLabels[idx] || ''}
+                              onChange={e => {
+                                const val = e.target.value;
+                                setInviteLabels(prev => {
+                                  const next = [...prev];
+                                  next[idx] = val;
+                                  return next;
+                                });
+                                if (val.length === 1) regenerateLabel(idx);
+                              }}
+                              placeholder="Type initials for cloud name..."
+                              className="rounded-xl text-sm"
+                              maxLength={30}
+                            />
+                            <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={() => regenerateLabel(idx)} title="Regenerate name">
+                              <RefreshCw className="h-4 w-4" />
+                            </Button>
+                          </div>
+                          <div className="flex gap-1.5 flex-wrap">
+                            {PRONOUNS.map(p => (
+                              <button
+                                key={p}
+                                onClick={() => {
+                                  setInviteLabels(prev => {
+                                    const next = [...prev];
+                                    next[idx] = p;
+                                    return next;
+                                  });
+                                  regenerateLabel(idx);
+                                }}
+                                className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                              >
+                                {p}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  );
+                })()}
               </div>
               <Button onClick={generateInvitations} className="gradient-teal text-secondary-foreground">
                 <Plus className="mr-1 h-4 w-4" /> Generate {inviteCount} Invitation{inviteCount > 1 ? 's' : ''}
