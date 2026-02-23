@@ -1,96 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 30 50% 98%;
+    --foreground: 220 30% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 30 40% 97%;
+    --card-foreground: 220 30% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 30% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 12 90% 62%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 175 55% 42%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 30 20% 93%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 45 95% 65%;
+    --accent-foreground: 220 30% 15%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 30 20% 88%;
+    --input: 30 20% 88%;
+    --ring: 12 90% 62%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 30 30% 96%;
+    --sidebar-foreground: 220 30% 15%;
+    --sidebar-primary: 12 90% 62%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 175 55% 42%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 30 20% 88%;
+    --sidebar-ring: 12 90% 62%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Custom tokens */
+    --coral: 12 90% 62%;
+    --coral-light: 12 90% 75%;
+    --coral-dark: 12 80% 48%;
+    --teal: 175 55% 42%;
+    --teal-light: 175 45% 60%;
+    --teal-dark: 175 65% 30%;
+    --peach: 20 80% 90%;
+    --cream: 30 50% 98%;
+    --gold: 45 95% 65%;
+    --lavender: 260 50% 75%;
+    --mint: 160 50% 80%;
+    --rose: 340 60% 70%;
 
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Category colors */
+    --cat-leisure: 12 90% 62%;
+    --cat-food: 30 85% 55%;
+    --cat-entertainment: 260 50% 60%;
+    --cat-travel: 175 55% 42%;
+    --cat-social: 340 60% 60%;
+    --cat-habits: 45 85% 55%;
+    --cat-spending: 200 60% 50%;
+    --cat-emotion: 340 70% 65%;
+    --cat-home: 140 45% 50%;
+    --cat-growth: 280 50% 55%;
+    --cat-values: 220 55% 55%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 220 25% 8%;
+    --foreground: 30 30% 92%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 25% 12%;
+    --card-foreground: 30 30% 92%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 25% 12%;
+    --popover-foreground: 30 30% 92%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 12 85% 58%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 175 50% 38%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 220 20% 18%;
+    --muted-foreground: 220 15% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 45 90% 60%;
+    --accent-foreground: 220 30% 10%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+    --ring: 12 85% 58%;
   }
 }
 
@@ -100,6 +110,65 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .gradient-coral {
+    background: linear-gradient(135deg, hsl(var(--coral)) 0%, hsl(var(--coral-light)) 100%);
+  }
+  .gradient-teal {
+    background: linear-gradient(135deg, hsl(var(--teal)) 0%, hsl(var(--teal-light)) 100%);
+  }
+  .gradient-hero {
+    background: linear-gradient(135deg, hsl(var(--coral)) 0%, hsl(var(--rose)) 50%, hsl(var(--lavender)) 100%);
+  }
+  .gradient-card {
+    background: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--peach) / 0.3) 100%);
+  }
+  .shadow-soft {
+    box-shadow: 0 4px 20px -4px hsl(var(--coral) / 0.15);
+  }
+  .shadow-glow {
+    box-shadow: 0 0 30px -5px hsl(var(--coral) / 0.3);
+  }
+
+  /* Category card colors */
+  .cat-leisure { background-color: hsl(var(--cat-leisure) / 0.12); border-color: hsl(var(--cat-leisure) / 0.3); color: hsl(var(--cat-leisure)); }
+  .cat-food { background-color: hsl(var(--cat-food) / 0.12); border-color: hsl(var(--cat-food) / 0.3); color: hsl(var(--cat-food)); }
+  .cat-entertainment { background-color: hsl(var(--cat-entertainment) / 0.12); border-color: hsl(var(--cat-entertainment) / 0.3); color: hsl(var(--cat-entertainment)); }
+  .cat-travel { background-color: hsl(var(--cat-travel) / 0.12); border-color: hsl(var(--cat-travel) / 0.3); color: hsl(var(--cat-travel)); }
+  .cat-social { background-color: hsl(var(--cat-social) / 0.12); border-color: hsl(var(--cat-social) / 0.3); color: hsl(var(--cat-social)); }
+  .cat-habits { background-color: hsl(var(--cat-habits) / 0.12); border-color: hsl(var(--cat-habits) / 0.3); color: hsl(var(--cat-habits)); }
+  .cat-spending { background-color: hsl(var(--cat-spending) / 0.12); border-color: hsl(var(--cat-spending) / 0.3); color: hsl(var(--cat-spending)); }
+  .cat-emotion { background-color: hsl(var(--cat-emotion) / 0.12); border-color: hsl(var(--cat-emotion) / 0.3); color: hsl(var(--cat-emotion)); }
+  .cat-home { background-color: hsl(var(--cat-home) / 0.12); border-color: hsl(var(--cat-home) / 0.3); color: hsl(var(--cat-home)); }
+  .cat-growth { background-color: hsl(var(--cat-growth) / 0.12); border-color: hsl(var(--cat-growth) / 0.3); color: hsl(var(--cat-growth)); }
+  .cat-values { background-color: hsl(var(--cat-values) / 0.12); border-color: hsl(var(--cat-values) / 0.3); color: hsl(var(--cat-values)); }
+
+  .cat-bg-leisure { background-color: hsl(var(--cat-leisure)); }
+  .cat-bg-food { background-color: hsl(var(--cat-food)); }
+  .cat-bg-entertainment { background-color: hsl(var(--cat-entertainment)); }
+  .cat-bg-travel { background-color: hsl(var(--cat-travel)); }
+  .cat-bg-social { background-color: hsl(var(--cat-social)); }
+  .cat-bg-habits { background-color: hsl(var(--cat-habits)); }
+  .cat-bg-spending { background-color: hsl(var(--cat-spending)); }
+  .cat-bg-emotion { background-color: hsl(var(--cat-emotion)); }
+  .cat-bg-home { background-color: hsl(var(--cat-home)); }
+  .cat-bg-growth { background-color: hsl(var(--cat-growth)); }
+  .cat-bg-values { background-color: hsl(var(--cat-values)); }
+}
+
+/* Hide scrollbar for category swiper */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
