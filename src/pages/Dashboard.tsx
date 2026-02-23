@@ -21,7 +21,7 @@ export default function Dashboard() {
   const [inviteLabels, setInviteLabels] = useState<string[]>(['']);
   const [editingTitle, setEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState('');
-
+  const [activeInviteIdx, setActiveInviteIdx] = useState(0);
   // Link any draft quiz to user after login
   useEffect(() => {
     if (!user) return;
@@ -245,6 +245,7 @@ export default function Dashboard() {
                           <div className="flex gap-2 items-center">
                             <Input
                               value={inviteLabels[idx] || ''}
+                              onFocus={() => setActiveInviteIdx(idx)}
                               onChange={e => {
                                 const val = e.target.value;
                                 setInviteLabels(prev => {
@@ -262,24 +263,30 @@ export default function Dashboard() {
                               <RefreshCw className="h-4 w-4" />
                             </Button>
                           </div>
-                          <div className="flex gap-1.5 flex-wrap">
-                            {PRONOUNS.map(p => (
-                              <button
-                                key={p}
-                                onClick={() => {
-                                  setInviteLabels(prev => {
-                                    const next = [...prev];
-                                    next[idx] = p;
-                                    return next;
-                                  });
-                                  regenerateLabel(idx);
-                                }}
-                                className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
-                              >
-                                {p}
-                              </button>
-                            ))}
-                          </div>
+                          {activeInviteIdx === idx && (
+                            <div className="flex gap-1.5 flex-wrap">
+                              {PRONOUNS.map(p => (
+                                <button
+                                  key={p}
+                                  onClick={() => {
+                                    setInviteLabels(prev => {
+                                      const next = [...prev];
+                                      next[idx] = p;
+                                      return next;
+                                    });
+                                    regenerateLabel(idx);
+                                    // Advance to next field
+                                    if (idx < inviteCount - 1) {
+                                      setActiveInviteIdx(idx + 1);
+                                    }
+                                  }}
+                                  className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                                >
+                                  {p}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
