@@ -22,14 +22,33 @@ export default function Dashboard() {
   const [editingTitle, setEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState('');
 
+  // Link any draft quiz to user after login
+  useEffect(() => {
+    if (!user) return;
+    const draftToken = localStorage.getItem('quiz_draft_token');
+    const draftQuizId = localStorage.getItem('quiz_draft_id');
+    if (draftToken && draftQuizId) {
+      supabase
+        .from('quizzes')
+        .update({ user_id: user.id, draft_token: null })
+        .eq('id', draftQuizId)
+        .eq('draft_token', draftToken)
+        .then(({ error }) => {
+          if (!error) {
+            localStorage.removeItem('quiz_draft_token');
+            localStorage.removeItem('quiz_draft_id');
+            toast.success('Your draft quiz has been linked to your account!');
+            fetchQuizzes();
+          }
+        });
+    } else {
+      fetchQuizzes();
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!loading && !user) navigate('/auth');
   }, [user, loading]);
-
-  useEffect(() => {
-    if (!user) return;
-    fetchQuizzes();
-  }, [user]);
 
   const fetchQuizzes = async () => {
     const { data } = await supabase.from('quizzes').select('*').eq('user_id', user!.id).order('created_at', { ascending: false });
