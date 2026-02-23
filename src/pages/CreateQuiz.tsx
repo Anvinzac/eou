@@ -505,7 +505,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
   const [customMode, setCustomMode] = useState(false);
   const [customCorrect, setCustomCorrect] = useState('');
   const [profanityWarning, setProfanityWarning] = useState('');
-  const [autoRandomize, setAutoRandomize] = useState(false);
+  const [autoRandomize, setAutoRandomize] = useState(true);
   const q = selected[currentIdx] as SelectedQuestion;
 
   const selectCorrect = (opt: string) => {
