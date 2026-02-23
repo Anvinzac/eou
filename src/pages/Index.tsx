@@ -61,24 +61,8 @@ export default function Index() {
   }
 
   if (user && hasQuiz) {
-    return (
-      <div className="min-h-screen bg-background p-6">
-        <div className="mx-auto max-w-2xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-center">
-            <h1 className="mb-2 text-3xl font-bold font-display">Welcome back! 🎉</h1>
-            <p className="text-muted-foreground">You already have a quiz. Manage it from your dashboard.</p>
-          </motion.div>
-          <div className="flex flex-col gap-4">
-            <Button onClick={() => navigate('/dashboard')} size="lg" className="gradient-coral text-primary-foreground">
-              Go to Dashboard <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button variant="outline" onClick={() => navigate('/create')} size="lg">
-              Create Another Quiz
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
+    navigate('/dashboard');
+    return null;
   }
 
   return (
