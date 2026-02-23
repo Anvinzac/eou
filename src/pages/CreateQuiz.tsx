@@ -427,7 +427,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
               className={`relative rounded-2xl border-2 p-4 text-left transition-all ${
                 isSelected
                   ? `${activeCategory.colorClass} border-current shadow-soft`
-                  : 'border-border bg-card hover:border-primary/30 hover:shadow-sm'
+                  : 'border-border bg-muted/50 hover:border-primary/30 hover:shadow-sm'
               }`}
             >
               {isSelected && (
