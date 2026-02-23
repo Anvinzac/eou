@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { ArrowLeft, ArrowRight, Check, Trash2, ArrowUpToLine, ArrowDownToLine, Pencil, X, Shuffle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Trash2, ArrowUp, ArrowDown, Pencil, X, Shuffle } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { containsProfanity } from '@/lib/profanity';
@@ -113,19 +114,21 @@ export default function CreateQuiz() {
     });
   }, []);
 
-  const moveToTop = (idx: number) => {
+  const moveUp = (idx: number) => {
+    if (idx === 0) return;
     setSelected(prev => {
-      const item = prev[idx];
-      const rest = prev.filter((_, i) => i !== idx);
-      return [item, ...rest].map((q, i) => ({ ...q, orderNumber: i + 1 }));
+      const arr = [...prev];
+      [arr[idx - 1], arr[idx]] = [arr[idx], arr[idx - 1]];
+      return arr.map((q, i) => ({ ...q, orderNumber: i + 1 }));
     });
   };
 
-  const moveToBottom = (idx: number) => {
+  const moveDown = (idx: number) => {
     setSelected(prev => {
-      const item = prev[idx];
-      const rest = prev.filter((_, i) => i !== idx);
-      return [...rest, item].map((q, i) => ({ ...q, orderNumber: i + 1 }));
+      if (idx >= prev.length - 1) return prev;
+      const arr = [...prev];
+      [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
+      return arr.map((q, i) => ({ ...q, orderNumber: i + 1 }));
     });
   };
 
@@ -324,8 +327,8 @@ export default function CreateQuiz() {
             <ReorderStep
               key="reorder"
               selected={selected}
-              moveToTop={moveToTop}
-              moveToBottom={moveToBottom}
+              moveUp={moveUp}
+              moveDown={moveDown}
               deleteQuestion={deleteQuestion}
               onNext={() => setStep('answers')}
             />
@@ -448,11 +451,18 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
 }
 
 /* ============= REORDER STEP ============= */
-function ReorderStep({ selected, moveToTop, moveToBottom, deleteQuestion, onNext }: any) {
+function ReorderStep({ selected, moveUp, moveDown, deleteQuestion, onNext }: any) {
   return (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-      <h2 className="mb-1 text-xl font-bold font-display">Arrange Your Questions</h2>
-      <p className="mb-4 text-sm text-muted-foreground">Reorder, or delete to pick a replacement.</p>
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold font-display">Arrange Your Questions</h2>
+          <p className="text-sm text-muted-foreground">Reorder, or delete to pick a replacement.</p>
+        </div>
+        <Button onClick={onNext} className="gradient-coral text-primary-foreground">
+          Done <Check className="ml-1 h-4 w-4" />
+        </Button>
+      </div>
 
       <div className="space-y-3">
         {selected.map((q: SelectedQuestion, idx: number) => {
@@ -471,11 +481,11 @@ function ReorderStep({ selected, moveToTop, moveToBottom, deleteQuestion, onNext
                 <span className="text-xs opacity-60">{q.category}</span>
               </div>
               <div className="flex gap-1">
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => moveToTop(idx)} disabled={idx === 0}>
-                  <ArrowUpToLine className="h-4 w-4" />
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => moveUp(idx)} disabled={idx === 0}>
+                  <ArrowUp className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => moveToBottom(idx)} disabled={idx === selected.length - 1}>
-                  <ArrowDownToLine className="h-4 w-4" />
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => moveDown(idx)} disabled={idx === selected.length - 1}>
+                  <ArrowDown className="h-4 w-4" />
                 </Button>
                 <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => deleteQuestion(idx)}>
                   <Trash2 className="h-4 w-4" />
@@ -484,12 +494,6 @@ function ReorderStep({ selected, moveToTop, moveToBottom, deleteQuestion, onNext
             </motion.div>
           );
         })}
-      </div>
-
-      <div className="mt-6 flex justify-end">
-        <Button onClick={onNext} className="gradient-coral text-primary-foreground">
-          Next: Set Answers <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
       </div>
     </motion.div>
   );
@@ -501,12 +505,23 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
   const [customMode, setCustomMode] = useState(false);
   const [customCorrect, setCustomCorrect] = useState('');
   const [profanityWarning, setProfanityWarning] = useState('');
+  const [autoRandomize, setAutoRandomize] = useState(false);
   const q = selected[currentIdx] as SelectedQuestion;
 
   const selectCorrect = (opt: string) => {
-    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
-      i === currentIdx ? { ...s, correctAnswer: opt, isCustom: false } : s
-    ));
+    if (autoRandomize && opt) {
+      // Auto-pick 3 random distractors
+      const available = q.options.filter(o => o !== opt);
+      const shuffled = [...available].sort(() => Math.random() - 0.5);
+      const autoDistractors = shuffled.slice(0, 3);
+      setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
+        i === currentIdx ? { ...s, correctAnswer: opt, distractors: autoDistractors, isCustom: false } : s
+      ));
+    } else {
+      setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
+        i === currentIdx ? { ...s, correctAnswer: opt, isCustom: false } : s
+      ));
+    }
   };
 
   const toggleDistractor = (opt: string) => {
@@ -534,7 +549,6 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
       toast.error('Enter a correct answer');
       return;
     }
-    // Auto-pick 3 random distractors from the existing options (excluding any that match the custom correct)
     const available = q.options.filter(o => o.toLowerCase() !== customCorrect.trim().toLowerCase());
     const shuffled = [...available].sort(() => Math.random() - 0.5);
     const autoDistractors = shuffled.slice(0, 3);
@@ -563,7 +577,17 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
   return (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold font-display">Set Answers</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-bold font-display">Set Answers</h2>
+          <label className="flex items-center gap-1.5 cursor-pointer">
+            <Checkbox
+              checked={autoRandomize}
+              onCheckedChange={(checked) => setAutoRandomize(!!checked)}
+              className="h-4 w-4"
+            />
+            <span className="text-xs text-muted-foreground font-medium">Auto-pick distractors</span>
+          </label>
+        </div>
         <Badge variant="secondary">{currentIdx + 1}/{selected.length}</Badge>
       </div>
 
@@ -580,8 +604,11 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
         {!customMode ? (
           <>
             <p className="mb-2 text-xs text-muted-foreground">
-              <span className="text-secondary font-bold">1.</span> Tap the <span className="font-bold text-secondary">correct answer</span>, then{' '}
-              <span className="text-primary font-bold">2.</span> pick <span className="font-bold text-primary">3 distractors</span>
+              {autoRandomize ? (
+                <>Tap the <span className="font-bold text-secondary">correct answer</span> — distractors will be picked automatically</>
+              ) : (
+                <>Firstly, tap the <span className="font-bold text-secondary">correct answer</span>, then pick <span className="font-bold text-primary">3 distractors</span></>
+              )}
             </p>
             <div className="grid grid-cols-2 gap-2">
               {q.options.map(opt => {
@@ -591,8 +618,12 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                   <button
                     key={opt}
                     onClick={() => {
-                      if (!q.correctAnswer || isCorrect) selectCorrect(isCorrect ? '' : opt);
-                      else if (q.correctAnswer && q.correctAnswer !== opt) toggleDistractor(opt);
+                      if (autoRandomize) {
+                        selectCorrect(isCorrect ? '' : opt);
+                      } else {
+                        if (!q.correctAnswer || isCorrect) selectCorrect(isCorrect ? '' : opt);
+                        else if (q.correctAnswer && q.correctAnswer !== opt) toggleDistractor(opt);
+                      }
                     }}
                     className={`rounded-xl border-2 px-3 py-2 text-sm font-medium transition-all ${
                       isCorrect
@@ -614,7 +645,6 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
           </>
         ) : (
           <>
-            {/* Custom correct answer input */}
             <div className="mb-3">
               <label className="text-xs font-semibold text-secondary mb-1 block">Your Correct Answer</label>
               <div className="flex gap-2">
@@ -636,7 +666,6 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                   className="mt-2 gradient-teal text-secondary-foreground text-xs"
                   onClick={() => {
                     if (!customCorrect.trim()) return;
-                    // Set the custom correct answer, then let user pick distractors from options below
                     selectCorrect(customCorrect.trim());
                     setSelected((prev: SelectedQuestion[]) => prev.map((s: SelectedQuestion) =>
                       s.questionId === q.questionId ? { ...s, isCustom: true, customCorrect: customCorrect.trim() } : s
@@ -650,7 +679,6 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
               )}
             </div>
 
-            {/* Still show options to pick distractors */}
             <p className="mb-2 text-xs text-muted-foreground">
               Pick <span className="font-bold text-primary">3 distractors</span> from below
             </p>
@@ -692,7 +720,6 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
         )}
       </div>
 
-      {/* Progress dots */}
       <div className="mt-4 flex justify-center gap-1">
         {selected.map((_: any, i: number) => {
           const s = selected[i] as SelectedQuestion;
