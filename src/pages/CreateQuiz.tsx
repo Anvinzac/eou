@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { ArrowLeft, ArrowRight, Check, Trash2, ArrowUpToLine, ArrowDownToLine, Pencil, X, ChevronLeft, ChevronRight, Shuffle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Trash2, ArrowUpToLine, ArrowDownToLine, Pencil, X, Shuffle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { containsProfanity } from '@/lib/profanity';
@@ -273,11 +273,11 @@ export default function CreateQuiz() {
               </div>
             ) : (
               <button
-                onClick={() => { setTempTitle(quizTitle); setEditingTitle(true); }}
-                className="group inline-flex items-center gap-1"
+                onClick={() => { setTempTitle(''); setEditingTitle(true); }}
+                className="inline-flex items-center gap-1.5"
               >
                 <span className="text-sm font-bold font-display">{quizTitle}</span>
-                <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Pencil className="h-3 w-3 text-muted-foreground" />
               </button>
             )}
             {/* Progress underline */}
@@ -379,12 +379,9 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
       <h2 className="mb-1 text-xl font-bold font-display">Pick Your Questions</h2>
       <p className="mb-4 text-sm text-muted-foreground">Swipe categories, tap questions to select. <span className="font-bold text-primary">{remaining}</span> remaining.</p>
 
-      {/* Category tabs with arrows */}
-      <div className="mb-6 flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0" onClick={() => swipeCategory(-1)} disabled={activeCategoryIdx === 0}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <div ref={scrollRef} className="flex gap-3 overflow-x-auto py-2 px-2 hide-scrollbar flex-1">
+      {/* Category tabs */}
+      <div className="-mx-4 mb-6">
+        <div ref={scrollRef} className="flex gap-3 overflow-x-auto py-2 px-4 hide-scrollbar">
           {CATEGORIES.map((cat, idx) => {
             const count = questionsByCategory[cat.key]?.filter((q: QuestionData) => selectedIds.has(q.id)).length || 0;
             const Icon = cat.icon;
@@ -392,24 +389,21 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
               <button
                 key={cat.key}
                 onClick={() => setActiveCategoryIdx(idx)}
-                className={`flex flex-shrink-0 flex-col items-center gap-1 rounded-2xl border-2 px-4 py-3 transition-all ${
+                className={`relative flex flex-shrink-0 flex-col items-center gap-1 rounded-2xl border-2 px-4 py-3 transition-all ${
                   idx === activeCategoryIdx
-                    ? `${cat.colorClass} border-current shadow-soft scale-105`
+                    ? `${cat.colorClass} border-current shadow-soft`
                     : 'border-transparent bg-muted/50 text-muted-foreground hover:bg-muted'
                 }`}
               >
+                {count > 0 && (
+                  <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">{count}</span>
+                )}
                 <Icon className="h-5 w-5" />
                 <span className="text-xs font-semibold whitespace-nowrap">{cat.key}</span>
-                {count > 0 && (
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">{count}</span>
-                )}
               </button>
             );
           })}
         </div>
-        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0" onClick={() => swipeCategory(1)} disabled={activeCategoryIdx === CATEGORIES.length - 1}>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
       </div>
 
       {/* Questions grid */}
