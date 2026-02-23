@@ -296,6 +296,7 @@ export type Database = {
       quizzes: {
         Row: {
           created_at: string
+          draft_token: string | null
           id: string
           is_active: boolean
           is_open: boolean
@@ -304,10 +305,11 @@ export type Database = {
           quiz_type: Database["public"]["Enums"]["quiz_type"]
           title: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
+          draft_token?: string | null
           id?: string
           is_active?: boolean
           is_open?: boolean
@@ -316,10 +318,11 @@ export type Database = {
           quiz_type?: Database["public"]["Enums"]["quiz_type"]
           title?: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
+          draft_token?: string | null
           id?: string
           is_active?: boolean
           is_open?: boolean
@@ -328,7 +331,7 @@ export type Database = {
           quiz_type?: Database["public"]["Enums"]["quiz_type"]
           title?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }

@@ -1,14 +1,14 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { ArrowLeft, ArrowRight, Check, Trash2, ArrowUpToLine, ArrowDownToLine, Pencil, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Trash2, ArrowUpToLine, ArrowDownToLine, Pencil, X, ChevronLeft, ChevronRight, Shuffle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { containsProfanity, cleanText } from '@/lib/profanity';
+import { containsProfanity } from '@/lib/profanity';
 import { CATEGORIES, getCategoryMeta } from '@/lib/categories';
 import type { QuestionData, SelectedQuestion } from '@/types/quiz';
 import questionsData from '@/data/qna.json';
@@ -18,12 +18,23 @@ const allQuestions = (questionsData as { questions: QuestionData[] }).questions;
 
 type Step = 'select' | 'reorder' | 'answers' | 'review';
 
+const DRAFT_TOKEN_KEY = 'quiz_draft_token';
+const DRAFT_QUIZ_ID_KEY = 'quiz_draft_id';
+
+function generateDraftToken() {
+  return crypto.randomUUID();
+}
+
 export default function CreateQuiz() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [step, setStep] = useState<Step>('select');
   const [selected, setSelected] = useState<SelectedQuestion[]>([]);
   const [activeCategoryIdx, setActiveCategoryIdx] = useState(0);
+  const [quizTitle, setQuizTitle] = useState('My Quiz');
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [tempTitle, setTempTitle] = useState('');
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   const questionsByCategory = useMemo(() => {
     const map: Record<string, QuestionData[]> = {};
@@ -36,6 +47,27 @@ export default function CreateQuiz() {
 
   const selectedIds = useMemo(() => new Set(selected.map(s => s.questionId)), [selected]);
   const remaining = MAX_QUESTIONS - selected.length;
+
+  // Link draft quiz to user after login
+  useEffect(() => {
+    if (!user) return;
+    const draftToken = localStorage.getItem(DRAFT_TOKEN_KEY);
+    const draftQuizId = localStorage.getItem(DRAFT_QUIZ_ID_KEY);
+    if (draftToken && draftQuizId) {
+      supabase
+        .from('quizzes')
+        .update({ user_id: user.id, draft_token: null })
+        .eq('id', draftQuizId)
+        .eq('draft_token', draftToken)
+        .then(({ error }) => {
+          if (!error) {
+            // Also update quiz_questions ownership is inherited via quiz_id
+            localStorage.removeItem(DRAFT_TOKEN_KEY);
+            localStorage.removeItem(DRAFT_QUIZ_ID_KEY);
+          }
+        });
+    }
+  }, [user]);
 
   const toggleQuestion = useCallback((q: QuestionData) => {
     setSelected(prev => {
@@ -60,6 +92,27 @@ export default function CreateQuiz() {
     });
   }, []);
 
+  const fillRandomQuestions = useCallback(() => {
+    setSelected(prev => {
+      if (prev.length >= MAX_QUESTIONS) return prev;
+      const usedIds = new Set(prev.map(s => s.questionId));
+      const available = allQuestions.filter(q => !usedIds.has(q.id));
+      const shuffled = [...available].sort(() => Math.random() - 0.5);
+      const needed = MAX_QUESTIONS - prev.length;
+      const toAdd = shuffled.slice(0, needed).map((q, i) => ({
+        questionId: q.id,
+        category: q.category,
+        text: q.text,
+        options: q.options,
+        orderNumber: prev.length + i + 1,
+        correctAnswer: '',
+        distractors: [],
+        isCustom: false,
+      }));
+      return [...prev, ...toAdd];
+    });
+  }, []);
+
   const moveToTop = (idx: number) => {
     setSelected(prev => {
       const item = prev[idx];
@@ -79,20 +132,69 @@ export default function CreateQuiz() {
   const deleteQuestion = (idx: number) => {
     const q = selected[idx];
     setSelected(prev => prev.filter((_, i) => i !== idx).map((q, i) => ({ ...q, orderNumber: i + 1 })));
-    // Jump to the category of the deleted question
     const catIdx = CATEGORIES.findIndex(c => c.key === q.category);
     if (catIdx >= 0) setActiveCategoryIdx(catIdx);
     setStep('select');
     toast.info(`Removed "${q.text.slice(0, 40)}..." — pick a replacement!`);
   };
 
-  const saveQuiz = async () => {
-    if (!user) {
-      toast.error('Please sign in to save your quiz');
-      navigate('/auth');
+  const handleNextToReorder = () => {
+    if (selected.length === 0) {
+      toast.error('Select at least 1 question');
       return;
     }
-    // Validate all questions have answers
+    if (selected.length < MAX_QUESTIONS) {
+      const needed = MAX_QUESTIONS - selected.length;
+      toast(`You have ${selected.length}/${MAX_QUESTIONS} questions. Adding ${needed} random questions to fill the quiz.`, {
+        action: {
+          label: 'Fill & Continue',
+          onClick: () => {
+            fillRandomQuestions();
+            setStep('reorder');
+          },
+        },
+      });
+      return;
+    }
+    setStep('reorder');
+  };
+
+  const saveQuiz = async () => {
+    if (!user) {
+      // Save as draft in DB first
+      const draftToken = generateDraftToken();
+      try {
+        const { data: quiz, error: quizErr } = await supabase
+          .from('quizzes')
+          .insert({ user_id: null, title: quizTitle, max_questions: MAX_QUESTIONS, draft_token: draftToken } as any)
+          .select()
+          .single();
+        if (quizErr) throw quizErr;
+
+        const questionsToInsert = selected.map(q => ({
+          quiz_id: quiz.id,
+          question_ref_id: q.questionId,
+          category: q.category,
+          question_text: q.text,
+          order_number: q.orderNumber,
+          correct_answers: [q.isCustom && q.customCorrect ? q.customCorrect : q.correctAnswer],
+          distractor_answers: q.isCustom && q.customDistractors?.length === 3 ? q.customDistractors : q.distractors,
+          is_custom: q.isCustom,
+        }));
+
+        const { error: qErr } = await supabase.from('quiz_questions').insert(questionsToInsert);
+        if (qErr) throw qErr;
+
+        localStorage.setItem(DRAFT_TOKEN_KEY, draftToken);
+        localStorage.setItem(DRAFT_QUIZ_ID_KEY, quiz.id);
+        toast.success('Quiz saved as draft! Sign in to manage it.');
+        navigate('/auth');
+      } catch (err: any) {
+        toast.error(err.message || 'Failed to save draft');
+      }
+      return;
+    }
+
     const incomplete = selected.find(q => !q.correctAnswer || q.distractors.length < 3);
     if (incomplete) {
       toast.error('Please set answers for all questions');
@@ -101,7 +203,7 @@ export default function CreateQuiz() {
     try {
       const { data: quiz, error: quizErr } = await supabase
         .from('quizzes')
-        .insert({ user_id: user.id, title: 'My Quiz', max_questions: MAX_QUESTIONS })
+        .insert({ user_id: user.id, title: quizTitle, max_questions: MAX_QUESTIONS })
         .select()
         .single();
       if (quizErr) throw quizErr;
@@ -116,7 +218,7 @@ export default function CreateQuiz() {
         distractor_answers: q.isCustom && q.customDistractors?.length === 3 ? q.customDistractors : q.distractors,
         is_custom: q.isCustom,
       }));
-      
+
       const { error: qErr } = await supabase.from('quiz_questions').insert(questionsToInsert);
       if (qErr) throw qErr;
 
@@ -127,9 +229,12 @@ export default function CreateQuiz() {
     }
   };
 
+  const stepIndex = ['select', 'reorder', 'answers', 'review'].indexOf(step);
+  const progressPercent = ((stepIndex + 1) / 4) * 100;
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      {/* Header with editable title + progress underline */}
       <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur-md px-4 py-3">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <Button variant="ghost" size="sm" onClick={() => {
@@ -140,11 +245,52 @@ export default function CreateQuiz() {
           }}>
             <ArrowLeft className="mr-1 h-4 w-4" /> Back
           </Button>
-          <div className="flex items-center gap-2">
-            {['select', 'reorder', 'answers', 'review'].map((s, i) => (
-              <div key={s} className={`h-2 w-8 rounded-full transition-colors ${step === s ? 'gradient-coral' : 'bg-muted'}`} />
-            ))}
+
+          <div className="flex-1 mx-4 text-center">
+            {editingTitle ? (
+              <div className="flex items-center justify-center gap-2">
+                <Input
+                  ref={titleInputRef}
+                  value={tempTitle}
+                  onChange={e => setTempTitle(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      setQuizTitle(tempTitle.trim() || 'My Quiz');
+                      setEditingTitle(false);
+                    }
+                    if (e.key === 'Escape') setEditingTitle(false);
+                  }}
+                  className="h-8 max-w-[200px] text-center text-sm font-bold rounded-lg"
+                  maxLength={50}
+                  autoFocus
+                />
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => {
+                  setQuizTitle(tempTitle.trim() || 'My Quiz');
+                  setEditingTitle(false);
+                }}>
+                  <Check className="h-3 w-3" />
+                </Button>
+              </div>
+            ) : (
+              <button
+                onClick={() => { setTempTitle(quizTitle); setEditingTitle(true); }}
+                className="group inline-flex items-center gap-1"
+              >
+                <span className="text-sm font-bold font-display">{quizTitle}</span>
+                <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            )}
+            {/* Progress underline */}
+            <div className="mt-1 h-1 w-full rounded-full bg-muted overflow-hidden">
+              <motion.div
+                className="h-full gradient-coral rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPercent}%` }}
+                transition={{ duration: 0.4, ease: 'easeInOut' }}
+              />
+            </div>
           </div>
+
           {step === 'select' && (
             <Badge variant="secondary" className="text-sm font-bold">
               {remaining} left
@@ -165,10 +311,7 @@ export default function CreateQuiz() {
               remaining={remaining}
               activeCategoryIdx={activeCategoryIdx}
               setActiveCategoryIdx={setActiveCategoryIdx}
-              onNext={() => {
-                if (selected.length === 0) { toast.error('Select at least 1 question'); return; }
-                setStep('reorder');
-              }}
+              onNext={handleNextToReorder}
             />
           )}
           {step === 'reorder' && (
@@ -195,7 +338,7 @@ export default function CreateQuiz() {
               selected={selected}
               onSave={saveQuiz}
               user={user}
-              onLogin={() => navigate('/auth')}
+              onLogin={saveQuiz}
             />
           )}
         </AnimatePresence>
@@ -208,35 +351,65 @@ export default function CreateQuiz() {
 function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remaining, activeCategoryIdx, setActiveCategoryIdx, onNext }: any) {
   const activeCategory = CATEGORIES[activeCategoryIdx];
   const questions = questionsByCategory[activeCategory.key] || [];
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef(0);
+
+  const swipeCategory = (dir: number) => {
+    const newIdx = activeCategoryIdx + dir;
+    if (newIdx >= 0 && newIdx < CATEGORIES.length) {
+      setActiveCategoryIdx(newIdx);
+    }
+  };
+
+  // Scroll active category into view
+  useEffect(() => {
+    const el = scrollRef.current?.children[activeCategoryIdx] as HTMLElement;
+    el?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [activeCategoryIdx]);
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+    <motion.div
+      initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+      onTouchStart={e => { touchStartX.current = e.touches[0].clientX; }}
+      onTouchEnd={e => {
+        const diff = touchStartX.current - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) swipeCategory(diff > 0 ? 1 : -1);
+      }}
+    >
       <h2 className="mb-1 text-xl font-bold font-display">Pick Your Questions</h2>
       <p className="mb-4 text-sm text-muted-foreground">Swipe categories, tap questions to select. <span className="font-bold text-primary">{remaining}</span> remaining.</p>
 
-      {/* Category tabs - horizontal scroll */}
-      <div className="mb-6 flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
-        {CATEGORIES.map((cat, idx) => {
-          const count = questionsByCategory[cat.key]?.filter((q: QuestionData) => selectedIds.has(q.id)).length || 0;
-          const Icon = cat.icon;
-          return (
-            <button
-              key={cat.key}
-              onClick={() => setActiveCategoryIdx(idx)}
-              className={`flex flex-shrink-0 flex-col items-center gap-1 rounded-2xl border-2 px-4 py-3 transition-all ${
-                idx === activeCategoryIdx 
-                  ? `${cat.colorClass} border-current shadow-soft scale-105` 
-                  : 'border-transparent bg-muted/50 text-muted-foreground hover:bg-muted'
-              }`}
-            >
-              <Icon className="h-5 w-5" />
-              <span className="text-xs font-semibold whitespace-nowrap">{cat.key}</span>
-              {count > 0 && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">{count}</span>
-              )}
-            </button>
-          );
-        })}
+      {/* Category tabs with arrows */}
+      <div className="mb-6 flex items-center gap-1">
+        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0" onClick={() => swipeCategory(-1)} disabled={activeCategoryIdx === 0}>
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <div ref={scrollRef} className="flex gap-3 overflow-x-auto py-2 px-2 hide-scrollbar flex-1">
+          {CATEGORIES.map((cat, idx) => {
+            const count = questionsByCategory[cat.key]?.filter((q: QuestionData) => selectedIds.has(q.id)).length || 0;
+            const Icon = cat.icon;
+            return (
+              <button
+                key={cat.key}
+                onClick={() => setActiveCategoryIdx(idx)}
+                className={`flex flex-shrink-0 flex-col items-center gap-1 rounded-2xl border-2 px-4 py-3 transition-all ${
+                  idx === activeCategoryIdx
+                    ? `${cat.colorClass} border-current shadow-soft scale-105`
+                    : 'border-transparent bg-muted/50 text-muted-foreground hover:bg-muted'
+                }`}
+              >
+                <Icon className="h-5 w-5" />
+                <span className="text-xs font-semibold whitespace-nowrap">{cat.key}</span>
+                {count > 0 && (
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">{count}</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0" onClick={() => swipeCategory(1)} disabled={activeCategoryIdx === CATEGORIES.length - 1}>
+          <ChevronRight className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Questions grid */}
@@ -249,8 +422,8 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
               layout
               onClick={() => toggleQuestion(q)}
               className={`relative rounded-2xl border-2 p-4 text-left transition-all ${
-                isSelected 
-                  ? `${activeCategory.colorClass} border-current shadow-soft` 
+                isSelected
+                  ? `${activeCategory.colorClass} border-current shadow-soft`
                   : 'border-border bg-card hover:border-primary/30 hover:shadow-sm'
               }`}
             >
@@ -327,12 +500,11 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [customMode, setCustomMode] = useState(false);
   const [customCorrect, setCustomCorrect] = useState('');
-  const [customDistractors, setCustomDistractors] = useState(['', '', '']);
   const [profanityWarning, setProfanityWarning] = useState('');
   const q = selected[currentIdx] as SelectedQuestion;
 
   const selectCorrect = (opt: string) => {
-    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) => 
+    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
       i === currentIdx ? { ...s, correctAnswer: opt, isCustom: false } : s
     ));
   };
@@ -340,7 +512,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
   const toggleDistractor = (opt: string) => {
     setSelected((prev: SelectedQuestion[]) => prev.map((s, i) => {
       if (i !== currentIdx) return s;
-      const distractors = s.distractors.includes(opt) 
+      const distractors = s.distractors.includes(opt)
         ? s.distractors.filter(d => d !== opt)
         : s.distractors.length < 3 ? [...s.distractors, opt] : s.distractors;
       return { ...s, distractors, isCustom: false };
@@ -357,23 +529,33 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
     setter(text);
   };
 
-  const saveCustom = () => {
-    if (!customCorrect.trim() || customDistractors.some(d => !d.trim())) {
-      toast.error('Fill in all custom fields');
+  const saveCustomCorrectOnly = () => {
+    if (!customCorrect.trim()) {
+      toast.error('Enter a correct answer');
       return;
     }
-    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) => 
-      i === currentIdx ? { 
-        ...s, 
-        isCustom: true, 
+    // Auto-pick 3 random distractors from the existing options (excluding any that match the custom correct)
+    const available = q.options.filter(o => o.toLowerCase() !== customCorrect.trim().toLowerCase());
+    const shuffled = [...available].sort(() => Math.random() - 0.5);
+    const autoDistractors = shuffled.slice(0, 3);
+
+    if (autoDistractors.length < 3) {
+      toast.error('Not enough options for distractors');
+      return;
+    }
+
+    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
+      i === currentIdx ? {
+        ...s,
+        isCustom: true,
         customCorrect: customCorrect.trim(),
-        customDistractors: customDistractors.map(d => d.trim()),
+        customDistractors: autoDistractors,
         correctAnswer: customCorrect.trim(),
-        distractors: customDistractors.map(d => d.trim()),
+        distractors: autoDistractors,
       } : s
     ));
     setCustomMode(false);
-    toast.success('Custom answers saved!');
+    toast.success('Custom answer saved with auto-generated distractors!');
   };
 
   const isComplete = q.correctAnswer && q.distractors.length === 3;
@@ -413,9 +595,9 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                       else if (q.correctAnswer && q.correctAnswer !== opt) toggleDistractor(opt);
                     }}
                     className={`rounded-xl border-2 px-3 py-2 text-sm font-medium transition-all ${
-                      isCorrect 
-                        ? 'border-secondary bg-secondary/10 text-secondary shadow-sm' 
-                        : isDistractor 
+                      isCorrect
+                        ? 'border-secondary bg-secondary/10 text-secondary shadow-sm'
+                        : isDistractor
                           ? 'border-primary bg-primary/10 text-primary'
                           : 'border-border hover:border-muted-foreground/30'
                     }`}
@@ -426,41 +608,27 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                 );
               })}
             </div>
-            <button onClick={() => { setCustomMode(true); setCustomCorrect(q.customCorrect || ''); setCustomDistractors(q.customDistractors || ['', '', '']); }} className="mt-3 text-xs text-muted-foreground hover:text-primary flex items-center gap-1">
-              <Pencil className="h-3 w-3" /> Custom answers
+            <button onClick={() => { setCustomMode(true); setCustomCorrect(q.customCorrect || ''); }} className="mt-3 text-xs text-muted-foreground hover:text-primary flex items-center gap-1">
+              <Pencil className="h-3 w-3" /> Custom correct answer
             </button>
           </>
         ) : (
           <div className="space-y-3">
             <div>
-              <label className="text-xs font-semibold text-secondary">Correct Answer</label>
-              <Input 
-                value={customCorrect} 
+              <label className="text-xs font-semibold text-secondary">Your Correct Answer</label>
+              <Input
+                value={customCorrect}
                 onChange={e => validateAndSetCustomText(e.target.value, setCustomCorrect)}
                 className="rounded-xl border-secondary/30 mt-1"
                 placeholder="Type the correct answer"
                 maxLength={100}
               />
+              <p className="mt-1 text-xs text-muted-foreground">3 distractors will be auto-selected from existing options</p>
             </div>
-            {customDistractors.map((d, i) => (
-              <div key={i}>
-                <label className="text-xs font-semibold text-primary">Distractor {i + 1}</label>
-                <Input
-                  value={d}
-                  onChange={e => {
-                    const val = e.target.value;
-                    validateAndSetCustomText(val, (v) => {
-                      setCustomDistractors(prev => prev.map((p, j) => j === i ? v : p));
-                    });
-                  }}
-                  className="rounded-xl border-primary/30 mt-1"
-                  placeholder={`Wrong answer ${i + 1}`}
-                  maxLength={100}
-                />
-              </div>
-            ))}
             <div className="flex gap-2">
-              <Button onClick={saveCustom} size="sm" className="gradient-teal text-secondary-foreground">Save Custom</Button>
+              <Button onClick={saveCustomCorrectOnly} size="sm" className="gradient-teal text-secondary-foreground">
+                <Shuffle className="mr-1 h-3 w-3" /> Save & Auto-fill Distractors
+              </Button>
               <Button onClick={() => setCustomMode(false)} variant="ghost" size="sm"><X className="h-4 w-4 mr-1" /> Cancel</Button>
             </div>
           </div>
@@ -471,7 +639,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
         <Button variant="ghost" onClick={() => setCurrentIdx(Math.max(0, currentIdx - 1))} disabled={currentIdx === 0}>
           <ArrowLeft className="mr-1 h-4 w-4" /> Prev
         </Button>
-        
+
         {currentIdx < selected.length - 1 ? (
           <Button onClick={() => setCurrentIdx(currentIdx + 1)} disabled={!isComplete} className="gradient-coral text-primary-foreground">
             Next <ArrowRight className="ml-1 h-4 w-4" />
@@ -489,12 +657,12 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
           const s = selected[i] as SelectedQuestion;
           const done = s.correctAnswer && s.distractors.length === 3;
           return (
-            <button 
-              key={i} 
+            <button
+              key={i}
               onClick={() => setCurrentIdx(i)}
               className={`h-2 w-2 rounded-full transition-all ${
                 i === currentIdx ? 'w-6 gradient-coral' : done ? 'bg-secondary' : 'bg-muted'
-              }`} 
+              }`}
             />
           );
         })}
@@ -535,9 +703,9 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
         </Button>
       ) : (
         <div className="text-center">
-          <p className="mb-3 text-sm text-muted-foreground">Sign in to save your quiz and share it!</p>
+          <p className="mb-3 text-sm text-muted-foreground">Sign in to manage your quiz, or save as draft first!</p>
           <Button onClick={onLogin} size="lg" className="gradient-coral text-primary-foreground">
-            Sign In to Save
+            Save Draft & Sign In
           </Button>
         </div>
       )}
