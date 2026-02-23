@@ -292,9 +292,15 @@ export default function CreateQuiz() {
           </div>
 
           {step === 'select' && (
-            <Badge variant="secondary" className="text-sm font-bold">
-              {remaining} left
-            </Badge>
+            remaining > 0 ? (
+              <Badge variant="secondary" className="text-sm font-bold">
+                {remaining} left
+              </Badge>
+            ) : (
+              <Button size="sm" onClick={handleNextToReorder} className="gradient-coral text-primary-foreground text-xs">
+                Next <ArrowRight className="ml-1 h-3 w-3" />
+              </Button>
+            )
           )}
           {step !== 'select' && <div className="w-16" />}
         </div>
