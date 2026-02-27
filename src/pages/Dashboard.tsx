@@ -238,57 +238,85 @@ export default function Dashboard() {
 
                 {(() => {
                   const PRONOUNS = ['Anh', 'Em', 'Bạn', 'Nó', 'Cô ấy', 'Hai'];
+                  const VN_NAMES = [
+                    'An', 'Anh', 'Ân', 'Ánh',
+                    'Bảo', 'Bình', 'Bạn',
+                    'Chi', 'Châu', 'Cường',
+                    'Duy', 'Dũng', 'Diệu', 'Đạt', 'Đức',
+                    'Em',
+                    'Gia', 'Giang',
+                    'Hà', 'Hai', 'Hạnh', 'Hiền', 'Hoa', 'Hoàng', 'Hùng', 'Hương', 'Huy',
+                    'Khánh', 'Khoa', 'Kiên',
+                    'Lan', 'Linh', 'Long', 'Lộc',
+                    'Mai', 'Minh', 'My',
+                    'Nam', 'Ngân', 'Nghĩa', 'Ngọc', 'Nhi', 'Nhung', 'Nó',
+                    'Phong', 'Phúc', 'Phương',
+                    'Quân', 'Quang', 'Quỳnh',
+                    'Sơn',
+                    'Tâm', 'Thảo', 'Thành', 'Thanh', 'Thắng', 'Thiên', 'Thúy', 'Tiến', 'Trang', 'Trung', 'Tú', 'Tuấn',
+                    'Uyên',
+                    'Vân', 'Việt', 'Vy',
+                    'Xuân',
+                    'Yến',
+                  ];
+
+                  const getChips = (input: string) => {
+                    const val = (input || '').trim().toLowerCase();
+                    if (!val) return PRONOUNS;
+                    return VN_NAMES.filter(n => n.toLowerCase().startsWith(val));
+                  };
+
                   return (
                     <div className="space-y-2 max-h-60 overflow-y-auto p-1">
-                      {Array.from({ length: inviteCount }).map((_, idx) => (
-                        <div key={idx} className="space-y-1.5">
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              value={inviteLabels[idx] || ''}
-                              onFocus={() => setActiveInviteIdx(idx)}
-                              onChange={e => {
-                                const val = e.target.value;
-                                setInviteLabels(prev => {
-                                  const next = [...prev];
-                                  next[idx] = val;
-                                  return next;
-                                });
-                                if (val.length === 1) regenerateLabel(idx);
-                              }}
-                              placeholder="Type initials for cloud name..."
-                              className="rounded-xl text-sm"
-                              maxLength={30}
-                            />
-                            <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={() => regenerateLabel(idx)} title="Regenerate name">
-                              <RefreshCw className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          {activeInviteIdx === idx && (
-                            <div className="flex gap-1.5 flex-wrap">
-                              {PRONOUNS.map(p => (
-                                <button
-                                  key={p}
-                                  onClick={() => {
-                                    setInviteLabels(prev => {
-                                      const next = [...prev];
-                                      next[idx] = p;
-                                      return next;
-                                    });
-                                    regenerateLabel(idx);
-                                    // Advance to next field
-                                    if (idx < inviteCount - 1) {
-                                      setActiveInviteIdx(idx + 1);
-                                    }
-                                  }}
-                                  className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
-                                >
-                                  {p}
-                                </button>
-                              ))}
+                      {Array.from({ length: inviteCount }).map((_, idx) => {
+                        const chips = getChips(inviteLabels[idx]);
+                        return (
+                          <div key={idx} className="space-y-1.5">
+                            <div className="flex gap-2 items-center">
+                              <Input
+                                value={inviteLabels[idx] || ''}
+                                onFocus={() => setActiveInviteIdx(idx)}
+                                onChange={e => {
+                                  const val = e.target.value;
+                                  setInviteLabels(prev => {
+                                    const next = [...prev];
+                                    next[idx] = val;
+                                    return next;
+                                  });
+                                }}
+                                placeholder="Type initials to filter names..."
+                                className="rounded-xl text-sm"
+                                maxLength={30}
+                              />
+                              <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={() => regenerateLabel(idx)} title="Regenerate name">
+                                <RefreshCw className="h-4 w-4" />
+                              </Button>
                             </div>
-                          )}
-                        </div>
-                      ))}
+                            {activeInviteIdx === idx && chips.length > 0 && (
+                              <div className="flex gap-1.5 flex-wrap">
+                                {chips.map(p => (
+                                  <button
+                                    key={p}
+                                    onClick={() => {
+                                      setInviteLabels(prev => {
+                                        const next = [...prev];
+                                        next[idx] = p;
+                                        return next;
+                                      });
+                                      if (idx < inviteCount - 1) {
+                                        setActiveInviteIdx(idx + 1);
+                                      }
+                                    }}
+                                    className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                                  >
+                                    {p}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   );
                 })()}
