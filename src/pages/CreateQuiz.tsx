@@ -10,6 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { containsProfanity } from '@/lib/profanity';
+import { generateDistractors } from '@/lib/distractorGenerator';
 import { CATEGORIES, getCategoryMeta } from '@/lib/categories';
 import type { QuestionData, SelectedQuestion } from '@/types/quiz';
 import questionsData from '@/data/qna.json';
