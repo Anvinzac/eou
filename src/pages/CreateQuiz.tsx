@@ -48,6 +48,27 @@ export default function CreateQuiz() {
 
   const selectedIds = useMemo(() => new Set(selected.map(s => s.questionId)), [selected]);
   const remaining = MAX_QUESTIONS - selected.length;
+  const customIdCounter = useRef(90000);
+
+  const addCustomQuestion = useCallback((text: string) => {
+    setSelected(prev => {
+      if (prev.length >= MAX_QUESTIONS) {
+        toast.error(`Maximum ${MAX_QUESTIONS} questions allowed`);
+        return prev;
+      }
+      customIdCounter.current += 1;
+      return [...prev, {
+        questionId: customIdCounter.current,
+        category: 'Custom',
+        text,
+        options: [],
+        orderNumber: prev.length + 1,
+        correctAnswer: '',
+        distractors: [],
+        isCustom: true,
+      }];
+    });
+  }, []);
 
   // Link draft quiz to user after login
   useEffect(() => {
