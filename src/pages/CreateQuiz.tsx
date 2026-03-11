@@ -342,6 +342,7 @@ export default function CreateQuiz() {
               activeCategoryIdx={activeCategoryIdx}
               setActiveCategoryIdx={setActiveCategoryIdx}
               onNext={handleNextToReorder}
+              addCustomQuestion={addCustomQuestion}
             />
           )}
           {step === 'reorder' && (
