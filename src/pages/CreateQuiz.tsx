@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { ArrowLeft, ArrowRight, Check, Trash2, ArrowUp, ArrowDown, Pencil, X, Shuffle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Trash2, ArrowUp, ArrowDown, Pencil, X, Shuffle, Plus } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -48,6 +48,27 @@ export default function CreateQuiz() {
 
   const selectedIds = useMemo(() => new Set(selected.map(s => s.questionId)), [selected]);
   const remaining = MAX_QUESTIONS - selected.length;
+  const customIdCounter = useRef(90000);
+
+  const addCustomQuestion = useCallback((text: string) => {
+    setSelected(prev => {
+      if (prev.length >= MAX_QUESTIONS) {
+        toast.error(`Maximum ${MAX_QUESTIONS} questions allowed`);
+        return prev;
+      }
+      customIdCounter.current += 1;
+      return [...prev, {
+        questionId: customIdCounter.current,
+        category: 'Custom',
+        text,
+        options: [],
+        orderNumber: prev.length + 1,
+        correctAnswer: '',
+        distractors: [],
+        isCustom: true,
+      }];
+    });
+  }, []);
 
   // Link draft quiz to user after login
   useEffect(() => {
@@ -321,6 +342,7 @@ export default function CreateQuiz() {
               activeCategoryIdx={activeCategoryIdx}
               setActiveCategoryIdx={setActiveCategoryIdx}
               onNext={handleNextToReorder}
+              addCustomQuestion={addCustomQuestion}
             />
           )}
           {step === 'reorder' && (
@@ -357,11 +379,28 @@ export default function CreateQuiz() {
 }
 
 /* ============= SELECT STEP ============= */
-function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remaining, activeCategoryIdx, setActiveCategoryIdx, onNext }: any) {
+function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remaining, activeCategoryIdx, setActiveCategoryIdx, onNext, addCustomQuestion }: any) {
   const activeCategory = CATEGORIES[activeCategoryIdx];
   const questions = questionsByCategory[activeCategory.key] || [];
   const scrollRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
+  const [customText, setCustomText] = useState('');
+
+  const handleAddCustom = () => {
+    const trimmed = customText.trim();
+    if (!trimmed) return;
+    if (trimmed.length < 5) {
+      toast.error('Question is too short');
+      return;
+    }
+    if (containsProfanity(trimmed)) {
+      toast.error('Please use appropriate language');
+      return;
+    }
+    addCustomQuestion(trimmed);
+    setCustomText('');
+    toast.success('Custom question added!');
+  };
 
   const swipeCategory = (dir: number) => {
     const newIdx = activeCategoryIdx + dir;
@@ -387,6 +426,28 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
     >
       <h2 className="mb-1 text-xl font-bold font-display">Pick Your Questions</h2>
       <p className="mb-4 text-sm text-muted-foreground">Swipe categories, tap questions to select. <span className="font-bold text-primary">{remaining}</span> remaining.</p>
+
+      {/* Custom question input */}
+      <div className="mb-4 flex gap-2">
+        <Input
+          value={customText}
+          onChange={e => setCustomText(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') handleAddCustom(); }}
+          placeholder="Write your own question…"
+          className="flex-1 text-sm"
+          maxLength={200}
+          disabled={remaining === 0}
+        />
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleAddCustom}
+          disabled={remaining === 0 || !customText.trim()}
+          className="shrink-0"
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
 
       {/* Category tabs */}
       <div className="-mx-4 mb-6">
