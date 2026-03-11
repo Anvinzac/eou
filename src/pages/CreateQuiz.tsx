@@ -568,11 +568,12 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
   const [customCorrect, setCustomCorrect] = useState('');
   const [profanityWarning, setProfanityWarning] = useState('');
   const [autoRandomize, setAutoRandomize] = useState(true);
+  const [customDistractorInputs, setCustomDistractorInputs] = useState<string[]>(['', '', '']);
   const q = selected[currentIdx] as SelectedQuestion;
+  const isFullyCustom = q.isCustom && q.options.length === 0;
 
   const selectCorrect = (opt: string) => {
     if (autoRandomize && opt) {
-      // Auto-pick 3 random distractors
       const available = q.options.filter(o => o !== opt);
       const shuffled = [...available].sort(() => Math.random() - 0.5);
       const autoDistractors = shuffled.slice(0, 3);
@@ -606,6 +607,62 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
     setter(text);
   };
 
+  // For fully custom questions: set correct answer + auto-generate distractors
+  const handleCustomAnswerSubmit = () => {
+    if (!customCorrect.trim()) {
+      toast.error('Enter a correct answer');
+      return;
+    }
+    const generated = generateDistractors(customCorrect.trim(), 3);
+    setCustomDistractorInputs(generated);
+    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
+      i === currentIdx ? {
+        ...s,
+        isCustom: true,
+        customCorrect: customCorrect.trim(),
+        customDistractors: generated,
+        correctAnswer: customCorrect.trim(),
+        distractors: generated,
+      } : s
+    ));
+    toast.success('Distractors auto-generated! Edit them if needed.');
+  };
+
+  const handleRegenerateDistractors = () => {
+    const answer = q.correctAnswer || customCorrect.trim();
+    if (!answer) return;
+    const generated = generateDistractors(answer, 3);
+    setCustomDistractorInputs(generated);
+    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
+      i === currentIdx ? {
+        ...s,
+        customDistractors: generated,
+        distractors: generated,
+      } : s
+    ));
+  };
+
+  const updateCustomDistractor = (idx: number, value: string) => {
+    const updated = [...customDistractorInputs];
+    updated[idx] = value;
+    setCustomDistractorInputs(updated);
+    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
+      i === currentIdx ? {
+        ...s,
+        customDistractors: updated,
+        distractors: updated,
+      } : s
+    ));
+  };
+
+  // Sync custom distractor inputs when navigating
+  useEffect(() => {
+    if (isFullyCustom) {
+      setCustomCorrect(q.correctAnswer || q.customCorrect || '');
+      setCustomDistractorInputs(q.distractors.length === 3 ? [...q.distractors] : ['', '', '']);
+    }
+  }, [currentIdx]);
+
   const saveCustomCorrectOnly = () => {
     if (!customCorrect.trim()) {
       toast.error('Enter a correct answer');
@@ -634,21 +691,23 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
     toast.success('Custom answer saved with auto-generated distractors!');
   };
 
-  const isComplete = q.correctAnswer && q.distractors.length === 3;
+  const isComplete = q.correctAnswer && q.distractors.length === 3 && q.distractors.every((d: string) => d.trim());
 
   return (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-xl font-bold font-display">Set Answers</h2>
-          <label className="flex items-center gap-1.5 cursor-pointer">
-            <Checkbox
-              checked={autoRandomize}
-              onCheckedChange={(checked) => setAutoRandomize(!!checked)}
-              className="h-4 w-4"
-            />
-            <span className="text-xs text-muted-foreground font-medium">Auto-pick distractors</span>
-          </label>
+          {!isFullyCustom && (
+            <label className="flex items-center gap-1.5 cursor-pointer">
+              <Checkbox
+                checked={autoRandomize}
+                onCheckedChange={(checked) => setAutoRandomize(!!checked)}
+                className="h-4 w-4"
+              />
+              <span className="text-xs text-muted-foreground font-medium">Auto-pick distractors</span>
+            </label>
+          )}
         </div>
         <Badge variant="secondary">{currentIdx + 1}/{selected.length}</Badge>
       </div>
@@ -663,7 +722,72 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
           </div>
         )}
 
-        {!customMode ? (
+        {isFullyCustom ? (
+          /* === Fully custom question: type correct answer + auto-generate distractors === */
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs font-semibold text-secondary mb-1 block">✅ Correct Answer</label>
+              <div className="flex gap-2">
+                <Input
+                  value={customCorrect}
+                  onChange={e => validateAndSetCustomText(e.target.value, setCustomCorrect)}
+                  className="rounded-xl border-secondary/30 flex-1"
+                  placeholder="Type the correct answer"
+                  maxLength={100}
+                  autoFocus
+                  onKeyDown={e => { if (e.key === 'Enter') handleCustomAnswerSubmit(); }}
+                />
+                <Button
+                  size="sm"
+                  className="gradient-teal text-secondary-foreground text-xs shrink-0"
+                  onClick={handleCustomAnswerSubmit}
+                  disabled={!customCorrect.trim()}
+                >
+                  <Check className="mr-1 h-3 w-3" /> Set
+                </Button>
+              </div>
+            </div>
+
+            {q.correctAnswer && q.distractors.length === 3 && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-semibold text-primary">❌ Distractors (wrong answers)</label>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs h-7 gap-1"
+                    onClick={handleRegenerateDistractors}
+                  >
+                    <Shuffle className="h-3 w-3" /> Regenerate
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {customDistractorInputs.map((d, idx) => (
+                    <Input
+                      key={idx}
+                      value={d}
+                      onChange={e => {
+                        const val = e.target.value;
+                        if (containsProfanity(val)) {
+                          setProfanityWarning('⚠️ Inappropriate language detected!');
+                          setTimeout(() => setProfanityWarning(''), 3000);
+                          return;
+                        }
+                        updateCustomDistractor(idx, val);
+                      }}
+                      className="rounded-xl border-primary/30 text-sm"
+                      placeholder={`Distractor ${idx + 1}`}
+                      maxLength={100}
+                    />
+                  ))}
+                </div>
+                <p className="mt-2 text-[10px] text-muted-foreground">
+                  💡 Distractors are auto-generated to confuse. Edit or regenerate as needed.
+                </p>
+              </div>
+            )}
+          </div>
+        ) : !customMode ? (
           <>
             <p className="mb-2 text-xs text-muted-foreground">
               {autoRandomize ? (
@@ -776,7 +900,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
             Next <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
         ) : (
-          <Button onClick={onNext} disabled={selected.some((s: SelectedQuestion) => !s.correctAnswer || s.distractors.length < 3)} className="gradient-coral text-primary-foreground">
+          <Button onClick={onNext} disabled={selected.some((s: SelectedQuestion) => !s.correctAnswer || s.distractors.length < 3 || s.distractors.some((d: string) => !d.trim()))} className="gradient-coral text-primary-foreground">
             Review <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
         )}
@@ -785,7 +909,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
       <div className="mt-4 flex justify-center gap-1">
         {selected.map((_: any, i: number) => {
           const s = selected[i] as SelectedQuestion;
-          const done = s.correctAnswer && s.distractors.length === 3;
+          const done = s.correctAnswer && s.distractors.length === 3 && s.distractors.every((d: string) => d.trim());
           return (
             <button
               key={i}
