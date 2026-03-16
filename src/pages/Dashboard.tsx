@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Copy, Plus, RefreshCw, Link2, ArrowLeft, BarChart3, LogOut, Eye, Globe, Lock, Pencil, Check, User, Settings, Minus } from 'lucide-react';
 import { generateCloudName, generateInviteCode } from '@/lib/nameGenerator';
+import PackManager from '@/components/dashboard/PackManager';
 
 export default function Dashboard() {
   const { user, loading, signOut } = useAuth();
