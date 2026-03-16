@@ -14,6 +14,7 @@ import { generateDistractors } from '@/lib/distractorGenerator';
 import { CATEGORIES, getCategoryMeta } from '@/lib/categories';
 import type { QuestionData, SelectedQuestion } from '@/types/quiz';
 import questionsData from '@/data/qna.json';
+import PacksStep from '@/components/quiz/PacksStep';
 
 const MIN_QUESTIONS = 5;
 const MAX_QUESTIONS = 10;
