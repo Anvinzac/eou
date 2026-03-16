@@ -443,7 +443,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
       }}
     >
       <h2 className="mb-1 text-xl font-bold font-display">Pick Your Questions</h2>
-      <p className="mb-4 text-sm text-muted-foreground">Swipe categories, tap questions to select. <span className="font-bold text-primary">{remaining}</span> remaining.</p>
+      <p className="mb-4 text-sm text-muted-foreground">Swipe categories, tap questions to select (min 5, max 10). <span className="font-bold text-primary">{remaining}</span> remaining.</p>
 
       {/* Custom question input */}
       <div className="mb-4 flex gap-2">
