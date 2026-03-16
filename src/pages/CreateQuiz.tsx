@@ -262,8 +262,8 @@ export default function CreateQuiz() {
     }
   };
 
-  const stepIndex = ['select', 'reorder', 'answers', 'review'].indexOf(step);
-  const progressPercent = ((stepIndex + 1) / 4) * 100;
+  const stepIndex = ['packs', 'select', 'reorder', 'answers', 'review'].indexOf(step);
+  const progressPercent = ((stepIndex + 1) / 5) * 100;
 
   return (
     <div className="min-h-screen bg-background">
@@ -271,7 +271,8 @@ export default function CreateQuiz() {
       <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur-md px-4 py-3">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <Button variant="ghost" size="sm" onClick={() => {
-            if (step === 'select') navigate('/');
+            if (step === 'packs') navigate('/');
+            else if (step === 'select') setStep('packs');
             else if (step === 'reorder') setStep('select');
             else if (step === 'answers') setStep('reorder');
             else setStep('answers');
