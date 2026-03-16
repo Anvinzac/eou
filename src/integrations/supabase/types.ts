@@ -147,6 +147,42 @@ export type Database = {
         }
         Relationships: []
       }
+      question_packs: {
+        Row: {
+          created_at: string
+          description: string | null
+          emoji: string | null
+          id: string
+          is_system: boolean
+          questions: Json
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          emoji?: string | null
+          id?: string
+          is_system?: boolean
+          questions?: Json
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          emoji?: string | null
+          id?: string
+          is_system?: boolean
+          questions?: Json
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       quiz_attempts: {
         Row: {
           completed_at: string | null

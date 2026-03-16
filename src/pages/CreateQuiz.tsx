@@ -14,11 +14,13 @@ import { generateDistractors } from '@/lib/distractorGenerator';
 import { CATEGORIES, getCategoryMeta } from '@/lib/categories';
 import type { QuestionData, SelectedQuestion } from '@/types/quiz';
 import questionsData from '@/data/qna.json';
+import PacksStep from '@/components/quiz/PacksStep';
 
+const MIN_QUESTIONS = 5;
 const MAX_QUESTIONS = 10;
 const allQuestions = (questionsData as { questions: QuestionData[] }).questions;
 
-type Step = 'select' | 'reorder' | 'answers' | 'review';
+type Step = 'packs' | 'select' | 'reorder' | 'answers' | 'review';
 
 const DRAFT_TOKEN_KEY = 'quiz_draft_token';
 const DRAFT_QUIZ_ID_KEY = 'quiz_draft_id';
@@ -30,7 +32,7 @@ function generateDraftToken() {
 export default function CreateQuiz() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [step, setStep] = useState<Step>('select');
+  const [step, setStep] = useState<Step>('packs');
   const [selected, setSelected] = useState<SelectedQuestion[]>([]);
   const [activeCategoryIdx, setActiveCategoryIdx] = useState(0);
   const [quizTitle, setQuizTitle] = useState('My Quiz');
@@ -117,11 +119,11 @@ export default function CreateQuiz() {
 
   const fillRandomQuestions = useCallback(() => {
     setSelected(prev => {
-      if (prev.length >= MAX_QUESTIONS) return prev;
+      if (prev.length >= MIN_QUESTIONS) return prev;
       const usedIds = new Set(prev.map(s => s.questionId));
       const available = allQuestions.filter(q => !usedIds.has(q.id));
       const shuffled = [...available].sort(() => Math.random() - 0.5);
-      const needed = MAX_QUESTIONS - prev.length;
+      const needed = MIN_QUESTIONS - prev.length;
       const toAdd = shuffled.slice(0, needed).map((q, i) => ({
         questionId: q.id,
         category: q.category,
@@ -168,9 +170,9 @@ export default function CreateQuiz() {
       toast.error('Select at least 1 question');
       return;
     }
-    if (selected.length < MAX_QUESTIONS) {
-      const needed = MAX_QUESTIONS - selected.length;
-      toast(`You have ${selected.length}/${MAX_QUESTIONS} questions. Adding ${needed} random questions to fill the quiz.`, {
+    if (selected.length < MIN_QUESTIONS) {
+      const needed = MIN_QUESTIONS - selected.length;
+      toast(`You need at least ${MIN_QUESTIONS} questions. Adding ${needed} random questions.`, {
         action: {
           label: 'Fill & Continue',
           onClick: () => {
@@ -182,6 +184,12 @@ export default function CreateQuiz() {
       return;
     }
     setStep('reorder');
+  };
+
+  const handleSelectPack = (questions: SelectedQuestion[]) => {
+    setSelected(questions);
+    setStep('select');
+    toast.success('Pack loaded! Add more questions or proceed.');
   };
 
   const saveQuiz = async () => {
@@ -254,8 +262,8 @@ export default function CreateQuiz() {
     }
   };
 
-  const stepIndex = ['select', 'reorder', 'answers', 'review'].indexOf(step);
-  const progressPercent = ((stepIndex + 1) / 4) * 100;
+  const stepIndex = ['packs', 'select', 'reorder', 'answers', 'review'].indexOf(step);
+  const progressPercent = ((stepIndex + 1) / 5) * 100;
 
   return (
     <div className="min-h-screen bg-background">
@@ -263,7 +271,8 @@ export default function CreateQuiz() {
       <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur-md px-4 py-3">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <Button variant="ghost" size="sm" onClick={() => {
-            if (step === 'select') navigate('/');
+            if (step === 'packs') navigate('/');
+            else if (step === 'select') setStep('packs');
             else if (step === 'reorder') setStep('select');
             else if (step === 'answers') setStep('reorder');
             else setStep('answers');
@@ -327,12 +336,20 @@ export default function CreateQuiz() {
               </Button>
             )
           )}
-          {step !== 'select' && <div className="w-16" />}
+          {step === 'packs' && <div className="w-16" />}
+          {step !== 'select' && step !== 'packs' && <div className="w-16" />}
         </div>
       </header>
 
       <div className="mx-auto max-w-3xl px-4 py-6">
         <AnimatePresence mode="wait">
+          {step === 'packs' && (
+            <PacksStep
+              key="packs"
+              onSelectPack={handleSelectPack}
+              onSkip={() => setStep('select')}
+            />
+          )}
           {step === 'select' && (
             <SelectStep
               key="select"
@@ -426,7 +443,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
       }}
     >
       <h2 className="mb-1 text-xl font-bold font-display">Pick Your Questions</h2>
-      <p className="mb-4 text-sm text-muted-foreground">Swipe categories, tap questions to select. <span className="font-bold text-primary">{remaining}</span> remaining.</p>
+      <p className="mb-4 text-sm text-muted-foreground">Swipe categories, tap questions to select (min 5, max 10). <span className="font-bold text-primary">{remaining}</span> remaining.</p>
 
       {/* Custom question input */}
       <div className="mb-4 flex gap-2">
@@ -504,7 +521,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
       </div>
 
       <div className="mt-6 flex justify-end">
-        <Button onClick={onNext} className="gradient-coral text-primary-foreground" disabled={remaining === MAX_QUESTIONS}>
+        <Button onClick={onNext} className="gradient-coral text-primary-foreground" disabled={selectedIds.size === 0}>
           Next: Reorder <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
