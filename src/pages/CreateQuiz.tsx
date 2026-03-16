@@ -15,10 +15,11 @@ import { CATEGORIES, getCategoryMeta } from '@/lib/categories';
 import type { QuestionData, SelectedQuestion } from '@/types/quiz';
 import questionsData from '@/data/qna.json';
 
+const MIN_QUESTIONS = 5;
 const MAX_QUESTIONS = 10;
 const allQuestions = (questionsData as { questions: QuestionData[] }).questions;
 
-type Step = 'select' | 'reorder' | 'answers' | 'review';
+type Step = 'packs' | 'select' | 'reorder' | 'answers' | 'review';
 
 const DRAFT_TOKEN_KEY = 'quiz_draft_token';
 const DRAFT_QUIZ_ID_KEY = 'quiz_draft_id';
