@@ -521,7 +521,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
       </div>
 
       <div className="mt-6 flex justify-end">
-        <Button onClick={onNext} className="gradient-coral text-primary-foreground" disabled={selected.length === 0}>
+        <Button onClick={onNext} className="gradient-coral text-primary-foreground" disabled={selectedIds.size === 0}>
           Next: Reorder <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
