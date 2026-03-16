@@ -32,7 +32,7 @@ function generateDraftToken() {
 export default function CreateQuiz() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [step, setStep] = useState<Step>('select');
+  const [step, setStep] = useState<Step>('packs');
   const [selected, setSelected] = useState<SelectedQuestion[]>([]);
   const [activeCategoryIdx, setActiveCategoryIdx] = useState(0);
   const [quizTitle, setQuizTitle] = useState('My Quiz');
