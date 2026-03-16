@@ -336,12 +336,20 @@ export default function CreateQuiz() {
               </Button>
             )
           )}
-          {step !== 'select' && <div className="w-16" />}
+          {step === 'packs' && <div className="w-16" />}
+          {step !== 'select' && step !== 'packs' && <div className="w-16" />}
         </div>
       </header>
 
       <div className="mx-auto max-w-3xl px-4 py-6">
         <AnimatePresence mode="wait">
+          {step === 'packs' && (
+            <PacksStep
+              key="packs"
+              onSelectPack={handleSelectPack}
+              onSkip={() => setStep('select')}
+            />
+          )}
           {step === 'select' && (
             <SelectStep
               key="select"
