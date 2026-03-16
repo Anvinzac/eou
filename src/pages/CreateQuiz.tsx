@@ -119,11 +119,11 @@ export default function CreateQuiz() {
 
   const fillRandomQuestions = useCallback(() => {
     setSelected(prev => {
-      if (prev.length >= MAX_QUESTIONS) return prev;
+      if (prev.length >= MIN_QUESTIONS) return prev;
       const usedIds = new Set(prev.map(s => s.questionId));
       const available = allQuestions.filter(q => !usedIds.has(q.id));
       const shuffled = [...available].sort(() => Math.random() - 0.5);
-      const needed = MAX_QUESTIONS - prev.length;
+      const needed = MIN_QUESTIONS - prev.length;
       const toAdd = shuffled.slice(0, needed).map((q, i) => ({
         questionId: q.id,
         category: q.category,
