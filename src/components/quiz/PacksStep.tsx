@@ -75,7 +75,7 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
         Pick a question pack to get started fast, or skip to build from scratch.
       </p>
 
-      {/* Horizontal scrollable packs */}
+      {/* Horizontal scrollable packs with full question lists */}
       <div className="-mx-4 mb-6">
         <div
           ref={scrollRef}
@@ -85,18 +85,29 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
             <button
               key={pack.id}
               onClick={() => setSelectedPackId(pack.id === selectedPackId ? null : pack.id)}
-              className={`relative flex-shrink-0 snap-center rounded-2xl border-2 p-5 text-left transition-all w-[260px] ${
+              className={`relative flex-shrink-0 snap-center rounded-2xl border-2 p-5 text-left transition-all w-[280px] ${
                 pack.id === selectedPackId
                   ? 'border-primary bg-primary/5 shadow-soft'
                   : 'border-border bg-card hover:border-primary/30 hover:shadow-sm'
               }`}
             >
-              <div className="text-3xl mb-2">{pack.emoji}</div>
-              <h3 className="font-bold font-display text-sm mb-1">{pack.title}</h3>
-              <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{pack.description}</p>
-              <Badge variant="secondary" className="text-[10px]">
-                {pack.questions.length} questions
-              </Badge>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-2xl">{pack.emoji}</span>
+                <div>
+                  <h3 className="font-bold font-display text-sm">{pack.title}</h3>
+                  <p className="text-[11px] text-muted-foreground line-clamp-1">{pack.description}</p>
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                {pack.questions.map((q, i) => (
+                  <div key={i} className="flex items-start gap-2 text-xs">
+                    <span className="flex-shrink-0 w-4 h-4 rounded bg-muted flex items-center justify-center font-bold text-muted-foreground text-[10px]">
+                      {i + 1}
+                    </span>
+                    <span className="text-foreground leading-tight">{q.text}</span>
+                  </div>
+                ))}
+              </div>
               {pack.id === selectedPackId && (
                 <div className="absolute top-3 right-3 h-5 w-5 rounded-full bg-primary flex items-center justify-center">
                   <span className="text-primary-foreground text-[10px] font-bold">✓</span>
@@ -106,30 +117,6 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
           ))}
         </div>
       </div>
-
-      {/* Selected pack preview */}
-      {selectedPack && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-border bg-card p-4 mb-6"
-        >
-          <h3 className="font-bold text-sm mb-2 flex items-center gap-2">
-            <Package className="h-4 w-4 text-primary" />
-            {selectedPack.emoji} {selectedPack.title} — Preview
-          </h3>
-          <div className="space-y-1.5">
-            {selectedPack.questions.map((q, i) => (
-              <div key={i} className="flex items-start gap-2 text-xs">
-                <span className="flex-shrink-0 w-5 h-5 rounded-md bg-muted flex items-center justify-center font-bold text-muted-foreground">
-                  {i + 1}
-                </span>
-                <span className="text-foreground">{q.text}</span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
 
       {/* Actions */}
       <div className="flex gap-3">
