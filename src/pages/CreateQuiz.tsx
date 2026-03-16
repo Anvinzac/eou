@@ -170,9 +170,9 @@ export default function CreateQuiz() {
       toast.error('Select at least 1 question');
       return;
     }
-    if (selected.length < MAX_QUESTIONS) {
-      const needed = MAX_QUESTIONS - selected.length;
-      toast(`You have ${selected.length}/${MAX_QUESTIONS} questions. Adding ${needed} random questions to fill the quiz.`, {
+    if (selected.length < MIN_QUESTIONS) {
+      const needed = MIN_QUESTIONS - selected.length;
+      toast(`You need at least ${MIN_QUESTIONS} questions. Adding ${needed} random questions.`, {
         action: {
           label: 'Fill & Continue',
           onClick: () => {
@@ -184,6 +184,12 @@ export default function CreateQuiz() {
       return;
     }
     setStep('reorder');
+  };
+
+  const handleSelectPack = (questions: SelectedQuestion[]) => {
+    setSelected(questions);
+    setStep('select');
+    toast.success('Pack loaded! Add more questions or proceed.');
   };
 
   const saveQuiz = async () => {
