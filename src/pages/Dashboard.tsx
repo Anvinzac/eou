@@ -389,6 +389,8 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
+            {/* Question Packs */}
+            <PackManager userId={user.id} />
           </motion.div>
         )}
 
