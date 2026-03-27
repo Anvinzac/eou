@@ -60,6 +60,60 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Environment setup
+
+For hosted preview or production, create a local `.env` from `.env.example` or configure the same values in your deployment platform:
+
+```sh
+cp .env.example .env
+```
+
+Required hosted variables:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+For local Supabase, use `.env.local` instead so it overrides the hosted values without changing them.
+
+## Local Supabase testing
+
+You can run this app against your own local Supabase instead of the hosted Lovable project.
+
+1. Install Docker Desktop.
+2. Start local Supabase:
+
+```sh
+npm run supabase:start
+```
+
+3. Get the local anon key:
+
+```sh
+npm run supabase:status
+```
+
+4. Copy `.env.local.example` to `.env.local` and paste the anon key from the status output.
+5. Apply the repo migrations to the local database:
+
+```sh
+npm run supabase:db:reset
+```
+
+6. Start the app:
+
+```sh
+npm run dev
+```
+
+`src/integrations/supabase/client.ts` accepts either `VITE_SUPABASE_PUBLISHABLE_KEY` or `VITE_SUPABASE_ANON_KEY`, so local Supabase works without changing the hosted `.env`.
+
+The local reset now also seeds demo data:
+
+- Open sample quiz: `/quiz/10000000-0000-0000-0000-000000000001`
+- Invite-only sample quiz: `/quiz/10000000-0000-0000-0000-000000000002?code=LOCAL1`
+- Completed couple result: `/couple/MATCH1`
+- Waiting couple session: `/couple/WAIT22`
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.

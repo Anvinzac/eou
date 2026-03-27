@@ -10,6 +10,7 @@ import CreateQuiz from "./pages/CreateQuiz";
 import Dashboard from "./pages/Dashboard";
 import TakeQuiz from "./pages/TakeQuiz";
 import QuizResult from "./pages/QuizResult";
+import CoupleResult from "./pages/CoupleResult";
 import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/quiz/:quizId" element={<TakeQuiz />} />
             <Route path="/result/:attemptId" element={<QuizResult />} />
+            <Route path="/couple/:sessionCode" element={<CoupleResult />} />
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

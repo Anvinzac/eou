@@ -3,21 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Copy, Plus, RefreshCw, Link2, ArrowLeft, BarChart3, LogOut, Eye, Globe, Lock, Pencil, Check, User, Settings, Minus } from 'lucide-react';
+import { Copy, Plus, RefreshCw, Link2, ArrowLeft, BarChart3, LogOut, Eye, Globe, Lock, Pencil, Check, User, Settings, Minus, HeartHandshake } from 'lucide-react';
 import { generateCloudName, generateInviteCode } from '@/lib/nameGenerator';
 import PackManager from '@/components/dashboard/PackManager';
+
+type QuizRow = Tables<'quizzes'>;
+type CoupleSessionRow = Tables<'couple_sessions'>;
 
 export default function Dashboard() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [quizzes, setQuizzes] = useState<any[]>([]);
-  const [selectedQuiz, setSelectedQuiz] = useState<any>(null);
+  const [quizzes, setQuizzes] = useState<QuizRow[]>([]);
+  const [selectedQuiz, setSelectedQuiz] = useState<QuizRow | null>(null);
   const [invitations, setInvitations] = useState<any[]>([]);
   const [attempts, setAttempts] = useState<any[]>([]);
+  const [coupleSessions, setCoupleSessions] = useState<CoupleSessionRow[]>([]);
   const [inviteCount, setInviteCount] = useState(1);
   const [inviteLabels, setInviteLabels] = useState<string[]>(['']);
   const [editingTitle, setEditingTitle] = useState(false);
@@ -62,10 +67,14 @@ export default function Dashboard() {
   const selectQuiz = async (quiz: any) => {
     setSelectedQuiz(quiz);
     setNewTitle(quiz.title);
-    const { data: inv } = await supabase.from('invitations').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false });
+    const [{ data: inv }, { data: att }, { data: sessions }] = await Promise.all([
+      supabase.from('invitations').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false }),
+      supabase.from('quiz_attempts').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false }),
+      supabase.from('couple_sessions').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false }),
+    ]);
     setInvitations(inv || []);
-    const { data: att } = await supabase.from('quiz_attempts').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false });
     setAttempts(att || []);
+    setCoupleSessions(sessions || []);
   };
 
   const generateInvitations = async () => {
@@ -101,6 +110,11 @@ export default function Dashboard() {
     const link = `${window.location.origin}/quiz/${selectedQuiz.id}`;
     navigator.clipboard.writeText(link);
     toast.success('Open link copied!');
+  };
+
+  const copyCoupleResultLink = (sessionCode: string) => {
+    navigator.clipboard.writeText(`${window.location.origin}/couple/${sessionCode}`);
+    toast.success('Couple result link copied!');
   };
 
   const toggleOpenQuiz = async () => {
@@ -386,6 +400,54 @@ export default function Dashboard() {
                       </div>
                     );
                   })}
+                </div>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <h3 className="mb-3 text-lg font-bold font-display flex items-center gap-2">
+                <HeartHandshake className="h-5 w-5 text-primary" /> Couple Sessions
+              </h3>
+              {coupleSessions.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No couple-mode sessions yet. Once two people compare answers, the shared result will appear here.</p>
+              ) : (
+                <div className="space-y-3">
+                  {coupleSessions.map(session => (
+                    <div key={session.id} className="rounded-xl bg-muted/50 p-4">
+                      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">{session.first_name || 'Partner 1'} + {session.second_name || 'Waiting'}</span>
+                            <Badge variant={session.status === 'completed' ? 'default' : 'secondary'}>
+                              {session.status === 'completed' ? 'Completed' : 'Waiting'}
+                            </Badge>
+                          </div>
+                          <p className="mt-1 font-mono text-xs text-muted-foreground">{session.session_code}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl font-bold font-display text-primary">
+                            {session.match_percentage ?? 0}%
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+                        <span>
+                          {session.match_count ?? 0}/{session.total_compared ?? 0} exact matches
+                        </span>
+                        <span>
+                          {session.completed_at ? new Date(session.completed_at).toLocaleDateString() : 'Still waiting for both submissions'}
+                        </span>
+                      </div>
+                      <div className="mt-3 flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => navigate(`/couple/${session.session_code}`)}>
+                          <Eye className="mr-1 h-4 w-4" /> View
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => copyCoupleResultLink(session.session_code)}>
+                          <Copy className="mr-1 h-4 w-4" /> Copy Link
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
