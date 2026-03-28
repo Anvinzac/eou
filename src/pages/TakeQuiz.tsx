@@ -396,7 +396,7 @@ export default function TakeQuiz() {
         match_percentage: summary.matchPercentage,
         match_count: summary.matchCount,
         total_compared: summary.totalCompared,
-        match_details: summary.details,
+        match_details: summary.details as any,
         completed_at: new Date().toISOString(),
       })
       .eq('id', updatedSession.id)
