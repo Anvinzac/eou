@@ -306,7 +306,7 @@ export default function TakeQuiz() {
         is_correct: question.correct_answers.includes(answers[question.id]),
       }));
 
-      const { error: responseError } = await supabase.from('quiz_responses').insert(responses);
+      const { error: responseError } = await supabase.from('quiz_responses').insert(responses as any);
       if (responseError) {
         throw responseError;
       }
