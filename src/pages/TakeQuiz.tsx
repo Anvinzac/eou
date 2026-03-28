@@ -306,7 +306,7 @@ export default function TakeQuiz() {
         is_correct: question.correct_answers.includes(answers[question.id]),
       }));
 
-      const { error: responseError } = await supabase.from('quiz_responses').insert(responses);
+      const { error: responseError } = await supabase.from('quiz_responses').insert(responses as any);
       if (responseError) {
         throw responseError;
       }
@@ -316,7 +316,7 @@ export default function TakeQuiz() {
       }
 
       if (coupleSession && coupleSlot) {
-        await syncCoupleSessionAfterSubmit(coupleSession, coupleSlot, attempt.id, respondentName.trim(), responses);
+        await syncCoupleSessionAfterSubmit(coupleSession, coupleSlot, attempt.id, respondentName.trim(), responses as any);
         navigate(`/couple/${coupleSession.session_code}`);
       } else {
         navigate(`/result/${attempt.id}`);
@@ -396,7 +396,7 @@ export default function TakeQuiz() {
         match_percentage: summary.matchPercentage,
         match_count: summary.matchCount,
         total_compared: summary.totalCompared,
-        match_details: summary.details,
+        match_details: summary.details as any,
         completed_at: new Date().toISOString(),
       })
       .eq('id', updatedSession.id)

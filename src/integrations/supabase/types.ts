@@ -14,6 +14,79 @@ export type Database = {
   }
   public: {
     Tables: {
+      couple_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          first_attempt_id: string | null
+          first_name: string | null
+          id: string
+          match_count: number | null
+          match_details: Json | null
+          match_percentage: number | null
+          quiz_id: string
+          second_attempt_id: string | null
+          second_name: string | null
+          session_code: string
+          status: string
+          total_compared: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          first_attempt_id?: string | null
+          first_name?: string | null
+          id?: string
+          match_count?: number | null
+          match_details?: Json | null
+          match_percentage?: number | null
+          quiz_id: string
+          second_attempt_id?: string | null
+          second_name?: string | null
+          session_code: string
+          status?: string
+          total_compared?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          first_attempt_id?: string | null
+          first_name?: string | null
+          id?: string
+          match_count?: number | null
+          match_details?: Json | null
+          match_percentage?: number | null
+          quiz_id?: string
+          second_attempt_id?: string | null
+          second_name?: string | null
+          session_code?: string
+          status?: string
+          total_compared?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "couple_sessions_first_attempt_id_fkey"
+            columns: ["first_attempt_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "couple_sessions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "couple_sessions_second_attempt_id_fkey"
+            columns: ["second_attempt_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_attempts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feature_flags: {
         Row: {
           created_at: string
@@ -43,82 +116,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
-      }
-      couple_sessions: {
-        Row: {
-          completed_at: string | null
-          created_at: string
-          first_attempt_id: string | null
-          first_name: string | null
-          id: string
-          match_count: number | null
-          match_details: Json
-          match_percentage: number | null
-          quiz_id: string
-          second_attempt_id: string | null
-          second_name: string | null
-          session_code: string
-          status: string
-          total_compared: number | null
-          updated_at: string
-        }
-        Insert: {
-          completed_at?: string | null
-          created_at?: string
-          first_attempt_id?: string | null
-          first_name?: string | null
-          id?: string
-          match_count?: number | null
-          match_details?: Json
-          match_percentage?: number | null
-          quiz_id: string
-          second_attempt_id?: string | null
-          second_name?: string | null
-          session_code: string
-          status?: string
-          total_compared?: number | null
-          updated_at?: string
-        }
-        Update: {
-          completed_at?: string | null
-          created_at?: string
-          first_attempt_id?: string | null
-          first_name?: string | null
-          id?: string
-          match_count?: number | null
-          match_details?: Json
-          match_percentage?: number | null
-          quiz_id?: string
-          second_attempt_id?: string | null
-          second_name?: string | null
-          session_code?: string
-          status?: string
-          total_compared?: number | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "couple_sessions_first_attempt_id_fkey"
-            columns: ["first_attempt_id"]
-            isOneToOne: false
-            referencedRelation: "quiz_attempts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "couple_sessions_quiz_id_fkey"
-            columns: ["quiz_id"]
-            isOneToOne: false
-            referencedRelation: "quizzes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "couple_sessions_second_attempt_id_fkey"
-            columns: ["second_attempt_id"]
-            isOneToOne: false
-            referencedRelation: "quiz_attempts"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       invitations: {
         Row: {
