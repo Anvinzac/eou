@@ -316,7 +316,7 @@ export default function TakeQuiz() {
       }
 
       if (coupleSession && coupleSlot) {
-        await syncCoupleSessionAfterSubmit(coupleSession, coupleSlot, attempt.id, respondentName.trim(), responses);
+        await syncCoupleSessionAfterSubmit(coupleSession, coupleSlot, attempt.id, respondentName.trim(), responses as any);
         navigate(`/couple/${coupleSession.session_code}`);
       } else {
         navigate(`/result/${attempt.id}`);
