@@ -11,6 +11,8 @@ import { toast } from 'sonner';
 import { Copy, Plus, RefreshCw, Link2, ArrowLeft, BarChart3, LogOut, Eye, Globe, Lock, Pencil, Check, User, Settings, Minus, HeartHandshake } from 'lucide-react';
 import { generateCloudName, generateInviteCode } from '@/lib/nameGenerator';
 import PackManager from '@/components/dashboard/PackManager';
+import { withFallback } from '@/lib/supabase-fallback';
+import { getMockQuizzes, getMockInvitations, getMockAttempts, getMockCoupleSessions } from '@/lib/mock-data';
 
 type QuizRow = Tables<'quizzes'>;
 type CoupleSessionRow = Tables<'couple_sessions'>;
@@ -57,7 +59,10 @@ export default function Dashboard() {
   }, [user, loading]);
 
   const fetchQuizzes = async () => {
-    const { data } = await supabase.from('quizzes').select('*').eq('user_id', user!.id).order('created_at', { ascending: false });
+    const { data } = await withFallback(
+      supabase.from('quizzes').select('*').eq('user_id', user!.id).order('created_at', { ascending: false }),
+      getMockQuizzes(user!.id)
+    );
     setQuizzes(data || []);
     if (data && data.length > 0 && !selectedQuiz) {
       selectQuiz(data[0]);
@@ -68,9 +73,18 @@ export default function Dashboard() {
     setSelectedQuiz(quiz);
     setNewTitle(quiz.title);
     const [{ data: inv }, { data: att }, { data: sessions }] = await Promise.all([
-      supabase.from('invitations').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false }),
-      supabase.from('quiz_attempts').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false }),
-      supabase.from('couple_sessions').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false }),
+      withFallback(
+        supabase.from('invitations').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false }),
+        getMockInvitations(quiz.id)
+      ),
+      withFallback(
+        supabase.from('quiz_attempts').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false }),
+        getMockAttempts(quiz.id)
+      ),
+      withFallback(
+        supabase.from('couple_sessions').select('*').eq('quiz_id', quiz.id).order('created_at', { ascending: false }),
+        getMockCoupleSessions(quiz.id)
+      ),
     ]);
     setInvitations(inv || []);
     setAttempts(att || []);

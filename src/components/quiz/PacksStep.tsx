@@ -5,6 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Package, Pencil } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import type { SelectedQuestion } from '@/types/quiz';
+import questionsData from '@/data/qna.json';
+
+const allQuestions = (questionsData as any).questions;
+const categories = [...new Set(allQuestions.map((q: any) => q.category))] as string[];
 
 interface PackQuestion {
   text: string;
@@ -37,11 +41,50 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
         .from('question_packs')
         .select('*')
         .order('created_at', { ascending: true });
-      if (data) {
+      if (data && data.length > 0) {
         setPacks(data.map(p => ({
           ...p,
           questions: (p.questions as any as PackQuestion[]) || [],
         })));
+      } else {
+        const getMixedQuestions = (offset: number) => {
+          const categories = [...new Set(allQuestions.map((q: any) => q.category))];
+          const result: any[] = [];
+          for (let i = 0; i < 10; i++) {
+            const cat = categories[i % categories.length];
+            const qs = allQuestions.filter((q: any) => q.category === cat);
+            result.push(qs[(i + offset) % qs.length]);
+          }
+          return result;
+        };
+
+        const mockPacks: QuestionPack[] = [
+          {
+            id: 'mock-1',
+            title: 'The Essentials',
+            description: 'A great mix of basic, everyday topics.',
+            emoji: '🌟',
+            questions: getMixedQuestions(0),
+            is_system: true
+          },
+          {
+            id: 'mock-2',
+            title: 'Deep & Quirky',
+            description: 'Fun, thoughtful, and unexpected questions.',
+            emoji: '🔮',
+            questions: getMixedQuestions(3),
+            is_system: true
+          },
+          {
+            id: 'mock-3',
+            title: 'Partner Test',
+            description: 'The ultimate test for close relationships.',
+            emoji: '💑',
+            questions: getMixedQuestions(7),
+            is_system: true
+          }
+        ];
+        setPacks(mockPacks);
       }
     };
     fetchPacks();
@@ -53,6 +96,23 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
     if (!selectedPack) return;
     const questions: SelectedQuestion[] = selectedPack.questions.map((q, i) => ({
       questionId: 80000 + i,
+      category: q.category,
+      text: q.text,
+      options: q.options,
+      orderNumber: i + 1,
+      correctAnswer: '',
+      distractors: [],
+      isCustom: false,
+    }));
+    onSelectPack(questions);
+  };
+
+  const handleCategorySelect = (category: string) => {
+    const catQs = allQuestions.filter((q: any) => q.category === category);
+    const shuffled = [...catQs].sort(() => Math.random() - 0.5).slice(0, 10);
+    
+    const questions: SelectedQuestion[] = shuffled.map((q: any, i: number) => ({
+      questionId: q.id,
       category: q.category,
       text: q.text,
       options: q.options,
@@ -119,7 +179,7 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
       </div>
 
       {/* Actions */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 mb-8">
         <Button
           onClick={handleUsePack}
           disabled={!selectedPack}
@@ -130,6 +190,22 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
         <Button variant="outline" onClick={onSkip} className="flex-shrink-0">
           <Pencil className="mr-1 h-4 w-4" /> Build from Scratch
         </Button>
+      </div>
+
+      <div>
+        <h3 className="mb-3 text-sm font-bold text-muted-foreground uppercase tracking-wider">Or Browse by Category</h3>
+        <div className="flex flex-wrap gap-2">
+          {categories.map(cat => (
+            <Badge 
+              key={cat} 
+              variant="outline" 
+              className="cursor-pointer hover:bg-primary/10 hover:border-primary/30 transition-colors py-1.5 px-3 text-sm"
+              onClick={() => handleCategorySelect(cat)}
+            >
+              {cat}
+            </Badge>
+          ))}
+        </div>
       </div>
     </motion.div>
   );

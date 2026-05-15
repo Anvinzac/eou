@@ -150,8 +150,14 @@ export default function TakeQuiz() {
     }
   }
 
-  function selectAnswer(questionId: string, answer: string) {
+  function selectAnswer(questionId: string, answer: string, index: number) {
     setAnswers((prev) => ({ ...prev, [questionId]: answer }));
+
+    if (index < questions.length - 1) {
+      setTimeout(() => {
+        setCurrentIdx((prev) => (prev === index ? prev + 1 : prev));
+      }, 800);
+    }
   }
 
   async function createCoupleSession() {
@@ -601,7 +607,7 @@ export default function TakeQuiz() {
                       <button
                         key={option}
                         type="button"
-                        onClick={() => selectAnswer(question.id, option)}
+                        onClick={() => selectAnswer(question.id, option, currentIdx)}
                         className={`rounded-2xl border-2 p-4 text-left text-sm font-medium transition-all ${
                           isSelected
                             ? 'border-primary gradient-coral text-primary-foreground shadow-soft'
