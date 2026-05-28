@@ -172,3 +172,218 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ============================================================ */
+/* High-grade animation layer — aurora, blobs, shimmer, sparkles */
+/* ============================================================ */
+
+@layer utilities {
+
+  /* Animated aurora gradient (slow color-pan background) */
+  .aurora-bg {
+    background:
+      radial-gradient(at 20% 20%, hsl(var(--coral) / 0.55) 0px, transparent 50%),
+      radial-gradient(at 80% 10%, hsl(var(--rose) / 0.55) 0px, transparent 50%),
+      radial-gradient(at 70% 80%, hsl(var(--lavender) / 0.55) 0px, transparent 50%),
+      radial-gradient(at 10% 90%, hsl(var(--gold) / 0.45) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, hsl(var(--teal) / 0.35) 0px, transparent 60%);
+    background-size: 200% 200%;
+    animation: aurora-pan 18s ease-in-out infinite;
+  }
+
+  /* Mesh dot pattern overlay */
+  .mesh-dots {
+    background-image: radial-gradient(hsl(var(--foreground) / 0.06) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Conic rainbow ring (for gradient borders) */
+  .ring-conic {
+    background: conic-gradient(
+      from 0deg,
+      hsl(var(--coral)),
+      hsl(var(--gold)),
+      hsl(var(--teal)),
+      hsl(var(--lavender)),
+      hsl(var(--rose)),
+      hsl(var(--coral))
+    );
+    animation: spin-slow 8s linear infinite;
+  }
+
+  /* Frosted glass card */
+  .glass {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid hsl(var(--border) / 0.6);
+  }
+
+  /* Animated text gradient */
+  .text-gradient-warm {
+    background: linear-gradient(
+      120deg,
+      hsl(var(--coral)) 0%,
+      hsl(var(--rose)) 30%,
+      hsl(var(--gold)) 60%,
+      hsl(var(--coral)) 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-pan 6s ease infinite;
+  }
+
+  /* Shimmer sweep for buttons (combine with `relative overflow-hidden`) */
+  .shimmer-sweep::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 35%,
+      hsl(0 0% 100% / 0.45) 50%,
+      transparent 65%
+    );
+    transform: translateX(-100%);
+    animation: shimmer 2.8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Floating blob — used for hero background orbs */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.55;
+    will-change: transform;
+  }
+
+  /* Soft outer halo on hover */
+  .hover-halo {
+    transition: box-shadow 0.4s ease, transform 0.3s ease;
+  }
+  .hover-halo:hover {
+    box-shadow:
+      0 0 0 4px hsl(var(--coral) / 0.12),
+      0 18px 50px -10px hsl(var(--coral) / 0.45);
+    transform: translateY(-3px);
+  }
+
+  /* Glow pulse — used for selected items */
+  .glow-pulse {
+    animation: glow-pulse 2.4s ease-in-out infinite;
+  }
+
+  /* 3D tilt-ready surface */
+  .tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .tilt-card:hover {
+    transform: perspective(900px) rotateX(4deg) rotateY(-4deg) translateY(-4px);
+  }
+
+  /* Subtle ambient noise (gives gradients a "filmic" feel) */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+  }
+}
+
+@keyframes aurora-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes gradient-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  60% { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--coral) / 0.45), 0 10px 30px -6px hsl(var(--coral) / 0.35); }
+  50%      { box-shadow: 0 0 0 8px hsl(var(--coral) / 0), 0 18px 44px -8px hsl(var(--coral) / 0.55); }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes drift-y {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50%      { transform: translateY(-22px) translateX(8px); }
+}
+
+@keyframes drift-x {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50%      { transform: translateX(28px) translateY(-12px); }
+}
+
+@keyframes sparkle-rise {
+  0%   { transform: translateY(20px) scale(0.4); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(-120px) scale(1); opacity: 0; }
+}
+
+@keyframes pop-in {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes ring-ping {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes heartbeat {
+  0%, 28%, 70%, 100% { transform: scale(1); }
+  14%                { transform: scale(1.14); }
+  42%                { transform: scale(1.08); }
+}
+
+@keyframes heart-rise {
+  0%   { transform: translate(var(--hx, 0), 0) scale(0.5) rotate(var(--hr, 0deg)); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translate(calc(var(--hx, 0) + var(--hdx, 0)), -90px) scale(1) rotate(var(--hr, 0deg)); opacity: 0; }
+}
+
+.animate-drift-y { animation: drift-y 8s ease-in-out infinite; }
+.animate-drift-x { animation: drift-x 10s ease-in-out infinite; }
+.animate-sparkle { animation: sparkle-rise 5s ease-in-out infinite; }
+.animate-pop-in  { animation: pop-in 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+.animate-ring-ping { animation: ring-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite; }
+.animate-heartbeat { animation: heartbeat 1.6s ease-in-out infinite; }
+.animate-heart-rise { animation: heart-rise 1.4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards; }
+
+/* Respect users who prefer no motion */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-bg,
+  .text-gradient-warm,
+  .ring-conic,
+  .animate-drift-y,
+  .animate-drift-x,
+  .animate-sparkle,
+  .animate-ring-ping,
+  .animate-heartbeat,
+  .animate-heart-rise,
+  .glow-pulse,
+  .shimmer-sweep::before {
+    animation: none !important;
+  }
+}
