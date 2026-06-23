@@ -1,0 +1,149 @@
+{
+  "landing": {
+    "intro_title": "Khám phá sự thật",
+    "mockup": {
+      "progress": "Câu hỏi 4 / 10",
+      "question": "Việc tôi tuyệt đối thích làm nhất vào ngày Chủ nhật lười biếng là gì?",
+      "options": [
+        "Cày một bộ phim mới",
+        "Đi leo núi đường dài",
+        "Đọc sách bên cửa sổ",
+        "Thử nấu một công thức mới"
+      ]
+    },
+    "hero": {
+      "badge": "Khám phá các mối quan hệ của bạn",
+      "title1": "Họ có",
+      "highlight": "Thực sự",
+      "title2": "Hiểu bạn?",
+      "description": "Tạo một bài kiểm tra cá nhân hóa đầy thú vị. Chia sẻ nó với những người bạn yêu quý. Khám phá xem ai là người thực sự chú ý đến bạn nhất!",
+      "start_btn": "Bắt đầu tạo",
+      "google_btn": "Tiếp tục với Google",
+      "email_btn": "Dùng Email"
+    },
+    "sneak_peek": {
+      "title1": "Thiết kế cho sự",
+      "highlight": "Tò mò",
+      "description": "Chúng tôi đã xây dựng một trải nghiệm khiến việc kiểm tra bạn bè không chỉ sâu sắc mà còn cực kỳ thú vị. Câu hỏi đẹp mắt, lựa chọn tương tác, và kết quả đầy bất ngờ.",
+      "features": [
+        "11 hạng mục khác nhau trong cuộc sống",
+        "Tự tạo câu hỏi với sự hỗ trợ của AI",
+        "Bảng xếp hạng & điểm số thời gian thực",
+        "Thiết kế mượt mà, ưu tiên trải nghiệm trên điện thoại"
+      ]
+    },
+    "how_it_works": {
+      "title": "Điều kỳ diệu diễn ra như thế nào",
+      "subtitle": "Bốn bước đơn giản để tìm ra sự thật.",
+      "steps": [
+        {
+          "title": "Tạo bài kiểm tra",
+          "desc": "Chọn 5 đến 10 câu hỏi từ 11 hạng mục về sở thích cá nhân của bạn."
+        },
+        {
+          "title": "Thiết lập đáp án",
+          "desc": "Chọn câu trả lời đúng và 3 đáp án gây nhiễu cho mỗi câu hỏi."
+        },
+        {
+          "title": "Đăng nhập & Chia sẻ",
+          "desc": "Đăng nhập để lưu bài kiểm tra, tạo mã mời và chia sẻ liên kết."
+        },
+        {
+          "title": "Mời bạn bè",
+          "desc": "Gửi mã mời độc nhất cho bạn bè, gia đình và nửa kia của bạn."
+        },
+        {
+          "title": "Xem kết quả",
+          "desc": "Xem mọi người hiểu bạn đến mức nào thông qua điểm số phần trăm!"
+        }
+      ]
+    },
+    "cta": {
+      "title1": "Sẵn sàng để tiết lộ",
+      "title2": "sự thật cuối cùng?",
+      "description": "Tham gia cùng hàng ngàn người đã kiểm chứng các mối quan hệ của họ. Quá trình này chưa mất đến 3 phút!",
+      "btn": "Tạo bài kiểm tra ngay"
+    }
+  },
+  "create_quiz": {
+    "toast": {
+      "enter_correct": "Vui lòng nhập câu trả lời đúng trước để tạo đáp án nhiễu",
+      "distractors_generated": "Đã tạo đáp án nhiễu!",
+      "distractors_failed": "Không thể tạo đáp án nhiễu",
+      "no_more_shuffle": "Không còn câu hỏi nào để xáo trộn!",
+      "enter_both": "Vui lòng nhập cả câu hỏi và câu trả lời",
+      "profanity": "Vui lòng sử dụng ngôn từ phù hợp",
+      "provide_distractors": "Vui lòng cung cấp hoặc tạo 3 đáp án nhiễu",
+      "draft_saved": "Đã lưu bản nháp! Đăng nhập để quản lý.",
+      "draft_failed": "Lưu bản nháp thất bại",
+      "saved": "Đã lưu bài kiểm tra thành công!",
+      "save_failed": "Lưu bài kiểm tra thất bại"
+    },
+    "header": {
+      "back": "Quay lại",
+      "choose_pack": "Chọn một gói",
+      "question_progress": "Câu hỏi {{current}} / {{total}}",
+      "quiz_ready": "Đã sẵn sàng!"
+    },
+    "custom": {
+      "title": "Tự viết câu hỏi",
+      "question_label": "Câu hỏi",
+      "question_placeholder": "VD: Tài lẻ bí mật của tôi là gì?",
+      "correct_label": "Câu trả lời đúng",
+      "correct_placeholder": "VD: Tung hứng",
+      "distractors_label": "Đáp án nhiễu (Sai)",
+      "refresh": "Tạo lại",
+      "distractor_placeholder": "Đáp án nhiễu {{index}}",
+      "use_question": "Sử dụng câu hỏi này"
+    },
+    "play": {
+      "shuffle": "Đổi câu khác",
+      "write_own": "Tự viết câu hỏi",
+      "finish_now": "Hoàn tất ngay (đã chọn {{count}}/10)"
+    },
+    "review": {
+      "title": "Đã sẵn sàng!",
+      "subtitle": "Bạn đã chốt {{count}} câu hỏi.",
+      "name_label": "Đặt tên cho bài kiểm tra của bạn",
+      "save_continue": "Lưu & Tiếp tục",
+      "signin_desc": "Đăng nhập để chia sẻ bài kiểm tra và xem kết quả.",
+      "save_signin": "Lưu & Đăng nhập"
+    }
+  },
+  "packs": {
+    "quick_start": "Gói Cố Định",
+    "custom_description": "Làm chủ! Chọn câu hỏi ngẫu nhiên, đổi câu bạn không thích, hoặc tự viết.",
+    "custom_btn": "Tạo bài tùy chỉnh",
+    "browse_category": "Hoặc Duyệt theo Hạng Mục",
+    "curated_description": "Bộ sưu tập 10 câu hỏi được chọn lọc kỹ càng để bắt đầu ngay lập tức.",
+    "pack_mixed": "Hỗn Hợp",
+    "pack_mixed_desc": "Mỗi thứ một chút. Sự lựa chọn hoàn hảo và đa dạng.",
+    "pack_deep": "Trò Chuyện Sâu Sắc",
+    "pack_deep_desc": "Giá trị cốt lõi, cảm xúc, và mục tiêu sống.",
+    "pack_fun": "Vui Nhộn & Độc Đáo",
+    "pack_fun_desc": "Các câu hỏi nhẹ nhàng và các tình huống giả định."
+  },
+  "take_quiz": {
+    "loading": "Đang tải bài kiểm tra...",
+    "not_found": "Không tìm thấy bài kiểm tra",
+    "start": "Bắt Đầu",
+    "question": "Câu hỏi {{current}} / {{total}}",
+    "submitting": "Đang phân tích kết quả..."
+  },
+  "dashboard": {
+    "title": "Bài Kiểm Tra Của Tôi",
+    "empty": "Bạn chưa tạo bài kiểm tra nào.",
+    "create_first": "Tạo Bài Đầu Tiên",
+    "active": "Đang hoạt động",
+    "copy_link": "Sao chép liên kết",
+    "results": "Kết quả",
+    "copied": "Đã sao chép liên kết!",
+    "recent_responses": "Phản hồi gần đây"
+  },
+  "auth": {
+    "welcome": "Chào mừng trở lại",
+    "desc": "Đăng nhập để quản lý bài kiểm tra và xem ai hiểu bạn nhất.",
+    "google": "Tiếp tục với Google",
+    "email": "Đăng nhập bằng Email"
+  }
+}

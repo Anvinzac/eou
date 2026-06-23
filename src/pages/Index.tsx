@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import {
   Heart, Users, Link2, BarChart3, ArrowRight, Sparkles,
-  MessageCircleQuestion, Mail, Star, Wand2, PartyPopper,
+  MessageCircleQuestion, Mail, Star, Wand2, PartyPopper, Swords
 } from 'lucide-react';
 import { lovable } from '@/integrations/lovable/index';
 import { toast } from 'sonner';
@@ -242,11 +242,27 @@ export default function Index() {
               <Button
                 onClick={() => navigate('/create')}
                 size="lg"
-                className="relative shimmer-sweep overflow-hidden gradient-coral text-primary-foreground px-10 py-7 text-lg font-bold rounded-full shadow-glow"
+                className="relative shimmer-sweep overflow-hidden gradient-coral text-primary-foreground px-10 py-7 text-lg font-bold rounded-full shadow-glow w-full"
               >
                 <Wand2 className="mr-2 h-5 w-5" />
                 Build My Quiz
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+              className="relative w-full max-w-[280px]"
+            >
+              <Button
+                onClick={() => navigate('/create-versus')}
+                size="lg"
+                variant="outline"
+                className="relative overflow-hidden border-2 border-red-500/50 bg-background/50 backdrop-blur hover:bg-red-500/10 hover:border-red-500 hover:text-red-500 text-foreground px-10 py-7 text-lg font-bold rounded-full shadow-soft w-full transition-all"
+              >
+                <Swords className="mr-2 h-5 w-5 text-red-500" />
+                Versus Mode
               </Button>
             </motion.div>
 

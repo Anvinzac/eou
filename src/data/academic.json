@@ -1,0 +1,276 @@
+{
+  "version": 2,
+  "questions": [
+    {
+      "id": 2001,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Easy",
+      "text": "What does HTML stand for?",
+      "options": ["Hyper Text Markup Language", "High Tech Modern Language", "Hyperlink Text Maker Language", "Home Tool Markup Language"],
+      "correctAnswer": "Hyper Text Markup Language"
+    },
+    {
+      "id": 2002,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Easy",
+      "text": "Which tag is used for the largest heading in HTML?",
+      "options": ["<h1>", "<head>", "<h6>", "<heading>"],
+      "correctAnswer": "<h1>"
+    },
+    {
+      "id": 2003,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Easy",
+      "text": "What does CSS stand for?",
+      "options": ["Cascading Style Sheets", "Creative Style System", "Computer Style Sheets", "Colorful Style System"],
+      "correctAnswer": "Cascading Style Sheets"
+    },
+    {
+      "id": 2004,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Easy",
+      "text": "Which symbol is used for an ID selector in CSS?",
+      "options": ["#", ".", "*", "@"],
+      "correctAnswer": "#"
+    },
+    {
+      "id": 2005,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Easy",
+      "text": "What is the default port for local React development (Vite)?",
+      "options": ["5173", "8080", "3000", "4200"],
+      "correctAnswer": "5173"
+    },
+    {
+      "id": 2011,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Medium",
+      "text": "Which hook is used to handle side effects in React?",
+      "options": ["useEffect", "useState", "useContext", "useReducer"],
+      "correctAnswer": "useEffect"
+    },
+    {
+      "id": 2012,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Medium",
+      "text": "In JavaScript, what is the result of 'typeof null'?",
+      "options": ["'object'", "'null'", "'undefined'", "'boolean'"],
+      "correctAnswer": "'object'"
+    },
+    {
+      "id": 2013,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Medium",
+      "text": "Which of these is a CSS preprocessor?",
+      "options": ["SASS", "React", "Angular", "Vue"],
+      "correctAnswer": "SASS"
+    },
+    {
+      "id": 2014,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Medium",
+      "text": "What is the purpose of the 'alt' attribute on an image?",
+      "options": ["Accessibility & SEO", "Image styling", "Defining image size", "Linking the image"],
+      "correctAnswer": "Accessibility & SEO"
+    },
+    {
+      "id": 2015,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Medium",
+      "text": "Which array method creates a new array with the results of calling a function for every element?",
+      "options": ["map()", "filter()", "forEach()", "reduce()"],
+      "correctAnswer": "map()"
+    },
+    {
+      "id": 2021,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Hard",
+      "text": "What is the difference between shallow and deep copy in JS?",
+      "options": ["Shallow copies references, deep copies values", "Shallow copies values, deep copies references", "They are identical in modern JS", "Deep copy only applies to primitives"],
+      "correctAnswer": "Shallow copies references, deep copies values"
+    },
+    {
+      "id": 2022,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Hard",
+      "text": "What does a React context provider use internally to notify consumers of changes?",
+      "options": ["Object.is or strict equality", "Event Emitters", "Proxy objects", "MutationObservers"],
+      "correctAnswer": "Object.is or strict equality"
+    },
+    {
+      "id": 2023,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Hard",
+      "text": "What is the primary role of the HTTP 'OPTIONS' method?",
+      "options": ["Preflight CORS requests", "Fetching headers", "Updating resources partially", "Deleting metadata"],
+      "correctAnswer": "Preflight CORS requests"
+    },
+    {
+      "id": 2024,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Hard",
+      "text": "In a Service Worker lifecycle, which event is used to clean up old caches?",
+      "options": ["activate", "install", "fetch", "message"],
+      "correctAnswer": "activate"
+    },
+    {
+      "id": 2025,
+      "category": "Software Engineering",
+      "topic": "Web Development",
+      "difficulty": "Hard",
+      "text": "What is 'hydration' in Server-Side Rendering (SSR)?",
+      "options": ["Attaching event listeners to static HTML", "Downloading the initial HTML chunk", "Minifying the JS bundle", "Injecting CSS into the DOM"],
+      "correctAnswer": "Attaching event listeners to static HTML"
+    },
+
+    {
+      "id": 3001,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Easy",
+      "text": "What is the capital city of Australia?",
+      "options": ["Sydney", "Melbourne", "Canberra", "Perth"],
+      "correctAnswer": "Canberra"
+    },
+    {
+      "id": 3002,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Easy",
+      "text": "How many continents are there?",
+      "options": ["5", "6", "7", "8"],
+      "correctAnswer": "7"
+    },
+    {
+      "id": 3003,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Easy",
+      "text": "What is the largest ocean on Earth?",
+      "options": ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"],
+      "correctAnswer": "Pacific Ocean"
+    },
+    {
+      "id": 3004,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Easy",
+      "text": "Which country is home to the Eiffel Tower?",
+      "options": ["Italy", "Germany", "France", "Spain"],
+      "correctAnswer": "France"
+    },
+    {
+      "id": 3005,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Easy",
+      "text": "Which is the longest river in the world?",
+      "options": ["Amazon River", "Nile River", "Yangtze River", "Mississippi River"],
+      "correctAnswer": "Nile River"
+    },
+    {
+      "id": 3011,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Medium",
+      "text": "Which of these countries is landlocked?",
+      "options": ["Switzerland", "France", "Spain", "Italy"],
+      "correctAnswer": "Switzerland"
+    },
+    {
+      "id": 3012,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Medium",
+      "text": "Mount Everest is located in which mountain range?",
+      "options": ["Andes", "Rockies", "Alps", "Himalayas"],
+      "correctAnswer": "Himalayas"
+    },
+    {
+      "id": 3013,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Medium",
+      "text": "What is the smallest country in the world by area?",
+      "options": ["Monaco", "Nauru", "Vatican City", "Tuvalu"],
+      "correctAnswer": "Vatican City"
+    },
+    {
+      "id": 3014,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Medium",
+      "text": "Which country has the most natural lakes?",
+      "options": ["Canada", "Russia", "USA", "Finland"],
+      "correctAnswer": "Canada"
+    },
+    {
+      "id": 3015,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Medium",
+      "text": "Which desert is the largest hot desert in the world?",
+      "options": ["Arabian Desert", "Sahara Desert", "Gobi Desert", "Kalahari Desert"],
+      "correctAnswer": "Sahara Desert"
+    },
+    {
+      "id": 3021,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Hard",
+      "text": "What is the capital of Kazakhstan?",
+      "options": ["Almaty", "Astana", "Tashkent", "Bishkek"],
+      "correctAnswer": "Astana"
+    },
+    {
+      "id": 3022,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Hard",
+      "text": "Which African country has Portuguese as its official language?",
+      "options": ["Senegal", "Angola", "Mali", "Tanzania"],
+      "correctAnswer": "Angola"
+    },
+    {
+      "id": 3023,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Hard",
+      "text": "What is the name of the strait that separates Europe and Asia in Istanbul?",
+      "options": ["Bosphorus", "Dardanelles", "Gibraltar", "Hormuz"],
+      "correctAnswer": "Bosphorus"
+    },
+    {
+      "id": 3024,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Hard",
+      "text": "Which country occupies the Horn of Africa?",
+      "options": ["Somalia", "Kenya", "Tanzania", "Mozambique"],
+      "correctAnswer": "Somalia"
+    },
+    {
+      "id": 3025,
+      "category": "Common Knowledge",
+      "topic": "Geography",
+      "difficulty": "Hard",
+      "text": "What is the highest waterfall in the world?",
+      "options": ["Niagara Falls", "Victoria Falls", "Angel Falls", "Iguazu Falls"],
+      "correctAnswer": "Angel Falls"
+    }
+  ]
+}

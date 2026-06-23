@@ -48,6 +48,70 @@ export default function TakeQuiz() {
   const [coupleSlot, setCoupleSlot] = useState<CoupleSlot | null>(null);
   const [sessionBusy, setSessionBusy] = useState(false);
 
+  const isVersus = quiz?.title.startsWith('[Versus]') || false;
+  const [timeLeft, setTimeLeft] = useState(15);
+  const [hasTakenVersus, setHasTakenVersus] = useState(false);
+
+  useEffect(() => {
+    if (isVersus && quizId && verified) {
+      if (localStorage.getItem(`versus_taken_${quizId}`)) {
+        setHasTakenVersus(true);
+      }
+    }
+  }, [isVersus, quizId, verified]);
+
+  useEffect(() => {
+    if (!isVersus || !verified || submitting || hasTakenVersus || currentIdx >= questions.length) return;
+    
+    setTimeLeft(15);
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          const currentQ = questions[currentIdx];
+          setAnswers(a => {
+            if (!a[currentQ.id]) return { ...a, [currentQ.id]: '___TIMED_OUT___' };
+            return a;
+          });
+          if (currentIdx < questions.length - 1) {
+            setCurrentIdx(c => c + 1);
+          } else {
+            setTimeout(() => {
+              const btn = document.getElementById('submit-quiz-btn');
+              if (btn) btn.click();
+            }, 100);
+          }
+          return 15;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isVersus, verified, currentIdx, submitting, hasTakenVersus, questions]);
+
+  useEffect(() => {
+    if (!isVersus || !verified || submitting || hasTakenVersus || currentIdx >= questions.length) return;
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        toast.error('Tab switching detected! You failed this question.');
+        const currentQ = questions[currentIdx];
+        setAnswers(a => {
+          if (!a[currentQ.id]) return { ...a, [currentQ.id]: '___CHEATED___' };
+          return a;
+        });
+        if (currentIdx < questions.length - 1) {
+          setCurrentIdx(c => c + 1);
+        } else {
+          setTimeout(() => {
+            const btn = document.getElementById('submit-quiz-btn');
+            if (btn) btn.click();
+          }, 100);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [isVersus, verified, currentIdx, submitting, hasTakenVersus, questions]);
+
   useEffect(() => {
     loadQuiz();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -267,12 +331,12 @@ export default function TakeQuiz() {
       return;
     }
 
-    if (Object.keys(answers).length < questions.length) {
+    if (Object.keys(answers).length < questions.length && !isVersus) {
       toast.error('Please answer all questions');
       return;
     }
 
-    if ((coupleSession || coupleCodeInput.trim()) && !respondentName.trim()) {
+    if (!isVersus && (coupleSession || coupleCodeInput.trim()) && !respondentName.trim()) {
       toast.error('Add your name before submitting');
       return;
     }
@@ -323,12 +387,14 @@ export default function TakeQuiz() {
 
       if (coupleSession && coupleSlot) {
         await syncCoupleSessionAfterSubmit(coupleSession, coupleSlot, attempt.id, respondentName.trim(), responses as any);
-        navigate(`/couple/${coupleSession.session_code}`);
+        const attemptId = coupleSession ? coupleSession.id : attempt.id;
+        if (isVersus) localStorage.setItem(`versus_taken_${quizId}`, 'true');
+        navigate(`/result/${attemptId}`);
       } else {
         navigate(`/result/${attempt.id}`);
       }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unable to submit quiz';
+    } catch (err: any) {
+      const message = err instanceof Error ? err.message : 'Unable to submit quiz';
       toast.error(message);
     } finally {
       setSubmitting(false);
@@ -501,6 +567,11 @@ export default function TakeQuiz() {
         setCodeInput={setCodeInput}
         verifyCode={verifyCode}
         quizTitle={quiz?.title || null}
+        isVersus={isVersus}
+        hasTakenVersus={hasTakenVersus}
+        setVerified={setVerified}
+        respondentName={respondentName}
+        setRespondentName={setRespondentName}
       />
     );
   }
@@ -643,6 +714,12 @@ export default function TakeQuiz() {
                 {/* Category color wash */}
                 <div className={`pointer-events-none absolute inset-0 ${categoryMeta.colorClass} opacity-35`} />
                 <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gradient-to-br from-coral/30 via-rose/25 to-lavender/25 blur-3xl" />
+
+                {isVersus && (
+                  <div className="absolute top-4 right-4 z-50 glass px-4 py-2 rounded-full border border-red-500/30 flex items-center gap-2 text-red-500 font-bold animate-pulse">
+                    <Hourglass className="w-4 h-4" /> {timeLeft}s
+                  </div>
+                )}
 
                 <div className="relative p-6 md:p-7">
                   {/* Top row: category pill + gentle micro-prompt */}
@@ -821,10 +898,11 @@ export default function TakeQuiz() {
             </motion.button>
           ) : (
             <motion.button
+              id="submit-quiz-btn"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.96 }}
               onClick={submitQuiz}
-              disabled={submitting || !allAnswered}
+              disabled={submitting || (!allAnswered && !isVersus)}
               className="relative flex h-12 items-center gap-1.5 overflow-hidden rounded-full shimmer-sweep gradient-coral text-primary-foreground px-5 text-sm font-bold shadow-glow disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {submitting ? (
@@ -981,11 +1059,21 @@ function LockScreen({
   setCodeInput,
   verifyCode,
   quizTitle,
+  isVersus,
+  hasTakenVersus,
+  setVerified,
+  respondentName,
+  setRespondentName,
 }: {
   codeInput: string;
   setCodeInput: (v: string) => void;
   verifyCode: (code: string) => void;
   quizTitle: string | null;
+  isVersus?: boolean;
+  hasTakenVersus?: boolean;
+  setVerified: (v: boolean) => void;
+  respondentName: string;
+  setRespondentName: (v: string) => void;
 }) {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6 py-10">
@@ -1021,64 +1109,45 @@ function LockScreen({
             transition={{ delay: 0.3 }}
           >
             <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] uppercase tracking-widest font-bold text-primary">
-              <Heart className="h-3 w-3 fill-current" /> Someone special invited you
+              <Heart className="h-3 w-3 fill-current" /> {isVersus ? 'Versus Mode' : 'Someone special invited you'}
             </div>
             <h1 className="mb-2 text-2xl md:text-3xl font-bold font-display leading-tight">
-              They want to see if you <span className="text-gradient-warm">really</span> know them
+              {isVersus ? 'Ready to accept the challenge?' : 'Ready to prove yourself?'}
             </h1>
-            {quizTitle && (
-              <p className="mb-1 text-sm font-semibold text-foreground/80">
-                "{quizTitle}"
-              </p>
-            )}
-            <p className="mb-6 text-sm text-muted-foreground">
-              Pop in the little code they sent and let's find out.
-            </p>
-          </motion.div>
-
-          {/* OTP-style code input */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.45 }}
-            className="mb-5 flex justify-center"
-          >
-            <InputOTP
-              maxLength={6}
-              value={codeInput}
-              onChange={(v) => setCodeInput(v.toUpperCase())}
-              onComplete={(v) => verifyCode(v)}
-            >
-              <InputOTPGroup className="gap-1.5">
-                {[0, 1, 2, 3, 4, 5].map((i) => (
-                  <InputOTPSlot
-                    key={i}
-                    index={i}
-                    className="h-12 w-10 rounded-xl border-2 border-border bg-card text-lg font-bold font-display data-[active=true]:border-primary data-[active=true]:shadow-glow first:rounded-l-xl last:rounded-r-xl"
+            {hasTakenVersus ? (
+              <>
+                <p className="mb-6 text-sm text-muted-foreground">
+                  You have already completed this Versus challenge.
+                </p>
+                <Button onClick={() => navigate('/dashboard')} className="w-full rounded-full bg-primary text-primary-foreground">
+                  Return Home
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="mb-6 text-sm text-muted-foreground">
+                  {isVersus ? 'This is a strict 15s-per-question challenge. Do not switch tabs.' : 'Enter your name to begin the test.'}
+                </p>
+                <div className="mb-5 flex items-center gap-2 rounded-full glass p-1.5 pl-4 shadow-soft">
+                  <UserCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
+                  <Input
+                    value={respondentName}
+                    onChange={(e) => setRespondentName(e.target.value)}
+                    placeholder="Your name"
+                    className="flex-1 border-0 bg-transparent text-sm shadow-none focus-visible:ring-0"
+                    maxLength={30}
+                    autoFocus
                   />
-                ))}
-              </InputOTPGroup>
-            </InputOTP>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55 }}
-          >
-            <Button
-              onClick={() => verifyCode(codeInput)}
-              size="lg"
-              className="relative w-full overflow-hidden rounded-full shimmer-sweep gradient-coral text-primary-foreground shadow-glow"
-              disabled={codeInput.length < 6}
-            >
-              <Heart className="mr-2 h-4 w-4 fill-current" />
-              Open the invite <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            <p className="mt-3 text-[11px] text-muted-foreground flex items-center justify-center gap-1.5">
-              <Lock className="h-3 w-3" />
-              Only people with the code can take this quiz
-            </p>
+                  <Button
+                    onClick={() => setVerified(true)}
+                    disabled={!respondentName.trim()}
+                    className="h-9 rounded-full gradient-coral text-primary-foreground px-5 shadow-glow transition-transform hover:scale-105 active:scale-95"
+                  >
+                    Start <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </>
+            )}
           </motion.div>
         </div>
       </motion.div>

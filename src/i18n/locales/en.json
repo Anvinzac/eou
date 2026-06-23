@@ -1,0 +1,149 @@
+{
+  "landing": {
+    "intro_title": "Uncover the Truth",
+    "mockup": {
+      "progress": "Question 4 of 10",
+      "question": "What is my absolute favorite thing to do on a lazy Sunday?",
+      "options": [
+        "Binge-watch a new series",
+        "Go for a long hike",
+        "Read a book by the window",
+        "Try cooking a new recipe"
+      ]
+    },
+    "hero": {
+      "badge": "Discover Your Relationships",
+      "title1": "Do They",
+      "highlight": "Really",
+      "title2": "Know You?",
+      "description": "Create an exciting personalized quiz. Share it with your favorite people. Uncover who pays the most attention to the real you!",
+      "start_btn": "Start Creating",
+      "google_btn": "Continue with Google",
+      "email_btn": "Use Email"
+    },
+    "sneak_peek": {
+      "title1": "Crafted for",
+      "highlight": "Curiosity",
+      "description": "We've built an experience that makes testing your friends not just insightful, but incredibly fun. Beautiful questions, interactive choices, and dramatic results.",
+      "features": [
+        "11 distinct categories of life",
+        "AI-assisted custom questions",
+        "Real-time scoreboard & rankings",
+        "Mobile-first, buttery smooth design"
+      ]
+    },
+    "how_it_works": {
+      "title": "How the Magic Happens",
+      "subtitle": "Four simple steps to find out the truth.",
+      "steps": [
+        {
+          "title": "Create Your Quiz",
+          "desc": "Pick 5 to 10 questions from 11 categories about your personal preferences."
+        },
+        {
+          "title": "Set Your Answers",
+          "desc": "Choose the correct answer and 3 distractors for each question."
+        },
+        {
+          "title": "Sign In & Share",
+          "desc": "Log in to save your quiz, generate invitation codes and share the link."
+        },
+        {
+          "title": "Invite People",
+          "desc": "Send unique invitation codes to friends, family and your partner."
+        },
+        {
+          "title": "See Results",
+          "desc": "View how well each person knows you with percentage scores!"
+        }
+      ]
+    },
+    "cta": {
+      "title1": "Ready to reveal the",
+      "title2": "ultimate truth?",
+      "description": "Join thousands of people who have already put their relationships to the test. It takes less than 3 minutes!",
+      "btn": "Create My Quiz Now"
+    }
+  },
+  "create_quiz": {
+    "toast": {
+      "enter_correct": "Please enter a correct answer first to generate distractors",
+      "distractors_generated": "Distractors generated!",
+      "distractors_failed": "Failed to generate distractors",
+      "no_more_shuffle": "No more questions to shuffle!",
+      "enter_both": "Please enter both question and answer",
+      "profanity": "Please use appropriate language",
+      "provide_distractors": "Please provide or generate 3 distractors",
+      "draft_saved": "Quiz saved as draft! Sign in to manage it.",
+      "draft_failed": "Failed to save draft",
+      "saved": "Quiz saved successfully!",
+      "save_failed": "Failed to save quiz"
+    },
+    "header": {
+      "back": "Back",
+      "choose_pack": "Choose a Pack",
+      "question_progress": "Question {{current}} of {{total}}",
+      "quiz_ready": "Quiz Ready!"
+    },
+    "custom": {
+      "title": "Write Your Own",
+      "question_label": "Question",
+      "question_placeholder": "e.g. What's my secret talent?",
+      "correct_label": "Correct Answer",
+      "correct_placeholder": "e.g. Juggling",
+      "distractors_label": "Distractors (Incorrect Options)",
+      "refresh": "Refresh",
+      "distractor_placeholder": "Distractor {{index}}",
+      "use_question": "Use Question"
+    },
+    "play": {
+      "shuffle": "Shuffle",
+      "write_own": "Write My Own",
+      "finish_now": "Finish Quiz Now ({{count}}/10 selected)"
+    },
+    "review": {
+      "title": "Quiz Ready!",
+      "subtitle": "You've locked in {{count}} questions.",
+      "name_label": "Give your quiz a name",
+      "save_continue": "Save Quiz & Continue",
+      "signin_desc": "Sign in to share your quiz and see results.",
+      "save_signin": "Save & Sign In"
+    }
+  },
+  "packs": {
+    "quick_start": "Quick Start Packs",
+    "custom_description": "Take the wheel! Randomly pick questions, shuffle ones you don't like, or write your own.",
+    "custom_btn": "Build Custom Quiz",
+    "browse_category": "Or Browse by Category",
+    "curated_description": "Hand-picked collections of 10 questions to get you started instantly.",
+    "pack_mixed": "Mixed Bag",
+    "pack_mixed_desc": "A little bit of everything. The perfect all-rounder.",
+    "pack_deep": "Deep Conversations",
+    "pack_deep_desc": "Values, emotions, and life goals.",
+    "pack_fun": "Fun & Quirky",
+    "pack_fun_desc": "Lighthearted questions and hypothetical scenarios."
+  },
+  "take_quiz": {
+    "loading": "Loading quiz...",
+    "not_found": "Quiz not found",
+    "start": "Start Quiz",
+    "question": "Question {{current}} of {{total}}",
+    "submitting": "Analyzing results..."
+  },
+  "dashboard": {
+    "title": "My Quizzes",
+    "empty": "You haven't created any quizzes yet.",
+    "create_first": "Create Your First Quiz",
+    "active": "Active",
+    "copy_link": "Copy Link",
+    "results": "Results",
+    "copied": "Link copied to clipboard!",
+    "recent_responses": "Recent Responses"
+  },
+  "auth": {
+    "welcome": "Welcome Back",
+    "desc": "Sign in to manage your quizzes and see who knows you best.",
+    "google": "Continue with Google",
+    "email": "Sign in with Email"
+  }
+}

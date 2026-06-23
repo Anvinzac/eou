@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import type { Tables } from '@/integrations/supabase/types';
@@ -8,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Copy, Plus, RefreshCw, Link2, ArrowLeft, BarChart3, LogOut, Eye, Globe, Lock, Pencil, Check, User, Settings, Minus, HeartHandshake } from 'lucide-react';
+import { Copy, Plus, RefreshCw, Link2, ArrowLeft, BarChart3, LogOut, Eye, Globe, Lock, Pencil, Check, User, Settings, Minus, HeartHandshake, Swords } from 'lucide-react';
 import { generateCloudName, generateInviteCode } from '@/lib/nameGenerator';
 import PackManager from '@/components/dashboard/PackManager';
 import { withFallback } from '@/lib/supabase-fallback';
@@ -18,6 +19,7 @@ type QuizRow = Tables<'quizzes'>;
 type CoupleSessionRow = Tables<'couple_sessions'>;
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState<QuizRow[]>([]);
@@ -158,7 +160,7 @@ export default function Dashboard() {
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             <ArrowLeft className="mr-1 h-4 w-4" /> Home
           </Button>
-          <h1 className="text-lg font-bold font-display">Dashboard</h1>
+          <h1 className="text-lg font-bold font-display">{t('dashboard.title', 'My Quizzes')}</h1>
           <div className="flex gap-2">
             <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}><Settings className="h-4 w-4" /></Button>
             <Button variant="ghost" size="sm" onClick={signOut}><LogOut className="h-4 w-4" /></Button>
@@ -470,9 +472,12 @@ export default function Dashboard() {
           </motion.div>
         )}
 
-        <div className="mt-6">
+        <div className="mt-6 flex flex-col sm:flex-row gap-3">
           <Button onClick={() => navigate('/create')} variant="outline" className="w-full">
-            <Plus className="mr-2 h-4 w-4" /> Create New Quiz
+            <Plus className="mr-2 h-4 w-4" /> {t('dashboard.create_first', 'Create New Quiz')}
+          </Button>
+          <Button onClick={() => navigate('/create-versus')} variant="outline" className="w-full border-red-500/30 hover:border-red-500 hover:text-red-500 transition-colors">
+            <Swords className="mr-2 h-4 w-4" /> Create Versus Challenge
           </Button>
         </div>
       </div>
