@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { toast } from 'sonner';
+import { KineticCanvas, buildQuizCanvasSpec } from '@/components/kinetic/KineticCanvas';
 
 type QuizRow = Tables<'quizzes'>;
 type QuizQuestionRow = Tables<'quiz_questions'>;
@@ -44,6 +45,7 @@ export default function TakeQuiz() {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [coupleCodeInput, setCoupleCodeInput] = useState(pairCode || '');
+  const reduceMotion = useReducedMotion();
   const [coupleSession, setCoupleSession] = useState<CoupleSession | null>(null);
   const [coupleSlot, setCoupleSlot] = useState<CoupleSlot | null>(null);
   const [sessionBusy, setSessionBusy] = useState(false);
@@ -511,6 +513,14 @@ export default function TakeQuiz() {
     localStorage.removeItem(getCoupleStorageKey(quizId));
   }
 
+  const canvasSpec = useMemo(
+    () => {
+      const current = questions[currentIdx];
+      return current ? buildQuizCanvasSpec(current) : null;
+    },
+    [questions, currentIdx],
+  );
+
   if (loading) {
     return (
       <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background">
@@ -526,35 +536,6 @@ export default function TakeQuiz() {
             <Heart className="relative h-9 w-9 text-primary fill-primary animate-heartbeat" />
           </div>
           <div className="text-sm font-medium text-muted-foreground">Warming things up…</div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (notFound) {
-    return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-6 text-center">
-        <TakeQuizBackdrop />
-        <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ type: 'spring', stiffness: 220, damping: 22 }}
-          className="relative max-w-md rounded-3xl glass p-8 shadow-soft"
-        >
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
-            <Mail className="h-8 w-8" />
-          </div>
-          <h1 className="mb-2 text-3xl font-bold font-display">Quiz not found</h1>
-          <p className="mb-6 text-sm text-muted-foreground">
-            This link might have expired or the quiz is no longer active. Ask your friend for a fresh invite.
-          </p>
-          <Button
-            onClick={() => navigate('/')}
-            size="lg"
-            className="rounded-full shimmer-sweep gradient-coral text-primary-foreground shadow-glow overflow-hidden relative"
-          >
-            <Home className="mr-2 h-4 w-4" /> Go home
-          </Button>
         </motion.div>
       </div>
     );
@@ -614,6 +595,11 @@ export default function TakeQuiz() {
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background">
       <TakeQuizBackdrop dim />
+      {!reduceMotion && canvasSpec && (
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-70">
+          <KineticCanvas spec={canvasSpec} playKey={currentIdx} />
+        </div>
+      )}
 
       {/* ===== Sticky glass header ===== */}
       <header className="sticky top-0 z-30 border-b border-border/40 glass px-4 py-3">

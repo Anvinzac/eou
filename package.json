@@ -14,7 +14,8 @@
     "supabase:status": "npx supabase status",
     "supabase:db:reset": "npx supabase db reset",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "seed:demo": "bun scripts/seed-demo.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

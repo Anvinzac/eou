@@ -6,10 +6,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import {
   Heart, Users, Link2, BarChart3, ArrowRight, Sparkles,
-  MessageCircleQuestion, Mail, Star, Wand2, PartyPopper, Swords
+  MessageCircleQuestion, Mail, Star, Wand2, PartyPopper, Swords, Play
 } from 'lucide-react';
 import { lovable } from '@/integrations/lovable/index';
 import { toast } from 'sonner';
+
+// Stable demo quiz (seeded by supabase/seed_demo.sql — a closed quiz
+// reachable via invitation code). Opens in a new tab for quick testing.
+const DEMO_LINK_PATH = '/quiz/11111111-1111-4111-8111-111111111111?code=DEMO123';
 
 const steps = [
   { icon: MessageCircleQuestion, title: 'Pick Questions', desc: 'Choose from 11 colourful categories — or write your own.', tint: 'from-coral to-rose' },
@@ -263,6 +267,25 @@ export default function Index() {
               >
                 <Swords className="mr-2 h-5 w-5 text-red-500" />
                 Versus Mode
+              </Button>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+              className="relative w-full max-w-[280px]"
+            >
+              <Button
+                asChild
+                size="lg"
+                variant="secondary"
+                className="relative overflow-hidden px-10 py-7 text-lg font-bold rounded-full shadow-soft w-full"
+              >
+                <a href={`${window.location.origin}${DEMO_LINK_PATH}`} target="_blank" rel="noopener noreferrer">
+                  <Play className="mr-2 h-5 w-5" />
+                  Try the Demo
+                </a>
               </Button>
             </motion.div>
 

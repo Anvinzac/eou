@@ -387,3 +387,227 @@
     animation: none !important;
   }
 }
+
+/* ============================================================
+   Kinetic canvas (embedded from KineMedia) — keyframes & emphasis
+   ============================================================ */
+@keyframes kinetic-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+@keyframes kinetic-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes kinetic-shake {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+  25% {
+    transform: translateX(-4px) rotate(-1deg);
+  }
+  75% {
+    transform: translateX(4px) rotate(1deg);
+  }
+}
+
+.kinetic-emphasis-mark {
+  display: inline-block;
+  transform-origin: center;
+  position: relative;
+}
+
+/* UNDERLINE — drawn on after the word lands. */
+.kinetic-emph-underline {
+  padding-bottom: 0.08em;
+}
+.kinetic-emph-underline::after {
+  content: "";
+  position: absolute;
+  left: -0.02em;
+  right: -0.02em;
+  bottom: -0.02em;
+  height: 0.08em;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 0.24em color-mix(in srgb, currentColor 42%, transparent);
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+.kinetic-emph-underline.is-animated::after {
+  animation: kinetic-emph-underline-draw 0.82s cubic-bezier(0.22, 1, 0.36, 1)
+    var(--kinetic-emphasis-delay, 0.68s) both;
+}
+@keyframes kinetic-emph-underline-draw {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+/* HALO — a soft luminous aura blooming behind the word. */
+.kinetic-emph-halo {
+  isolation: isolate;
+}
+.kinetic-emph-halo::before {
+  content: "";
+  position: absolute;
+  inset: -0.34em -0.58em;
+  z-index: -1;
+  border-radius: 999px;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--kinetic-aura-color, #ffbe0b) 88%, transparent) 0%,
+    color-mix(in srgb, var(--kinetic-aura-color, #ffbe0b) 42%, transparent) 46%,
+    transparent 76%
+  );
+  filter: blur(0.09em);
+  opacity: 0.6;
+  pointer-events: none;
+}
+.kinetic-emph-halo.is-animated::before {
+  animation: kinetic-emph-halo-breathe 1.9s ease-in-out infinite;
+}
+@keyframes kinetic-emph-halo-breathe {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.44;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 0.74;
+  }
+}
+
+/* FRAME — a crisp, glowing token box framing the word. */
+.kinetic-emph-frame {
+  --kinetic-frame-radius: 0.28em;
+  padding: 0.05em 0.3em 0.1em;
+  border-radius: var(--kinetic-frame-radius);
+  border: 0.05em solid transparent;
+  isolation: isolate;
+}
+.kinetic-emph-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 0.05em solid color-mix(in srgb, currentColor 80%, transparent);
+  box-shadow: 0 0 0.5em color-mix(in srgb, currentColor 42%, transparent);
+  clip-path: inset(0 0 0 0 round var(--kinetic-frame-radius));
+}
+.kinetic-emph-frame.is-animated::after {
+  animation: kinetic-emph-frame-draw 0.74s cubic-bezier(0.22, 1, 0.36, 1)
+    var(--kinetic-emphasis-delay, 0.68s) both;
+}
+@keyframes kinetic-emph-frame-draw {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0 round var(--kinetic-frame-radius));
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round var(--kinetic-frame-radius));
+  }
+}
+
+/* SWEEP — keep the word fully painted, then pass a soft spotlight over it. */
+.kinetic-emph-sweep {
+  isolation: isolate;
+  overflow: visible;
+}
+.kinetic-emph-sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: linear-gradient(
+    100deg,
+    transparent 0%,
+    color-mix(in srgb, #ffffff 10%, transparent) 34%,
+    color-mix(in srgb, #ffffff 78%, currentColor 22%) 48%,
+    color-mix(in srgb, #ffffff 12%, transparent) 62%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 150% 0;
+  filter: blur(0.03em);
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.kinetic-emph-sweep.is-animated::after {
+  animation: kinetic-emph-sweep-glide 2.3s ease-in-out var(--kinetic-emphasis-delay, 0.68s)
+    infinite;
+}
+@keyframes kinetic-emph-sweep-glide {
+  0% {
+    opacity: 0;
+    background-position: 150% 0;
+  }
+  14%,
+  46% {
+    opacity: 0.86;
+  }
+  55%,
+  100% {
+    opacity: 0;
+    background-position: -50% 0;
+  }
+}
+
+@keyframes kinetic-emphasis-jiggle {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0);
+  }
+  25% {
+    transform: translate3d(-0.04em, -0.02em, 0) rotate(-1.8deg);
+  }
+  60% {
+    transform: translate3d(0.05em, 0.015em, 0) rotate(1.4deg);
+  }
+}
+
+@keyframes kinetic-emphasis-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.07);
+    filter: brightness(1.18);
+  }
+}
+
+@keyframes kinetic-emphasis-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0.08em var(--kinetic-aura-color, #ffbe0b));
+  }
+  50% {
+    filter: drop-shadow(0 0 0.34em var(--kinetic-aura-color, #ffbe0b));
+  }
+}
