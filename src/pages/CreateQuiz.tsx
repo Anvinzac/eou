@@ -8,12 +8,14 @@ import { toast } from 'sonner';
 import {
   ArrowLeft, ArrowRight, Check, Trash2, ArrowUp, ArrowDown, Pencil, X, Shuffle, Plus,
   Package, ListChecks, MoveVertical, KeyRound, Eye, Sparkles, Wand2, Heart, PartyPopper,
+  Loader2,
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { containsProfanity } from '@/lib/profanity';
 import { generateDistractors } from '@/lib/distractorGenerator';
+import { generateDistractorsWithLLM } from '@/lib/qwenDistractor';
 import { CATEGORIES, getCategoryMeta } from '@/lib/categories';
 import type { QuestionData, SelectedQuestion } from '@/types/quiz';
 import questionsData from '@/data/qna.json';
@@ -1106,6 +1108,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
   const [profanityWarning, setProfanityWarning] = useState('');
   const [autoRandomize, setAutoRandomize] = useState(true);
   const [customDistractorInputs, setCustomDistractorInputs] = useState<string[]>(['', '', '']);
+  const [generating, setGenerating] = useState(false);
   const q = selected[currentIdx] as SelectedQuestion;
   const isFullyCustom = q.isCustom && q.options.length === 0;
 
@@ -1146,37 +1149,48 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
 
   // For fully custom questions: set correct answer + auto-generate distractors
   const handleCustomAnswerSubmit = () => {
-    if (!customCorrect.trim()) {
+    const answer = customCorrect.trim();
+    if (!answer) {
       toast.error('Enter a correct answer');
       return;
     }
-    const generated = generateDistractors(customCorrect.trim(), 3);
-    setCustomDistractorInputs(generated);
-    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
-      i === currentIdx ? {
-        ...s,
-        isCustom: true,
-        customCorrect: customCorrect.trim(),
-        customDistractors: generated,
-        correctAnswer: customCorrect.trim(),
-        distractors: generated,
-      } : s
-    ));
-    toast.success('Distractors auto-generated! Edit them if needed.');
+    setGenerating(true);
+    generateDistractorsWithLLM(answer, 3, { questionText: q.text, category: q.category })
+      .then(({ distractors, source }) => {
+        setCustomDistractorInputs(distractors);
+        setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
+          i === currentIdx ? {
+            ...s,
+            isCustom: true,
+            customCorrect: answer,
+            customDistractors: distractors,
+            correctAnswer: answer,
+            distractors,
+          } : s
+        ));
+        toast.success(source === 'llm' ? 'AI-generated distractors ready!' : 'Distractors auto-generated! Edit them if needed.');
+      })
+      .finally(() => setGenerating(false));
   };
 
   const handleRegenerateDistractors = () => {
     const answer = q.correctAnswer || customCorrect.trim();
     if (!answer) return;
-    const generated = generateDistractors(answer, 3);
-    setCustomDistractorInputs(generated);
-    setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
-      i === currentIdx ? {
-        ...s,
-        customDistractors: generated,
-        distractors: generated,
-      } : s
-    ));
+    const selectedQuestion = q;
+    setGenerating(true);
+    generateDistractorsWithLLM(answer, 3, { questionText: selectedQuestion.text, category: selectedQuestion.category })
+      .then(({ distractors, source }) => {
+        setCustomDistractorInputs(distractors);
+        setSelected((prev: SelectedQuestion[]) => prev.map((s, i) =>
+          i === currentIdx ? {
+            ...s,
+            customDistractors: distractors,
+            distractors,
+          } : s
+        ));
+        toast.success(source === 'llm' ? 'AI-generated distractors ready!' : 'Distractors generated! Edit them if needed.');
+      })
+      .finally(() => setGenerating(false));
   };
 
   const updateCustomDistractor = (idx: number, value: string) => {
@@ -1314,9 +1328,10 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                   size="sm"
                   className="gradient-teal text-secondary-foreground text-xs shrink-0"
                   onClick={handleCustomAnswerSubmit}
-                  disabled={!customCorrect.trim()}
+                  disabled={!customCorrect.trim() || generating}
                 >
-                  <Check className="mr-1 h-3 w-3" /> Set
+                  {generating ? <Loader2 className="mr-1 h-3 w-3 animate-spin" /> : <Check className="mr-1 h-3 w-3" />}
+                  {generating ? 'Generating…' : 'Set'}
                 </Button>
               </div>
             </div>
@@ -1330,8 +1345,10 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                     size="sm"
                     className="text-xs h-7 gap-1"
                     onClick={handleRegenerateDistractors}
+                    disabled={generating}
                   >
-                    <Shuffle className="h-3 w-3" /> Regenerate
+                    {generating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Shuffle className="h-3 w-3" />}
+                    {generating ? 'Generating…' : 'Regenerate'}
                   </Button>
                 </div>
                 <div className="space-y-2">
