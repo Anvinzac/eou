@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // If Supabase is not configured, use a mock user
     if (import.meta.env.VITE_SUPABASE_URL === 'https://your-project-id.supabase.co') {
-      const mockUser = { id: 'demo-user-123', email: 'demo@example.com', user_metadata: { display_name: 'Demo User' } } as User;
+      const mockUser = { id: 'demo-user-123', email: 'demo@example.com', user_metadata: { display_name: 'Demo User' } } as unknown as User;
       setUser(mockUser);
       setSession({ user: mockUser, access_token: 'mock-token', refresh_token: 'mock-refresh' } as any);
       setLoading(false);
@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (email: string, password: string, displayName?: string) => {
     if (import.meta.env.VITE_SUPABASE_URL === 'https://your-project-id.supabase.co') {
-      const mockUser = { id: 'demo-user-123', email, user_metadata: { display_name: displayName || 'Demo User' } } as User;
+      const mockUser = { id: 'demo-user-123', email, user_metadata: { display_name: displayName || 'Demo User' } } as unknown as User;
       setUser(mockUser);
       setSession({ user: mockUser, access_token: 'mock-token', refresh_token: 'mock-refresh' } as any);
       return { error: null };
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     if (import.meta.env.VITE_SUPABASE_URL === 'https://your-project-id.supabase.co') {
-      const mockUser = { id: 'demo-user-123', email, user_metadata: { display_name: 'Demo User' } } as User;
+      const mockUser = { id: 'demo-user-123', email, user_metadata: { display_name: 'Demo User' } } as unknown as User;
       setUser(mockUser);
       setSession({ user: mockUser, access_token: 'mock-token', refresh_token: 'mock-refresh' } as any);
       return { error: null };
