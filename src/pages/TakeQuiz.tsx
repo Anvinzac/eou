@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { toast } from 'sonner';
-import { KineticCanvas, buildQuizCanvasSpec } from '@/components/kinetic/KineticCanvas';
+import { KineticCanvas, buildQuizCanvasSpec, quizThemeGradient } from '@/components/kinetic/KineticCanvas';
 
 type QuizRow = Tables<'quizzes'>;
 type QuizQuestionRow = Tables<'quiz_questions'>;
@@ -516,9 +516,11 @@ export default function TakeQuiz() {
   const canvasSpec = useMemo(
     () => {
       const current = questions[currentIdx];
-      return current ? buildQuizCanvasSpec(current) : null;
+      if (!current) return null;
+      const themeGradient = quiz ? quizThemeGradient(quiz.id) : quizThemeGradient("kinetic");
+      return buildQuizCanvasSpec(current.question_text, themeGradient, current.category);
     },
-    [questions, currentIdx],
+    [questions, currentIdx, quiz],
   );
 
   if (loading) {

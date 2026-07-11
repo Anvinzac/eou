@@ -94,11 +94,12 @@ export function quizThemeGradient(seed: string): string {
 
 /** Derive a kinetic-canvas spec from a quiz question so it renders as immersive type. */
 export function buildQuizCanvasSpec(
-  questionText: string,
+  questionText: string | undefined,
   themeGradient: string,
   category?: string,
 ): CanvasSpec {
-  const words = questionText.split(/\s+/).filter(Boolean).length;
+  const text = questionText ?? "";
+  const words = text.split(/\s+/).filter(Boolean).length;
   const size = words > 14 ? 44 : words > 8 ? 52 : words > 5 ? 60 : 68;
   return {
     ...DEFAULT_CANVAS,
