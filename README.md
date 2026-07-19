@@ -1,40 +1,29 @@
-# Welcome to your Lovable project
+# EOU — Full-stack MVC
 
-## Project info
+React (Vite) client + Express TypeScript API. Domain logic lives on the server; the client is a thin view layer. Supabase remains the database/auth provider.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Architecture
 
-## How can I edit this code?
+```
+client/   Views (React) + api/ fetch wrappers
+server/
+  controllers/   HTTP only
+  services/      Business rules (own/rewrite these)
+  models/        Supabase data access
+  routes/        Route → controller wiring
+supabase/        Migrations & seeds
+```
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Local setup
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# Copy .env.example → .env and set SUPABASE_* + QWEN_* (server) and VITE_* (client)
+# Prefer SUPABASE_SERVICE_ROLE_KEY on the server so writes bypass RLS safely.
+npm run dev   # API :3001 + Vite :8080 (proxies /api)
 ```
+
+Useful scripts: `npm run server:dev`, `npm run client:dev`, `npm test`, `npm run supabase:start`.
 
 **Edit a file directly in GitHub**
 

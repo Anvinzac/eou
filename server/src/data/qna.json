@@ -1,0 +1,1955 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "id": 1,
+      "category": "Leisure",
+      "text": "What hobby does your partner enjoy most in free time?",
+      "options": [
+        "Reading",
+        "Gaming",
+        "Sports",
+        "Music",
+        "Art",
+        "Cooking",
+        "DIY",
+        "Collecting"
+      ]
+    },
+    {
+      "id": 2,
+      "category": "Leisure",
+      "text": "What creative activity would your partner most enjoy?",
+      "options": [
+        "Drawing",
+        "Writing",
+        "Crafting",
+        "Photography",
+        "Music making",
+        "Decorating",
+        "Design",
+        "Sculpting"
+      ]
+    },
+    {
+      "id": 3,
+      "category": "Leisure",
+      "text": "Which indoor activity suits your partner best?",
+      "options": [
+        "Watching movies",
+        "Reading",
+        "Gaming",
+        "Cooking",
+        "Crafting",
+        "Music",
+        "Online browsing",
+        "Learning"
+      ]
+    },
+    {
+      "id": 4,
+      "category": "Leisure",
+      "text": "Which outdoor activity suits your partner best?",
+      "options": [
+        "Walking",
+        "Cycling",
+        "Hiking",
+        "Sports",
+        "Photography",
+        "Picnic",
+        "Travel exploring",
+        "Gardening"
+      ]
+    },
+    {
+      "id": 5,
+      "category": "Leisure",
+      "text": "What type of games does your partner prefer?",
+      "options": [
+        "Video games",
+        "Board games",
+        "Puzzle games",
+        "Party games",
+        "Strategy games",
+        "Card games",
+        "Mobile games",
+        "Trivia"
+      ]
+    },
+    {
+      "id": 6,
+      "category": "Food",
+      "text": "What cuisine does your partner crave most?",
+      "options": [
+        "Vietnamese",
+        "Korean",
+        "Japanese",
+        "Italian",
+        "Thai",
+        "Chinese",
+        "Western",
+        "Street food"
+      ]
+    },
+    {
+      "id": 7,
+      "category": "Food",
+      "text": "What comfort food suits them best?",
+      "options": [
+        "Noodles",
+        "Rice dishes",
+        "Soup",
+        "Fried food",
+        "BBQ",
+        "Hotpot",
+        "Bread",
+        "Dessert"
+      ]
+    },
+    {
+      "id": 8,
+      "category": "Food",
+      "text": "What snack type do they enjoy most?",
+      "options": [
+        "Sweet",
+        "Savory",
+        "Crunchy",
+        "Chocolate",
+        "Fruit",
+        "Baked",
+        "Creamy",
+        "Salty"
+      ]
+    },
+    {
+      "id": 9,
+      "category": "Food",
+      "text": "What dessert flavor do they prefer?",
+      "options": [
+        "Chocolate",
+        "Vanilla",
+        "Fruit",
+        "Matcha",
+        "Coffee",
+        "Caramel",
+        "Cheese",
+        "Coconut"
+      ]
+    },
+    {
+      "id": 10,
+      "category": "Food",
+      "text": "What drink do they choose most often?",
+      "options": [
+        "Coffee",
+        "Tea",
+        "Milk tea",
+        "Juice",
+        "Smoothie",
+        "Soda",
+        "Water",
+        "Herbal drink"
+      ]
+    },
+    {
+      "id": 11,
+      "category": "Entertainment",
+      "text": "What movie genre does your partner prefer?",
+      "options": [
+        "Romance",
+        "Comedy",
+        "Action",
+        "Thriller",
+        "Drama",
+        "Sci-fi",
+        "Animation",
+        "Documentary"
+      ]
+    },
+    {
+      "id": 12,
+      "category": "Entertainment",
+      "text": "What series style do they enjoy most?",
+      "options": [
+        "Sitcom",
+        "Crime",
+        "Fantasy",
+        "Reality",
+        "Historical",
+        "Romance",
+        "Mystery",
+        "Anime"
+      ]
+    },
+    {
+      "id": 13,
+      "category": "Entertainment",
+      "text": "What video content do they watch most?",
+      "options": [
+        "Vlogs",
+        "Education",
+        "Comedy",
+        "Gaming",
+        "Lifestyle",
+        "Music",
+        "Travel",
+        "Food"
+      ]
+    },
+    {
+      "id": 14,
+      "category": "Entertainment",
+      "text": "What music genre fits them best?",
+      "options": [
+        "Pop",
+        "Acoustic",
+        "Indie",
+        "R&B",
+        "Rock",
+        "EDM",
+        "Classical",
+        "Lo-fi"
+      ]
+    },
+    {
+      "id": 15,
+      "category": "Entertainment",
+      "text": "What humor style do they enjoy most?",
+      "options": [
+        "Playful",
+        "Sarcastic",
+        "Dark",
+        "Silly",
+        "Witty",
+        "Observational",
+        "Physical",
+        "Absurd"
+      ]
+    },
+    {
+      "id": 16,
+      "category": "Travel",
+      "text": "What trip type excites your partner most?",
+      "options": [
+        "Beach",
+        "Mountains",
+        "City",
+        "Nature retreat",
+        "Food trip",
+        "Adventure",
+        "Luxury",
+        "Staycation"
+      ]
+    },
+    {
+      "id": 17,
+      "category": "Travel",
+      "text": "What landscape do they prefer most?",
+      "options": [
+        "Sea",
+        "Forest",
+        "Mountains",
+        "Countryside",
+        "City skyline",
+        "Rivers",
+        "Desert",
+        "Islands"
+      ]
+    },
+    {
+      "id": 18,
+      "category": "Travel",
+      "text": "What travel pace suits them best?",
+      "options": [
+        "Relaxed",
+        "Balanced",
+        "Fast-paced",
+        "Spontaneous",
+        "Planned",
+        "Flexible",
+        "Minimal",
+        "Luxury"
+      ]
+    },
+    {
+      "id": 19,
+      "category": "Travel",
+      "text": "What accommodation do they prefer?",
+      "options": [
+        "Hotel",
+        "Resort",
+        "Homestay",
+        "Hostel",
+        "Apartment",
+        "Villa",
+        "Camping",
+        "Eco-lodge"
+      ]
+    },
+    {
+      "id": 20,
+      "category": "Travel",
+      "text": "What climate do they enjoy most?",
+      "options": [
+        "Tropical",
+        "Cool",
+        "Cold",
+        "Mild",
+        "Sunny",
+        "Rainy",
+        "Dry",
+        "Windy"
+      ]
+    },
+    {
+      "id": 21,
+      "category": "Social",
+      "text": "What social setting suits your partner best?",
+      "options": [
+        "One-on-one",
+        "Small group",
+        "Party",
+        "Family",
+        "Work events",
+        "Community",
+        "Online",
+        "Quiet hangout"
+      ]
+    },
+    {
+      "id": 22,
+      "category": "Social",
+      "text": "What group size do they prefer?",
+      "options": [
+        "2 people",
+        "3-4",
+        "5-6",
+        "Small group",
+        "Medium group",
+        "Large group",
+        "Crowd",
+        "Alone"
+      ]
+    },
+    {
+      "id": 23,
+      "category": "Social",
+      "text": "What time of day are they most social?",
+      "options": [
+        "Morning",
+        "Late morning",
+        "Afternoon",
+        "Evening",
+        "Night",
+        "Late night",
+        "Anytime",
+        "Rarely"
+      ]
+    },
+    {
+      "id": 24,
+      "category": "Social",
+      "text": "What celebration style do they prefer?",
+      "options": [
+        "Intimate",
+        "Family",
+        "Friends",
+        "Party",
+        "Romantic",
+        "Quiet",
+        "Outdoor",
+        "Surprise"
+      ]
+    },
+    {
+      "id": 25,
+      "category": "Social",
+      "text": "What conversation type do they enjoy?",
+      "options": [
+        "Deep talk",
+        "Fun chat",
+        "Ideas",
+        "Stories",
+        "Jokes",
+        "Debates",
+        "Dreams",
+        "Memories"
+      ]
+    },
+    {
+      "id": 26,
+      "category": "Habits",
+      "text": "What daily habit is hardest for them to skip?",
+      "options": [
+        "Coffee/tea",
+        "Phone",
+        "Music",
+        "Exercise",
+        "Snacks",
+        "Social media",
+        "News",
+        "Gaming"
+      ]
+    },
+    {
+      "id": 27,
+      "category": "Habits",
+      "text": "What morning style fits them?",
+      "options": [
+        "Slow",
+        "Energetic",
+        "Quiet",
+        "Routine",
+        "Rushed",
+        "Mindful",
+        "Lazy",
+        "Focused"
+      ]
+    },
+    {
+      "id": 28,
+      "category": "Habits",
+      "text": "What evening routine suits them?",
+      "options": [
+        "TV",
+        "Phone",
+        "Reading",
+        "Music",
+        "Chatting",
+        "Gaming",
+        "Work",
+        "Relaxing"
+      ]
+    },
+    {
+      "id": 29,
+      "category": "Habits",
+      "text": "What productivity style fits them?",
+      "options": [
+        "Planner",
+        "Spontaneous",
+        "Focused",
+        "Multitask",
+        "Deadline-driven",
+        "Steady",
+        "Burst",
+        "Flexible"
+      ]
+    },
+    {
+      "id": 30,
+      "category": "Habits",
+      "text": "What break activity do they prefer?",
+      "options": [
+        "Phone",
+        "Snack",
+        "Walk",
+        "Chat",
+        "Music",
+        "Stretch",
+        "Coffee",
+        "Rest"
+      ]
+    },
+    {
+      "id": 31,
+      "category": "Spending",
+      "text": "What would they spend extra money on?",
+      "options": [
+        "Food",
+        "Travel",
+        "Gadgets",
+        "Clothes",
+        "Hobbies",
+        "Home",
+        "Experiences",
+        "Gifts"
+      ]
+    },
+    {
+      "id": 32,
+      "category": "Spending",
+      "text": "What purchase excites them most?",
+      "options": [
+        "Tech",
+        "Fashion",
+        "Decor",
+        "Art",
+        "Food",
+        "Tickets",
+        "Courses",
+        "Accessories"
+      ]
+    },
+    {
+      "id": 33,
+      "category": "Spending",
+      "text": "What comfort item matters most?",
+      "options": [
+        "Blanket",
+        "Clothes",
+        "Chair",
+        "Bed",
+        "Pillow",
+        "Shoes",
+        "Bag",
+        "Lighting"
+      ]
+    },
+    {
+      "id": 34,
+      "category": "Spending",
+      "text": "What hobby item would they buy?",
+      "options": [
+        "Art supplies",
+        "Instruments",
+        "Tools",
+        "Books",
+        "Games",
+        "Sports gear",
+        "Camera",
+        "Craft kits"
+      ]
+    },
+    {
+      "id": 35,
+      "category": "Spending",
+      "text": "What gift type do they prefer?",
+      "options": [
+        "Useful",
+        "Personal",
+        "Experiences",
+        "Handmade",
+        "Luxury",
+        "Fun",
+        "Romantic",
+        "Practical"
+      ]
+    },
+    {
+      "id": 36,
+      "category": "Emotion",
+      "text": "What gesture makes your partner happiest?",
+      "options": [
+        "Words",
+        "Time",
+        "Gifts",
+        "Touch",
+        "Help",
+        "Surprises",
+        "Support",
+        "Listening"
+      ]
+    },
+    {
+      "id": 37,
+      "category": "Emotion",
+      "text": "What appreciation style suits them?",
+      "options": [
+        "Praise",
+        "Thanks",
+        "Recognition",
+        "Affection",
+        "Encouragement",
+        "Respect",
+        "Attention",
+        "Trust"
+      ]
+    },
+    {
+      "id": 38,
+      "category": "Emotion",
+      "text": "What support do they value most?",
+      "options": [
+        "Advice",
+        "Listening",
+        "Help",
+        "Comfort",
+        "Action",
+        "Presence",
+        "Solutions",
+        "Reassurance"
+      ]
+    },
+    {
+      "id": 39,
+      "category": "Emotion",
+      "text": "What shared moment matters most?",
+      "options": [
+        "Meals",
+        "Trips",
+        "Talks",
+        "Activities",
+        "Celebrations",
+        "Memories",
+        "Relaxing",
+        "Laughing"
+      ]
+    },
+    {
+      "id": 40,
+      "category": "Emotion",
+      "text": "What affection style fits them?",
+      "options": [
+        "Hugs",
+        "Holding hands",
+        "Words",
+        "Acts",
+        "Gifts",
+        "Closeness",
+        "Playful",
+        "Gentle"
+      ]
+    },
+    {
+      "id": 41,
+      "category": "Leisure",
+      "text": "What art form attracts them most?",
+      "options": [
+        "Painting",
+        "Music",
+        "Dance",
+        "Writing",
+        "Film",
+        "Craft",
+        "Design",
+        "Photography"
+      ]
+    },
+    {
+      "id": 42,
+      "category": "Leisure",
+      "text": "What solo hobby suits them best?",
+      "options": [
+        "Reading",
+        "Gaming",
+        "Art",
+        "Music",
+        "DIY",
+        "Collecting",
+        "Learning",
+        "Exercise"
+      ]
+    },
+    {
+      "id": 43,
+      "category": "Leisure",
+      "text": "What social hobby suits them best?",
+      "options": [
+        "Sports",
+        "Board games",
+        "Music",
+        "Dance",
+        "Cooking",
+        "Clubs",
+        "Travel",
+        "Events"
+      ]
+    },
+    {
+      "id": 44,
+      "category": "Leisure",
+      "text": "What skill would they like to learn?",
+      "options": [
+        "Language",
+        "Instrument",
+        "Cooking",
+        "Art",
+        "Coding",
+        "Craft",
+        "Sport",
+        "Writing"
+      ]
+    },
+    {
+      "id": 45,
+      "category": "Leisure",
+      "text": "What relaxing activity do they enjoy most?",
+      "options": [
+        "Music",
+        "Bath",
+        "Walk",
+        "Tea",
+        "Reading",
+        "TV",
+        "Meditation",
+        "Nature"
+      ]
+    },
+    {
+      "id": 46,
+      "category": "Food",
+      "text": "What meal time do they enjoy most?",
+      "options": [
+        "Breakfast",
+        "Brunch",
+        "Lunch",
+        "Snack",
+        "Dinner",
+        "Late night",
+        "Anytime",
+        "Dessert"
+      ]
+    },
+    {
+      "id": 47,
+      "category": "Food",
+      "text": "What flavor profile do they prefer?",
+      "options": [
+        "Sweet",
+        "Salty",
+        "Spicy",
+        "Sour",
+        "Umami",
+        "Bitter",
+        "Mild",
+        "Rich"
+      ]
+    },
+    {
+      "id": 48,
+      "category": "Food",
+      "text": "What street food would they pick first?",
+      "options": [
+        "Banh mi",
+        "Pho",
+        "BBQ skewers",
+        "Fried snacks",
+        "Rice paper",
+        "Noodles",
+        "Sweet soup",
+        "Grilled corn"
+      ]
+    },
+    {
+      "id": 49,
+      "category": "Food",
+      "text": "What dining atmosphere do they prefer?",
+      "options": [
+        "Cozy",
+        "Fancy",
+        "Street",
+        "Nature",
+        "Modern",
+        "Traditional",
+        "Quiet",
+        "Lively"
+      ]
+    },
+    {
+      "id": 50,
+      "category": "Food",
+      "text": "What ingredient do they love most?",
+      "options": [
+        "Cheese",
+        "Chocolate",
+        "Chili",
+        "Herbs",
+        "Garlic",
+        "Seafood",
+        "Meat",
+        "Vegetables"
+      ]
+    },
+    {
+      "id": 51,
+      "category": "Entertainment",
+      "text": "What book genre suits them best?",
+      "options": [
+        "Romance",
+        "Fantasy",
+        "Mystery",
+        "Self-help",
+        "History",
+        "Sci-fi",
+        "Drama",
+        "Poetry"
+      ]
+    },
+    {
+      "id": 52,
+      "category": "Entertainment",
+      "text": "What live show would they attend?",
+      "options": [
+        "Concert",
+        "Theater",
+        "Comedy",
+        "Dance",
+        "Festival",
+        "Talk",
+        "Exhibit",
+        "Cinema"
+      ]
+    },
+    {
+      "id": 53,
+      "category": "Entertainment",
+      "text": "What screen activity do they do most?",
+      "options": [
+        "Movies",
+        "Series",
+        "YouTube",
+        "Gaming",
+        "Social",
+        "Music",
+        "News",
+        "Learning"
+      ]
+    },
+    {
+      "id": 54,
+      "category": "Entertainment",
+      "text": "What audio content do they enjoy?",
+      "options": [
+        "Music",
+        "Podcasts",
+        "Audiobooks",
+        "Radio",
+        "Talks",
+        "Meditation",
+        "Stories",
+        "None"
+      ]
+    },
+    {
+      "id": 55,
+      "category": "Entertainment",
+      "text": "What story type moves them most?",
+      "options": [
+        "Romantic",
+        "Inspiring",
+        "Tragic",
+        "Heroic",
+        "Real",
+        "Fantasy",
+        "Funny",
+        "Emotional"
+      ]
+    },
+    {
+      "id": 56,
+      "category": "Travel",
+      "text": "What local experience excites them?",
+      "options": [
+        "Food",
+        "Culture",
+        "Nature",
+        "Markets",
+        "Art",
+        "Festivals",
+        "History",
+        "People"
+      ]
+    },
+    {
+      "id": 57,
+      "category": "Travel",
+      "text": "What transport style do they prefer?",
+      "options": [
+        "Plane",
+        "Train",
+        "Car",
+        "Motorbike",
+        "Boat",
+        "Walking",
+        "Cycling",
+        "Mixed"
+      ]
+    },
+    {
+      "id": 58,
+      "category": "Travel",
+      "text": "What trip length suits them best?",
+      "options": [
+        "Day trip",
+        "Weekend",
+        "3-5 days",
+        "1 week",
+        "2 weeks",
+        "Long",
+        "Flexible",
+        "Short"
+      ]
+    },
+    {
+      "id": 59,
+      "category": "Travel",
+      "text": "What travel activity excites them?",
+      "options": [
+        "Sightseeing",
+        "Food",
+        "Adventure",
+        "Relax",
+        "Shopping",
+        "Photography",
+        "Culture",
+        "Nature"
+      ]
+    },
+    {
+      "id": 60,
+      "category": "Travel",
+      "text": "What destination vibe fits them?",
+      "options": [
+        "Calm",
+        "Vibrant",
+        "Romantic",
+        "Wild",
+        "Historic",
+        "Modern",
+        "Remote",
+        "Luxurious"
+      ]
+    },
+    {
+      "id": 61,
+      "category": "Social",
+      "text": "What weekend social plan fits them?",
+      "options": [
+        "Date",
+        "Friends",
+        "Family",
+        "Events",
+        "Home",
+        "Outing",
+        "Travel",
+        "Rest"
+      ]
+    },
+    {
+      "id": 62,
+      "category": "Social",
+      "text": "What friendship style fits them?",
+      "options": [
+        "Deep",
+        "Fun",
+        "Loyal",
+        "Supportive",
+        "Adventurous",
+        "Calm",
+        "Talkative",
+        "Quiet"
+      ]
+    },
+    {
+      "id": 63,
+      "category": "Social",
+      "text": "What gathering atmosphere suits them?",
+      "options": [
+        "Cozy",
+        "Lively",
+        "Elegant",
+        "Casual",
+        "Creative",
+        "Outdoor",
+        "Indoor",
+        "Festive"
+      ]
+    },
+    {
+      "id": 64,
+      "category": "Social",
+      "text": "What hosting style fits them?",
+      "options": [
+        "Warm",
+        "Organized",
+        "Fun",
+        "Relaxed",
+        "Creative",
+        "Elegant",
+        "Simple",
+        "Generous"
+      ]
+    },
+    {
+      "id": 65,
+      "category": "Social",
+      "text": "What outing style do they enjoy?",
+      "options": [
+        "Cafe",
+        "Dining",
+        "Walk",
+        "Movies",
+        "Events",
+        "Shopping",
+        "Nature",
+        "Home"
+      ]
+    },
+    {
+      "id": 66,
+      "category": "Habits",
+      "text": "What comfort routine do they use?",
+      "options": [
+        "Music",
+        "Food",
+        "Bath",
+        "Sleep",
+        "Phone",
+        "Chat",
+        "Walk",
+        "TV"
+      ]
+    },
+    {
+      "id": 67,
+      "category": "Habits",
+      "text": "What digital habit do they do most?",
+      "options": [
+        "Social",
+        "Video",
+        "Chat",
+        "News",
+        "Games",
+        "Shopping",
+        "Music",
+        "Work"
+      ]
+    },
+    {
+      "id": 68,
+      "category": "Habits",
+      "text": "What self-care habit fits them?",
+      "options": [
+        "Skincare",
+        "Exercise",
+        "Meditation",
+        "Rest",
+        "Grooming",
+        "Spa",
+        "Nature",
+        "Journaling"
+      ]
+    },
+    {
+      "id": 69,
+      "category": "Habits",
+      "text": "What organization style suits them?",
+      "options": [
+        "Neat",
+        "Minimal",
+        "Visual",
+        "Flexible",
+        "Messy",
+        "Detailed",
+        "Simple",
+        "Structured"
+      ]
+    },
+    {
+      "id": 70,
+      "category": "Habits",
+      "text": "What planning style fits them?",
+      "options": [
+        "Planner",
+        "Spontaneous",
+        "Checklist",
+        "Calendar",
+        "Loose",
+        "Detailed",
+        "Adaptive",
+        "None"
+      ]
+    },
+    {
+      "id": 71,
+      "category": "Spending",
+      "text": "What upgrade would they choose?",
+      "options": [
+        "Phone",
+        "Clothes",
+        "Home",
+        "Travel",
+        "Food",
+        "Hobby",
+        "Comfort",
+        "Tech"
+      ]
+    },
+    {
+      "id": 72,
+      "category": "Spending",
+      "text": "What luxury appeals most?",
+      "options": [
+        "Hotel",
+        "Dining",
+        "Fashion",
+        "Spa",
+        "Tech",
+        "Travel",
+        "Decor",
+        "Experiences"
+      ]
+    },
+    {
+      "id": 73,
+      "category": "Spending",
+      "text": "What saving goal motivates them?",
+      "options": [
+        "Home",
+        "Travel",
+        "Security",
+        "Family",
+        "Education",
+        "Business",
+        "Freedom",
+        "Lifestyle"
+      ]
+    },
+    {
+      "id": 74,
+      "category": "Spending",
+      "text": "What personal item matters most?",
+      "options": [
+        "Phone",
+        "Bag",
+        "Clothes",
+        "Shoes",
+        "Jewelry",
+        "Watch",
+        "Notebook",
+        "Headphones"
+      ]
+    },
+    {
+      "id": 75,
+      "category": "Spending",
+      "text": "What experience is worth paying for?",
+      "options": [
+        "Travel",
+        "Food",
+        "Concert",
+        "Course",
+        "Events",
+        "Spa",
+        "Adventure",
+        "Art"
+      ]
+    },
+    {
+      "id": 76,
+      "category": "Emotion",
+      "text": "What reassurance helps them most?",
+      "options": [
+        "Words",
+        "Touch",
+        "Presence",
+        "Help",
+        "Promises",
+        "Plans",
+        "Time",
+        "Calm"
+      ]
+    },
+    {
+      "id": 77,
+      "category": "Emotion",
+      "text": "What bonding activity fits them?",
+      "options": [
+        "Talk",
+        "Cook",
+        "Travel",
+        "Walk",
+        "Watch",
+        "Play",
+        "Create",
+        "Relax"
+      ]
+    },
+    {
+      "id": 78,
+      "category": "Emotion",
+      "text": "What memory type they cherish most?",
+      "options": [
+        "Trips",
+        "Milestones",
+        "Daily",
+        "Romantic",
+        "Family",
+        "Fun",
+        "Achievements",
+        "Moments"
+      ]
+    },
+    {
+      "id": 79,
+      "category": "Emotion",
+      "text": "What makes them feel understood?",
+      "options": [
+        "Listening",
+        "Empathy",
+        "Support",
+        "Time",
+        "Attention",
+        "Respect",
+        "Care",
+        "Trust"
+      ]
+    },
+    {
+      "id": 80,
+      "category": "Emotion",
+      "text": "What affection intensity suits them?",
+      "options": [
+        "Subtle",
+        "Gentle",
+        "Warm",
+        "Playful",
+        "Passionate",
+        "Calm",
+        "Frequent",
+        "Private"
+      ]
+    },
+    {
+      "id": 81,
+      "category": "Leisure",
+      "text": "What collection would interest them?",
+      "options": [
+        "Books",
+        "Art",
+        "Figures",
+        "Clothes",
+        "Plants",
+        "Music",
+        "Photos",
+        "Crafts"
+      ]
+    },
+    {
+      "id": 82,
+      "category": "Leisure",
+      "text": "What hands-on activity suits them?",
+      "options": [
+        "Cooking",
+        "Craft",
+        "DIY",
+        "Gardening",
+        "Art",
+        "Repair",
+        "Building",
+        "Decor"
+      ]
+    },
+    {
+      "id": 83,
+      "category": "Leisure",
+      "text": "What weekend activity excites them?",
+      "options": [
+        "Outing",
+        "Home",
+        "Friends",
+        "Nature",
+        "Events",
+        "Travel",
+        "Hobby",
+        "Rest"
+      ]
+    },
+    {
+      "id": 84,
+      "category": "Leisure",
+      "text": "What hobby would they repeat often?",
+      "options": [
+        "Art",
+        "Music",
+        "Games",
+        "Cooking",
+        "Sports",
+        "Reading",
+        "Craft",
+        "Collecting"
+      ]
+    },
+    {
+      "id": 85,
+      "category": "Leisure",
+      "text": "What music activity would they enjoy?",
+      "options": [
+        "Listening",
+        "Singing",
+        "Playing",
+        "Dancing",
+        "Concerts",
+        "Creating",
+        "Learning",
+        "Sharing"
+      ]
+    },
+    {
+      "id": 86,
+      "category": "Food",
+      "text": "What breakfast style suits them best?",
+      "options": [
+        "Light",
+        "Full",
+        "Sweet",
+        "Savory",
+        "Healthy",
+        "Quick",
+        "Coffee",
+        "Brunch"
+      ]
+    },
+    {
+      "id": 87,
+      "category": "Food",
+      "text": "What late-night food would they want?",
+      "options": [
+        "Noodles",
+        "Snacks",
+        "Rice",
+        "Soup",
+        "Fast food",
+        "Dessert",
+        "Fruit",
+        "None"
+      ]
+    },
+    {
+      "id": 88,
+      "category": "Food",
+      "text": "What restaurant type do they enjoy?",
+      "options": [
+        "Casual",
+        "Fine",
+        "Street",
+        "Buffet",
+        "Cafe",
+        "Family",
+        "Vegetarian",
+        "BBQ"
+      ]
+    },
+    {
+      "id": 89,
+      "category": "Food",
+      "text": "What food texture do they like?",
+      "options": [
+        "Crunchy",
+        "Soft",
+        "Chewy",
+        "Creamy",
+        "Juicy",
+        "Crispy",
+        "Smooth",
+        "Mixed"
+      ]
+    },
+    {
+      "id": 90,
+      "category": "Food",
+      "text": "What dessert type suits them?",
+      "options": [
+        "Cake",
+        "Ice cream",
+        "Pastry",
+        "Fruit",
+        "Pudding",
+        "Chocolate",
+        "Sweet soup",
+        "Cookies"
+      ]
+    },
+    {
+      "id": 91,
+      "category": "Entertainment",
+      "text": "What fandom theme attracts them?",
+      "options": [
+        "Fantasy",
+        "Sci-fi",
+        "Anime",
+        "Drama",
+        "Romance",
+        "History",
+        "Games",
+        "Music"
+      ]
+    },
+    {
+      "id": 92,
+      "category": "Entertainment",
+      "text": "What rewatchable content do they prefer?",
+      "options": [
+        "Comedy",
+        "Romance",
+        "Action",
+        "Drama",
+        "Animation",
+        "Shows",
+        "Movies",
+        "Clips"
+      ]
+    },
+    {
+      "id": 93,
+      "category": "Entertainment",
+      "text": "What entertainment mood they prefer?",
+      "options": [
+        "Light",
+        "Emotional",
+        "Exciting",
+        "Calm",
+        "Funny",
+        "Deep",
+        "Inspiring",
+        "Dark"
+      ]
+    },
+    {
+      "id": 94,
+      "category": "Entertainment",
+      "text": "What fictional world attracts them?",
+      "options": [
+        "Magic",
+        "Future",
+        "Historical",
+        "Urban",
+        "Nature",
+        "Space",
+        "Myth",
+        "Adventure"
+      ]
+    },
+    {
+      "id": 95,
+      "category": "Entertainment",
+      "text": "What humor tone suits them?",
+      "options": [
+        "Cute",
+        "Sarcastic",
+        "Witty",
+        "Silly",
+        "Dry",
+        "Dark",
+        "Playful",
+        "Absurd"
+      ]
+    },
+    {
+      "id": 96,
+      "category": "Travel",
+      "text": "What travel companion style suits them?",
+      "options": [
+        "Partner",
+        "Friends",
+        "Family",
+        "Solo",
+        "Group",
+        "Tour",
+        "Flexible",
+        "Any"
+      ]
+    },
+    {
+      "id": 97,
+      "category": "Travel",
+      "text": "What trip memory matters most?",
+      "options": [
+        "Views",
+        "Food",
+        "People",
+        "Moments",
+        "Photos",
+        "Stories",
+        "Feelings",
+        "Experiences"
+      ]
+    },
+    {
+      "id": 98,
+      "category": "Travel",
+      "text": "What travel energy fits them?",
+      "options": [
+        "Relaxed",
+        "Curious",
+        "Adventurous",
+        "Romantic",
+        "Playful",
+        "Calm",
+        "Social",
+        "Free"
+      ]
+    },
+    {
+      "id": 99,
+      "category": "Travel",
+      "text": "What place type attracts them?",
+      "options": [
+        "Beach",
+        "Mountains",
+        "City",
+        "Village",
+        "Forest",
+        "Island",
+        "Desert",
+        "Lake"
+      ]
+    },
+    {
+      "id": 100,
+      "category": "Travel",
+      "text": "What exploration style suits them?",
+      "options": [
+        "Planned",
+        "Spontaneous",
+        "Slow",
+        "Active",
+        "Comfort",
+        "Budget",
+        "Deep",
+        "Wide"
+      ]
+    },
+    {
+      "id": 101,
+      "category": "Home",
+      "text": "What is their ideal home aesthetic?",
+      "options": [
+        "Minimalist",
+        "Bohemian",
+        "Industrial",
+        "Classic Cozy",
+        "Modern",
+        "Rustic",
+        "Art Deco",
+        "Eclectic"
+      ]
+    },
+    {
+      "id": 102,
+      "category": "Home",
+      "text": "Which chore do they mind the least?",
+      "options": [
+        "Cooking",
+        "Laundry",
+        "Organizing",
+        "Vacuuming",
+        "Dishwashing",
+        "Gardening",
+        "Trash",
+        "Pet care"
+      ]
+    },
+    {
+      "id": 103,
+      "category": "Home",
+      "text": "What is their favorite spot in the house?",
+      "options": [
+        "The bed",
+        "The kitchen",
+        "Balcony",
+        "Sofa",
+        "Home office",
+        "Bathtub",
+        "Dining table",
+        "Garden"
+      ]
+    },
+    {
+      "id": 104,
+      "category": "Home",
+      "text": "What scent makes them feel most at home?",
+      "options": [
+        "Fresh linen",
+        "Coffee",
+        "Vanilla",
+        "Woods & Rain",
+        "Citrus",
+        "Flowers",
+        "Sandalwood",
+        "Baked goods"
+      ]
+    },
+    {
+      "id": 105,
+      "category": "Home",
+      "text": "How do they feel about guest 'pop-ins'?",
+      "options": [
+        "Love it",
+        "Heads-up only",
+        "Scheduled",
+        "No pop-ins",
+        "Family only",
+        "Weekends only",
+        "Short visits",
+        "Depends on mood"
+      ]
+    },
+    {
+      "id": 106,
+      "category": "Home",
+      "text": "What is their lighting preference?",
+      "options": [
+        "Bright & sunny",
+        "Dim & moody",
+        "Warm lamps",
+        "RGB & Neon",
+        "Natural light",
+        "Ceiling lights",
+        "Fairy lights",
+        "Candles"
+      ]
+    },
+    {
+      "id": 107,
+      "category": "Home",
+      "text": "What kind of 'plant parent' are they?",
+      "options": [
+        "Jungalist",
+        "Easy ones only",
+        "Artificial",
+        "Plant slayer",
+        "Succulents",
+        "Veggie gardener",
+        "Flowers",
+        "None"
+      ]
+    },
+    {
+      "id": 108,
+      "category": "Home",
+      "text": "What is their temperature 'sweet spot'?",
+      "options": [
+        "Ice box",
+        "Tropical",
+        "Perfect 24°C",
+        "Cool breeze",
+        "Cozy warmth",
+        "Humidity",
+        "Crisp air",
+        "AC always"
+      ]
+    },
+    {
+      "id": 109,
+      "category": "Home",
+      "text": "How do they prefer to decorate?",
+      "options": [
+        "Family photos",
+        "Art prints",
+        "Books",
+        "Records",
+        "Functional items",
+        "Travel souvenirs",
+        "Minimalist",
+        "Plants"
+      ]
+    },
+    {
+      "id": 110,
+      "category": "Home",
+      "text": "What is their sleep environment requirement?",
+      "options": [
+        "Total silence",
+        "White noise",
+        "TV on",
+        "Window open",
+        "Pitch black",
+        "Fan on",
+        "Weighted blanket",
+        "Soft music"
+      ]
+    },
+    {
+      "id": 111,
+      "category": "Growth",
+      "text": "What is their primary motivator at work?",
+      "options": [
+        "Money",
+        "Impact",
+        "Creative freedom",
+        "Recognition",
+        "Stability",
+        "Growth",
+        "Community",
+        "Flexibility"
+      ]
+    },
+    {
+      "id": 112,
+      "category": "Growth",
+      "text": "What is their 'dream' career pivot?",
+      "options": [
+        "Artist",
+        "Small business",
+        "Tech mogul",
+        "Charity",
+        "Travel blogger",
+        "Teacher",
+        "Writer",
+        "Farmer"
+      ]
+    },
+    {
+      "id": 113,
+      "category": "Growth",
+      "text": "How do they handle a major setback?",
+      "options": [
+        "Analyze & pivot",
+        "Vent",
+        "Sleep it off",
+        "Quiet stress",
+        "Ask for help",
+        "Try harder",
+        "Distract",
+        "Journal"
+      ]
+    },
+    {
+      "id": 114,
+      "category": "Growth",
+      "text": "What kind of legacy do they want to leave?",
+      "options": [
+        "Knowledge",
+        "Wealth",
+        "Kindness",
+        "Art",
+        "Family",
+        "Innovation",
+        "Justice",
+        "Memories"
+      ]
+    },
+    {
+      "id": 115,
+      "category": "Growth",
+      "text": "What is their learning style?",
+      "options": [
+        "Visual",
+        "Videos",
+        "Reading",
+        "Hands-on",
+        "Discussing",
+        "Listening",
+        "Writing",
+        "Trial & error"
+      ]
+    },
+    {
+      "id": 116,
+      "category": "Growth",
+      "text": "What is their biggest 'bucket list' goal?",
+      "options": [
+        "Financial freedom",
+        "Writing a book",
+        "New language",
+        "Extreme sport",
+        "World travel",
+        "House",
+        "Skill mastery",
+        "Philanthropy"
+      ]
+    },
+    {
+      "id": 117,
+      "category": "Growth",
+      "text": "How do they feel about public speaking?",
+      "options": [
+        "Natural pro",
+        "Terrified",
+        "Doable with prep",
+        "Avoid at all costs",
+        "Excited",
+        "Nervous but good",
+        "Short & sweet",
+        "Confident"
+      ]
+    },
+    {
+      "id": 118,
+      "category": "Growth",
+      "text": "What is their definition of success?",
+      "options": [
+        "Peace of mind",
+        "Social status",
+        "Family help",
+        "Constant growth",
+        "Travel",
+        "Creative output",
+        "Wealth",
+        "Happiness"
+      ]
+    },
+    {
+      "id": 119,
+      "category": "Growth",
+      "text": "Which skill would they download 'Matrix-style'?",
+      "options": [
+        "Coding",
+        "Multi-lingual",
+        "Musical",
+        "Cooking",
+        "Martial arts",
+        "Investing",
+        "Writing",
+        "Public speaking"
+      ]
+    },
+    {
+      "id": 120,
+      "category": "Growth",
+      "text": "What is their biggest productivity hurdle?",
+      "options": [
+        "Procrastination",
+        "Perfectionism",
+        "Distractions",
+        "Overthinking",
+        "Lack of energy",
+        "Multitasking",
+        "Burnout",
+        "Disorganization"
+      ]
+    },
+    {
+      "id": 121,
+      "category": "Values",
+      "text": "What is their primary Love Language?",
+      "options": [
+        "Acts of Service",
+        "Words of Affirmation",
+        "Quality Time",
+        "Gifts",
+        "Physical Touch",
+        "Support",
+        "Loyalty",
+        "Space"
+      ]
+    },
+    {
+      "id": 122,
+      "category": "Values",
+      "text": "How do they view 'The Future'?",
+      "options": [
+        "Optimistic",
+        "Realistic",
+        "Planned",
+        "Anxious",
+        "Spontaneous",
+        "Excited",
+        "Cautious",
+        "Idealistic"
+      ]
+    },
+    {
+      "id": 123,
+      "category": "Values",
+      "text": "What quality do they admire most in others?",
+      "options": [
+        "Honesty",
+        "Resilience",
+        "Humor",
+        "Intelligence",
+        "Kindness",
+        "Ambition",
+        "Loyalty",
+        "Authenticity"
+      ]
+    },
+    {
+      "id": 124,
+      "category": "Values",
+      "text": "What is their stance on 'Second Chances'?",
+      "options": [
+        "Always give",
+        "Case-by-case",
+        "Rarely",
+        "One chance only",
+        "For family only",
+        "If earned",
+        "Never",
+        "Soft-hearted"
+      ]
+    },
+    {
+      "id": 125,
+      "category": "Values",
+      "text": "How do they handle conflict?",
+      "options": [
+        "Address immediately",
+        "Give space",
+        "Avoid",
+        "Logical debate",
+        "Compromise",
+        "Vent",
+        "Mediation",
+        "Silence"
+      ]
+    },
+    {
+      "id": 126,
+      "category": "Values",
+      "text": "What do they value more in life?",
+      "options": [
+        "Experiences",
+        "Stability",
+        "Knowledge",
+        "Relationships",
+        "Career",
+        "Adventure",
+        "Peace",
+        "Purpose"
+      ]
+    },
+    {
+      "id": 127,
+      "category": "Values",
+      "text": "What is their 'Pet Peeve' level?",
+      "options": [
+        "Chill",
+        "Easily annoyed",
+        "Selective",
+        "Clean freak",
+        "Noise sensitive",
+        "Time sensitive",
+        "Highly observant",
+        "Relaxed"
+      ]
+    },
+    {
+      "id": 128,
+      "category": "Values",
+      "text": "How do they show stress?",
+      "options": [
+        "Quiet",
+        "Irritable",
+        "Overwork",
+        "Procrastinate",
+        "Fidgety",
+        "Emotional",
+        "Logical",
+        "Sleepy"
+      ]
+    },
+    {
+      "id": 129,
+      "category": "Values",
+      "text": "What makes them feel most 'alive'?",
+      "options": [
+        "Adrenaline",
+        "Deep connection",
+        "Solving problems",
+        "Creating",
+        "Nature",
+        "Travel",
+        "Competition",
+        "Learning"
+      ]
+    },
+    {
+      "id": 130,
+      "category": "Values",
+      "text": "What is their 'Spirit Animal' vibe?",
+      "options": [
+        "Golden Retriever",
+        "Independent Cat",
+        "Busy Bee",
+        "Wise Owl",
+        "Lone Wolf",
+        "Playful Dolphin",
+        "Steady Bear",
+        "Free Bird"
+      ]
+    }
+  ]
+}

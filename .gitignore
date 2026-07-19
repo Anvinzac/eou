@@ -27,3 +27,4 @@ supabase/.temp
 
 # Supabase CLI scratch
 supabase/.temp
+server/dist
