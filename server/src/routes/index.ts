@@ -11,6 +11,7 @@ import { QuestionPackController } from '../controllers/QuestionPackController.js
 import { AdminController } from '../controllers/AdminController.js';
 import { DistractorController } from '../controllers/DistractorController.js';
 import { CatalogController } from '../controllers/CatalogController.js';
+import { TelemetryController } from '../controllers/TelemetryController.js';
 
 export const apiRouter = Router();
 
@@ -69,3 +70,20 @@ apiRouter.patch(
   asyncHandler(AdminController.toggleFlag),
 );
 apiRouter.get('/admin/profiles', requireAuth, requireAdmin, asyncHandler(AdminController.profiles));
+
+// Admin telemetry (Unified Telemetry Contract)
+apiRouter.get('/admin/telemetry/events', requireAuth, requireAdmin, asyncHandler(TelemetryController.events));
+apiRouter.get('/admin/telemetry/rollups/daily', requireAuth, requireAdmin, asyncHandler(TelemetryController.rollupsDaily));
+apiRouter.get('/admin/telemetry/health', requireAuth, requireAdmin, asyncHandler(TelemetryController.health));
+apiRouter.get('/admin/telemetry/health/history', requireAuth, requireAdmin, asyncHandler(TelemetryController.healthHistory));
+apiRouter.get('/admin/telemetry/stream', requireAuth, requireAdmin, asyncHandler(TelemetryController.stream));
+apiRouter.post('/admin/telemetry/client-error', optionalAuth, asyncHandler(TelemetryController.clientError));
+apiRouter.post('/admin/telemetry/backfill', requireAuth, requireAdmin, asyncHandler(TelemetryController.backfill));
+
+// Admin usage drill-downs (eou-specific)
+apiRouter.get('/admin/usage/summary', requireAuth, requireAdmin, asyncHandler(TelemetryController.summary));
+apiRouter.get('/admin/usage/funnel', requireAuth, requireAdmin, asyncHandler(TelemetryController.funnel));
+apiRouter.get('/admin/usage/versus', requireAuth, requireAdmin, asyncHandler(TelemetryController.versus));
+apiRouter.get('/admin/usage/couple', requireAuth, requireAdmin, asyncHandler(TelemetryController.couple));
+apiRouter.get('/admin/usage/invitations', requireAuth, requireAdmin, asyncHandler(TelemetryController.invitations));
+apiRouter.get('/admin/usage/profiles', requireAuth, requireAdmin, asyncHandler(TelemetryController.profilesPaged));

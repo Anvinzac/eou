@@ -17,7 +17,7 @@ type CoupleSessionRow = any;
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState<QuizRow[]>([]);
   const [selectedQuiz, setSelectedQuiz] = useState<QuizRow | null>(null);
@@ -155,7 +155,9 @@ export default function Dashboard() {
           </Button>
           <h1 className="text-lg font-bold font-display">{t('dashboard.title', 'My Quizzes')}</h1>
           <div className="flex gap-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}><Settings className="h-4 w-4" /></Button>
+            {isAdmin && (
+              <Button variant="ghost" size="icon" onClick={() => navigate('/admin')}><Settings className="h-4 w-4" /></Button>
+            )}
             <Button variant="ghost" size="sm" onClick={signOut}><LogOut className="h-4 w-4" /></Button>
           </div>
         </div>

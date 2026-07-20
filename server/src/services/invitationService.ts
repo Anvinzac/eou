@@ -3,6 +3,7 @@ import { InvitationModel } from '../models/InvitationModel.js';
 import { QuizModel } from '../models/QuizModel.js';
 import { badRequest, notFound } from '../lib/errors.js';
 import { generateCloudName, generateInviteCode } from './nameGenerator.js';
+import { TelemetryService } from './telemetryService.js';
 
 export const createInvitesSchema = z.object({
   labels: z.array(z.string()).min(1).max(20),
@@ -16,7 +17,17 @@ export const InvitationService = {
       code: generateInviteCode(),
       label: label.trim() || generateCloudName(),
     }));
-    return InvitationModel.createMany(rows);
+    const invitations = await InvitationModel.createMany(rows);
+    for (const inv of invitations) {
+      TelemetryService.emitSafe({
+        event_type: 'link.created',
+        actor_user_id: userId,
+        entity_type: 'invitation',
+        entity_id: inv.id,
+        metadata: { quiz_id: quizId, code: inv.code, label: inv.label },
+      });
+    }
+    return invitations;
   },
 
   async list(userId: string, quizId: string) {

@@ -4,6 +4,7 @@ import type { AuthedRequest } from '../middleware/auth.js';
 import { signInWithPassword, signUpWithPassword } from '../lib/supabase.js';
 import { AdminModel } from '../models/AdminModel.js';
 import { QuizService } from '../services/quizService.js';
+import { TelemetryService } from '../services/telemetryService.js';
 import { badRequest, unauthorized } from '../lib/errors.js';
 
 const credsSchema = z.object({
@@ -17,6 +18,15 @@ export const AuthController = {
     const body = credsSchema.parse(req.body);
     const { data, error } = await signUpWithPassword(body.email, body.password, body.displayName);
     if (error) throw badRequest(error.message);
+    if (data.user) {
+      TelemetryService.emitSafe({
+        event_type: 'user.registered',
+        actor_user_id: data.user.id,
+        entity_type: 'profile',
+        entity_id: data.user.id,
+        metadata: { email: body.email, display_name: body.displayName },
+      });
+    }
     res.status(201).json({
       user: data.user,
       session: data.session,

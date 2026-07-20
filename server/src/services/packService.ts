@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { QuestionPackModel } from '../models/QuestionPackModel.js';
 import { badRequest } from '../lib/errors.js';
+import { TelemetryService } from './telemetryService.js';
 
 export const packBodySchema = z.object({
   title: z.string().min(1),
@@ -30,7 +31,7 @@ export const PackService = {
   async create(userId: string, body: z.infer<typeof packBodySchema>) {
     const validQuestions = body.questions.filter((q) => q.text.trim());
     if (validQuestions.length < 1) throw badRequest('Add at least 1 question');
-    return QuestionPackModel.create({
+    const pack = await QuestionPackModel.create({
       user_id: userId,
       title: body.title.trim(),
       description: (body.description || '').trim(),
@@ -38,20 +39,43 @@ export const PackService = {
       questions: validQuestions,
       is_system: false,
     });
+    TelemetryService.emitSafe({
+      event_type: 'content.created',
+      actor_user_id: userId,
+      entity_type: 'question_pack',
+      entity_id: pack.id,
+      metadata: { title: pack.title },
+    });
+    return pack;
   },
 
   async update(userId: string, id: string, body: z.infer<typeof packBodySchema>) {
     const validQuestions = body.questions.filter((q) => q.text.trim());
     if (validQuestions.length < 1) throw badRequest('Add at least 1 question');
-    return QuestionPackModel.update(id, userId, {
+    const pack = await QuestionPackModel.update(id, userId, {
       title: body.title.trim(),
       description: (body.description || '').trim(),
       emoji: body.emoji || '📦',
       questions: validQuestions,
     });
+    TelemetryService.emitSafe({
+      event_type: 'content.updated',
+      actor_user_id: userId,
+      entity_type: 'question_pack',
+      entity_id: id,
+      metadata: { title: body.title.trim() },
+    });
+    return pack;
   },
 
-  remove(userId: string, id: string) {
-    return QuestionPackModel.remove(id, userId);
+  async remove(userId: string, id: string) {
+    await QuestionPackModel.remove(id, userId);
+    TelemetryService.emitSafe({
+      event_type: 'content.deleted',
+      actor_user_id: userId,
+      entity_type: 'question_pack',
+      entity_id: id,
+      metadata: {},
+    });
   },
 };

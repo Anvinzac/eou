@@ -12,9 +12,16 @@ import Dashboard from "./views/Dashboard";
 import TakeQuiz from "./views/TakeQuiz";
 import QuizResult from "./views/QuizResult";
 import CoupleResult from "./views/CoupleResult";
-import AdminPanel from "./views/AdminPanel";
 import CreateVersus from "./views/CreateVersus";
 import NotFound from "./views/NotFound";
+import AdminLayout from "./views/admin/AdminLayout";
+import AdminOverview from "./views/admin/AdminOverview";
+import AdminUsers from "./views/admin/AdminUsers";
+import AdminContent from "./views/admin/AdminContent";
+import AdminLinks from "./views/admin/AdminLinks";
+import AdminErrors from "./views/admin/AdminErrors";
+import AdminStatus from "./views/admin/AdminStatus";
+import AdminSettings from "./views/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +42,15 @@ const App = () => (
             <Route path="/quiz/:quizId" element={<TakeQuiz />} />
             <Route path="/result/:attemptId" element={<QuizResult />} />
             <Route path="/couple/:sessionCode" element={<CoupleResult />} />
-            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminOverview />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="content" element={<AdminContent />} />
+              <Route path="links" element={<AdminLinks />} />
+              <Route path="errors" element={<AdminErrors />} />
+              <Route path="status" element={<AdminStatus />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

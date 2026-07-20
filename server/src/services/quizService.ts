@@ -5,6 +5,7 @@ import { InvitationModel } from '../models/InvitationModel.js';
 import { badRequest, notFound } from '../lib/errors.js';
 import { containsProfanity } from './profanity.js';
 import { generateInviteCode } from './nameGenerator.js';
+import { TelemetryService } from './telemetryService.js';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -78,6 +79,13 @@ export const QuizService = {
       max_questions: MAX_QUESTIONS,
     });
     const questions = await QuizModel.insertQuestions(toQuestionRows(quiz.id, body.questions));
+    TelemetryService.emitSafe({
+      event_type: 'content.created',
+      actor_user_id: userId,
+      entity_type: 'quiz',
+      entity_id: quiz.id,
+      metadata: { title: quiz.title, question_count: questions.length },
+    });
     return { quiz, questions };
   },
 
@@ -91,12 +99,25 @@ export const QuizService = {
       draft_token: draftToken,
     });
     const questions = await QuizModel.insertQuestions(toQuestionRows(quiz.id, body.questions));
+    TelemetryService.emitSafe({
+      event_type: 'content.created',
+      entity_type: 'quiz',
+      entity_id: quiz.id,
+      metadata: { title: quiz.title, is_draft: true, question_count: questions.length },
+    });
     return { quiz, questions, draftToken };
   },
 
   async claimDraft(userId: string, quizId: string, draftToken: string) {
     const quiz = await QuizModel.claimDraft(quizId, draftToken, userId);
     if (!quiz) throw notFound('Draft not found or already claimed');
+    TelemetryService.emitSafe({
+      event_type: 'content.updated',
+      actor_user_id: userId,
+      entity_type: 'quiz',
+      entity_id: quiz.id,
+      metadata: { action: 'draft_claimed' },
+    });
     return quiz;
   },
 
@@ -131,7 +152,15 @@ export const QuizService = {
     }
     if (typeof patch.is_open === 'boolean') updates.is_open = patch.is_open;
     if (Object.keys(updates).length === 0) throw badRequest('No changes provided');
-    return QuizModel.update(quizId, updates);
+    const updated = await QuizModel.update(quizId, updates);
+    TelemetryService.emitSafe({
+      event_type: 'content.updated',
+      actor_user_id: userId,
+      entity_type: 'quiz',
+      entity_id: quizId,
+      metadata: updates,
+    });
+    return updated;
   },
 
   async createVersus(userId: string, category: string, difficulty: string) {
@@ -171,6 +200,21 @@ export const QuizService = {
         label: 'Open Challenge',
       },
     ]);
+
+    TelemetryService.emitSafe({
+      event_type: 'content.created',
+      actor_user_id: userId,
+      entity_type: 'versus_quiz',
+      entity_id: quiz.id,
+      metadata: { category, difficulty, title },
+    });
+    TelemetryService.emitSafe({
+      event_type: 'link.created',
+      actor_user_id: userId,
+      entity_type: 'invitation',
+      entity_id: invitation.id,
+      metadata: { quiz_id: quiz.id, code: invitation.code, label: invitation.label },
+    });
 
     return { quiz, questions, invitation };
   },

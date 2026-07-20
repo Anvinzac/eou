@@ -5,6 +5,7 @@ import { QuizModel } from '../models/QuizModel.js';
 import { CoupleSessionModel } from '../models/CoupleSessionModel.js';
 import { buildCoupleMatchSummary } from './coupleMatching.js';
 import { badRequest, notFound } from '../lib/errors.js';
+import { TelemetryService } from './telemetryService.js';
 
 export const submitAttemptSchema = z.object({
   answers: z.record(z.string(), z.string().nullable()),
@@ -103,6 +104,41 @@ export const AttemptService = {
       );
     }
 
+    TelemetryService.emitSafe({
+      event_type: 'link.interacted',
+      entity_type: 'quiz_attempt',
+      entity_id: attempt.id,
+      metadata: {
+        quiz_id: quizId,
+        invitation_id: invitationId,
+        interaction_kind: invitationId ? 'invite_attempt' : quiz.is_open ? 'open_quiz_attempt' : 'attempt',
+        score: attempt.score,
+        total_questions: attempt.total_questions,
+        versus,
+        timed_out: !!body.versusFlags?.timedOut,
+        cheated: !!body.versusFlags?.cheated,
+      },
+    });
+
+    if (body.versusFlags?.cheated) {
+      TelemetryService.emitSafe({
+        event_type: 'error.reported',
+        entity_type: 'quiz_attempt',
+        entity_id: attempt.id,
+        severity: 'warn',
+        metadata: { kind: 'versus_cheated', quiz_id: quizId },
+      });
+    }
+    if (body.versusFlags?.timedOut) {
+      TelemetryService.emitSafe({
+        event_type: 'error.reported',
+        entity_type: 'quiz_attempt',
+        entity_id: attempt.id,
+        severity: 'warn',
+        metadata: { kind: 'versus_timed_out', quiz_id: quizId },
+      });
+    }
+
     return {
       attempt,
       responses,
@@ -140,7 +176,7 @@ export const AttemptService = {
     const secondResponses = storedResponses.filter((r) => r.attempt_id === secondAttemptId);
     const summary = buildCoupleMatchSummary(questions, firstResponses, secondResponses);
 
-    return CoupleSessionModel.update(updated.id, {
+    const finalized = await CoupleSessionModel.update(updated.id, {
       first_attempt_id: firstAttemptId,
       second_attempt_id: secondAttemptId,
       status: 'completed',
@@ -150,6 +186,20 @@ export const AttemptService = {
       match_details: summary.details,
       completed_at: new Date().toISOString(),
     });
+
+    TelemetryService.emitSafe({
+      event_type: 'content.created',
+      entity_type: 'couple_session',
+      entity_id: finalized.id,
+      metadata: {
+        quiz_id: quizId,
+        match_percentage: summary.matchPercentage,
+        match_count: summary.matchCount,
+        status: 'completed',
+      },
+    });
+
+    return finalized;
   },
 
   async getAttempt(attemptId: string) {

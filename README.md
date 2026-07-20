@@ -25,6 +25,9 @@ npm run dev   # API :3001 + Vite :8080 (proxies /api)
 
 Useful scripts: `npm run server:dev`, `npm run client:dev`, `npm test`, `npm run supabase:start`.
 
+Admin live dashboard (admin role required): `/admin` — Overview, Users, Content, Links, Errors, Status, Settings.  
+Apply migration `supabase/migrations/20260720100000_telemetry_tables.sql`, then run backfill from Settings or `npm run backfill -w server`. See [`MAPPING_NOTES.md`](MAPPING_NOTES.md).
+
 **Edit a file directly in GitHub**
 
 - Navigate to the desired file(s).

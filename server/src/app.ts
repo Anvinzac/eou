@@ -3,6 +3,7 @@ import cors from 'cors';
 import { env } from './lib/env.js';
 import { apiRouter } from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { requestLatency } from './middleware/requestLatency.js';
 
 export function createApp() {
   const app = express();
@@ -14,6 +15,7 @@ export function createApp() {
     }),
   );
   app.use(express.json({ limit: '1mb' }));
+  app.use(requestLatency);
 
   app.get('/health', (_req, res) => {
     res.json({ ok: true });

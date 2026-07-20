@@ -2,6 +2,7 @@ import { CoupleSessionModel } from '../models/CoupleSessionModel.js';
 import { QuizModel } from '../models/QuizModel.js';
 import { badRequest, conflict, notFound } from '../lib/errors.js';
 import { generateInviteCode } from './nameGenerator.js';
+import { TelemetryService } from './telemetryService.js';
 
 export const CoupleService = {
   async create(quizId: string, firstName: string) {
@@ -12,11 +13,18 @@ export const CoupleService = {
 
     for (let attempt = 0; attempt < 5; attempt += 1) {
       try {
-        return await CoupleSessionModel.create({
+        const session = await CoupleSessionModel.create({
           quiz_id: quizId,
           session_code: generateInviteCode(),
           first_name: name,
         });
+        TelemetryService.emitSafe({
+          event_type: 'content.created',
+          entity_type: 'couple_session',
+          entity_id: session.id,
+          metadata: { quiz_id: quizId, status: 'waiting', action: 'created' },
+        });
+        return session;
       } catch {
         /* retry on unique code collision */
       }
@@ -39,7 +47,14 @@ export const CoupleService = {
       throw conflict('This couple session already has two participants');
     }
 
-    return CoupleSessionModel.update(session.id, { second_name: trimmed });
+    const updated = await CoupleSessionModel.update(session.id, { second_name: trimmed });
+    TelemetryService.emitSafe({
+      event_type: 'content.updated',
+      entity_type: 'couple_session',
+      entity_id: updated.id,
+      metadata: { quiz_id: quizId, action: 'joined' },
+    });
+    return updated;
   },
 
   async getByCode(code: string) {

@@ -8,3 +8,5 @@ export { packsApi } from './packs';
 export { catalogApi } from './catalog';
 export { distractorsApi } from './distractors';
 export { adminApi } from './admin';
+export { adminTelemetryApi, openTelemetryStream } from './adminTelemetry';
+export type { TelemetryEvent, DailyRollup, HealthSnapshot } from './adminTelemetry';
