@@ -16,6 +16,7 @@ export interface SelectedQuestion {
   isCustom: boolean;
   customCorrect?: string;
   customDistractors?: string[];
+  emoji?: string;
 }
 
 export interface QuizDraft {

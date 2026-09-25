@@ -15,6 +15,7 @@ dist-ssr
 supabase/.temp
 
 # Editor directories and files
+.qoder/
 .vscode/*
 !.vscode/extensions.json
 .idea

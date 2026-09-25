@@ -7,6 +7,7 @@ export type QuizInsert = {
   max_questions: number;
   draft_token?: string | null;
   is_open?: boolean;
+  appearance?: { theme: string; style: string };
 };
 
 export type QuestionInsert = {
@@ -18,6 +19,7 @@ export type QuestionInsert = {
   correct_answers: string[];
   distractor_answers: string[];
   is_custom: boolean;
+  emoji?: string;
 };
 
 export const QuizModel = {

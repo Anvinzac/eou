@@ -1,28 +1,32 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from './ui/button';
 import { Globe } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
-export const LanguageSwitcher = () => {
+export const LanguageSwitcher = ({ className = '' }: { className?: string }) => {
   const { i18n } = useTranslation();
-  
+
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === 'vi' ? 'en' : 'vi');
   };
 
-  // HIDDEN FOR NOW AS PER USER REQUEST
   return (
-    <Button 
-      variant="outline" 
-      size="icon" 
+    <Button
+      variant="outline"
+      size="sm"
       onClick={toggleLanguage}
-      className="hidden fixed bottom-4 right-4 z-50 rounded-full shadow-lg bg-background/80 backdrop-blur-md border-primary/20"
-      title="Toggle Language"
+      className={`language-switcher min-h-11 shrink-0 gap-2 rounded-full border-primary/20 bg-background/90 px-3 text-xs shadow-sm backdrop-blur-md ${className}`}
+      aria-label={i18n.language === 'vi' ? 'Switch to English' : 'Chuyển sang tiếng Việt'}
+      lang={i18n.language === 'vi' ? 'en' : 'vi'}
     >
       <Globe className="h-4 w-4" />
-      <span className="sr-only">Toggle Language</span>
-      <span className="absolute -top-1 -right-1 text-[10px] font-bold bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center">
-        {i18n.language.toUpperCase()}
-      </span>
+      <span>{i18n.language === 'vi' ? 'English' : 'Tiếng Việt'}</span>
     </Button>
   );
 };
+
+export function AppLanguageSwitcher() {
+  const { pathname } = useLocation();
+  if (pathname === '/' || pathname === '/create') return null;
+  return <div className="app-language-bar"><LanguageSwitcher /></div>;
+}

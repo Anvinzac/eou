@@ -1,11 +1,14 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef } from 'react';
+import { StudioActions } from './QuizStudio';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Pencil, Sparkles, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { packsApi } from '@/api';
-import type { SelectedQuestion } from '@/types/quiz';
+import type { QuestionData, SelectedQuestion } from '@/types/quiz';
 
 interface PackQuestion {
+  id?: number;
   text: string;
   category: string;
   options: string[];
@@ -23,10 +26,12 @@ interface QuestionPack {
 interface PacksStepProps {
   onSelectPack: (questions: SelectedQuestion[]) => void;
   onSkip: () => void;
+  catalog?: QuestionData[];
 }
 
-export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
-  const [packs, setPacks] = useState<QuestionPack[]>([]);
+export default function PacksStep({ onSelectPack, onSkip, catalog = [] }: PacksStepProps) {
+  const { t } = useTranslation();
+  const [savedPacks, setPacks] = useState<QuestionPack[]>([]);
   const [selectedPackId, setSelectedPackId] = useState<string | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -46,12 +51,18 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
     fetchPacks();
   }, []);
 
+  const curatedPacks: QuestionPack[] = catalog.length ? [
+    { id: 'curated-mixed', title: t('packs.pack_mixed'), description: t('packs.pack_mixed_desc'), emoji: '🌈', questions: catalog.filter((_, index) => index % Math.max(1, Math.floor(catalog.length / 10)) === 0).slice(0, 10), is_system: true },
+    { id: 'curated-fun', title: t('packs.pack_fun'), description: t('packs.pack_fun_desc'), emoji: '🪩', questions: catalog.filter(q => ['Leisure', 'Entertainment', 'Food', 'Travel'].includes(q.category)).filter((_, index) => index % 3 === 0).slice(0, 10), is_system: true },
+    { id: 'curated-deep', title: t('packs.pack_deep'), description: t('packs.pack_deep_desc'), emoji: '💌', questions: catalog.filter(q => ['Emotion', 'Growth', 'Values'].includes(q.category)).filter((_, index) => index % 2 === 0).slice(0, 10), is_system: true },
+  ].filter(pack => pack.questions.length >= 5) : [];
+  const packs = [...curatedPacks, ...savedPacks];
   const selectedPack = packs.find(p => p.id === selectedPackId);
 
   const handleUsePack = () => {
     if (!selectedPack) return;
     const questions: SelectedQuestion[] = selectedPack.questions.map((q, i) => ({
-      questionId: 80000 + i,
+      questionId: q.id ?? 80000 + i,
       category: q.category,
       text: q.text,
       options: q.options,
@@ -90,16 +101,17 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
           transition={{ delay: 0.05 }}
           className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary"
         >
-          <Sparkles className="h-3 w-3" /> Step 1 of 5 · Quick start
+          <Sparkles className="h-3 w-3" /> {t('studio.packs_step')}
         </motion.div>
         <h2 className="mb-2 text-2xl md:text-3xl font-bold font-display">
-          Start with a <span className="text-gradient-warm">curated pack</span>
+          {t('studio.packs_title')} <span className="text-gradient-warm">{t('studio.packs_highlight')}</span>
         </h2>
         <p className="text-sm text-muted-foreground max-w-xl">
-          Pre-built bundles of thoughtful questions. Pick one to fast-forward — or design yours from scratch.
+          {t('studio.packs_hint')}
         </p>
       </div>
 
+      {packs.length === 0 && <p className="mb-6 text-sm text-muted-foreground">{t('studio.no_packs')}</p>}
       {/* Carousel */}
       <div className="relative -mx-4 mb-8">
         {/* Nav buttons */}
@@ -108,14 +120,14 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
             <button
               onClick={() => go(-1)}
               className="absolute left-1 top-1/2 z-10 hidden -translate-y-1/2 rounded-full glass p-2 shadow-soft hover-halo md:flex"
-              aria-label="Previous pack"
+              aria-label={t('studio.pack_previous')}
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               onClick={() => go(1)}
               className="absolute right-1 top-1/2 z-10 hidden -translate-y-1/2 rounded-full glass p-2 shadow-soft hover-halo md:flex"
-              aria-label="Next pack"
+              aria-label={t('studio.pack_next')}
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -144,7 +156,7 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
                   scale: isActive ? 1 : 0.94,
                 }}
                 transition={{ delay: i * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className={`group relative flex-shrink-0 snap-center w-[300px] text-left ${
+                className={`group relative flex-shrink-0 snap-center w-[min(300px,calc(100vw-64px))] text-left ${
                   isActive ? 'z-10' : ''
                 }`}
               >
@@ -215,14 +227,14 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
                   {/* Footer badge */}
                   <div className="relative mt-4 flex items-center justify-between">
                     <span className="rounded-full bg-muted/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      {pack.questions.length} questions
+                      {t('common.questions', { count: pack.questions.length })}
                     </span>
                     <span
                       className={`text-xs font-semibold transition-colors ${
                         isSelected ? 'text-primary' : 'text-muted-foreground/60 group-hover:text-primary'
                       }`}
                     >
-                      {isSelected ? 'Selected' : 'Tap to pick'}
+                      {isSelected ? t('studio.pack_selected') : t('studio.pack_pick')}
                     </span>
                   </div>
                 </div>
@@ -244,7 +256,7 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
                 className={`h-1.5 rounded-full transition-all ${
                   i === activeIdx ? 'w-6 bg-primary' : 'w-1.5 bg-muted'
                 }`}
-                aria-label={`Go to pack ${i + 1}`}
+                aria-label={t('studio.pack_go', { number: i + 1 })}
               />
             ))}
           </div>
@@ -252,18 +264,13 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
       </div>
 
       {/* Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25 }}
-        className="flex flex-col-reverse gap-3 sm:flex-row"
-      >
+      <StudioActions className="flex flex-col-reverse gap-2 sm:flex-row">
         <Button
           variant="outline"
           onClick={onSkip}
           className="glass hover-halo rounded-full sm:flex-shrink-0"
         >
-          <Pencil className="mr-2 h-4 w-4" /> Build from scratch
+          <Pencil className="mr-2 h-4 w-4" /> {t('studio.build_scratch')}
         </Button>
         <motion.div
           whileTap={{ scale: 0.97 }}
@@ -279,14 +286,14 @@ export default function PacksStep({ onSelectPack, onSkip }: PacksStepProps) {
           >
             {selectedPack ? (
               <>
-                Use "{selectedPack.title}" <ArrowRight className="ml-2 h-4 w-4" />
+                <span className="truncate">{t('studio.use_pack', { title: selectedPack.title })}</span><ArrowRight className="ml-2 h-4 w-4 shrink-0" />
               </>
             ) : (
-              <>Pick a pack to continue</>
+              <>{t('studio.choose_pack')}</>
             )}
           </Button>
         </motion.div>
-      </motion.div>
+      </StudioActions>
 
       <style>{`
         .mask-fade-bottom {

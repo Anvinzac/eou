@@ -312,6 +312,7 @@ export type Database = {
           created_at: string
           distractor_answers: string[]
           distractor_answers_vi: string[] | null
+          emoji: string
           id: string
           is_custom: boolean
           order_number: number
@@ -327,6 +328,7 @@ export type Database = {
           created_at?: string
           distractor_answers: string[]
           distractor_answers_vi?: string[] | null
+          emoji?: string
           id?: string
           is_custom?: boolean
           order_number: number
@@ -342,6 +344,7 @@ export type Database = {
           created_at?: string
           distractor_answers?: string[]
           distractor_answers_vi?: string[] | null
+          emoji?: string
           id?: string
           is_custom?: boolean
           order_number?: number
@@ -404,6 +407,7 @@ export type Database = {
       }
       quizzes: {
         Row: {
+          appearance: Json | null
           created_at: string
           draft_token: string | null
           id: string
@@ -417,6 +421,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          appearance?: Json | null
           created_at?: string
           draft_token?: string | null
           id?: string
@@ -430,6 +435,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          appearance?: Json | null
           created_at?: string
           draft_token?: string | null
           id?: string

@@ -11,6 +11,7 @@ export const getMockQuizzes = (userId: string): Tables<'quizzes'>[] => [
     max_questions: 10,
     quiz_type: 'preference',
     draft_token: null,
+    appearance: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
@@ -24,6 +25,7 @@ export const getMockQuizzes = (userId: string): Tables<'quizzes'>[] => [
     max_questions: 15,
     quiz_type: 'preference',
     draft_token: null,
+    appearance: null,
     created_at: new Date(Date.now() - 86400000).toISOString(),
     updated_at: new Date(Date.now() - 86400000).toISOString(),
   }

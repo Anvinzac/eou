@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -12,6 +13,7 @@ type QuizRow = any;
 type MatchDetail = any;
 
 export default function CoupleResult() {
+  const { t } = useTranslation();
   const { sessionCode } = useParams();
   const navigate = useNavigate();
   const [session, setSession] = useState<CoupleSessionRow | null>(null);
@@ -74,7 +76,7 @@ export default function CoupleResult() {
     }
 
     navigator.clipboard.writeText(`${window.location.origin}/couple/${session.session_code}`);
-    toast.success('Comparison link copied');
+    toast.success(t('couple_result.copied'));
   }
 
   if (loading) {
@@ -92,9 +94,9 @@ export default function CoupleResult() {
   if (notFound || !session) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
-        <h1 className="mb-3 text-3xl font-bold font-display">Session not found</h1>
-        <p className="mb-6 text-muted-foreground">This couple comparison link is invalid or no longer available.</p>
-        <Button onClick={() => navigate('/')}>Go Home</Button>
+        <h1 className="mb-3 text-3xl font-bold font-display">{t('couple_result.missing')}</h1>
+        <p className="mb-6 text-muted-foreground">{t('couple_result.invalid')}</p>
+        <Button onClick={() => navigate('/')}>{t('journey.go_home')}</Button>
       </div>
     );
   }
@@ -105,45 +107,45 @@ export default function CoupleResult() {
   const totalCompared = session.total_compared ?? details.length;
   const message =
     matchPercentage >= 85
-      ? 'You two are seriously in sync.'
+      ? t('couple_result.sync')
       : matchPercentage >= 65
-        ? 'A strong match with a few fun surprises.'
+        ? t('couple_result.strong')
         : matchPercentage >= 40
-          ? 'Some overlap, some plot twists.'
-          : 'Lots to talk about after this round.';
+          ? t('couple_result.some')
+          : t('couple_result.talk');
 
   return (
-    <div className="min-h-screen bg-background px-4 py-8">
+    <div className="consumer-page min-h-screen bg-background px-4 py-6 sm:py-8">
       <div className="mx-auto max-w-4xl space-y-6">
         <section className="rounded-3xl border border-border bg-card/90 p-6 shadow-soft">
           <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
             <div>
               <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
                 <HeartHandshake className="h-4 w-4" />
-                Couple comparison
+                {t('couple_result.title')}
               </div>
-              <h1 className="text-3xl font-bold font-display">{quiz?.title || 'Shared quiz result'}</h1>
+              <h1 className="text-3xl font-bold font-display">{quiz?.title || t('couple_result.shared')}</h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                {session.first_name || 'Partner 1'} and {session.second_name || 'Partner 2'}
+                {t('couple_result.names', { first: session.first_name || t('journey.first'), second: session.second_name || t('journey.second') })}
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button variant="outline" onClick={() => void loadSession()}>
-                <RefreshCw className="mr-2 h-4 w-4" /> Refresh
+                <RefreshCw className="mr-2 h-4 w-4" /> {t('create_quiz.custom.refresh')}
               </Button>
               <Button variant="outline" onClick={copyShareLink}>
-                <Copy className="mr-2 h-4 w-4" /> Copy Link
+                <Copy className="mr-2 h-4 w-4" /> {t('dashboard.copy_link')}
               </Button>
             </div>
           </div>
 
           {waiting ? (
             <div className="rounded-2xl bg-muted/60 p-5">
-              <Badge variant="secondary">Waiting for both submissions</Badge>
-              <p className="mt-3 text-lg font-semibold font-display">The shared result will appear here automatically.</p>
+              <Badge variant="secondary">{t('couple_result.waiting')}</Badge>
+              <p className="mt-3 text-lg font-semibold font-display">{t('couple_result.automatic')}</p>
               <p className="mt-2 text-sm text-muted-foreground">
-                {session.first_attempt_id ? 'One partner has finished.' : 'No one has submitted yet.'}{' '}
-                {session.second_attempt_id ? 'The second submission is already in.' : 'The page checks again every few seconds.'}
+                {session.first_attempt_id ? t('couple_result.one_done') : t('couple_result.none_done')}{' '}
+                {session.second_attempt_id ? t('couple_result.second_done') : t('couple_result.polling')}
               </p>
             </div>
           ) : (
@@ -154,23 +156,23 @@ export default function CoupleResult() {
                 </div>
                 <p className="mt-4 text-lg font-semibold">{message}</p>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  {matchCount} of {totalCompared} answers matched exactly
+                  {t('couple_result.count', { count: matchCount, total: totalCompared })}
                 </p>
               </div>
 
               <div className="rounded-3xl border border-border bg-muted/40 p-5">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl bg-background p-4">
-                    <p className="text-xs font-semibold uppercase text-muted-foreground">Partner 1</p>
-                    <p className="mt-1 text-lg font-bold font-display">{session.first_name || 'Partner 1'}</p>
+                    <p className="text-xs font-semibold uppercase text-muted-foreground">{t('journey.first')}</p>
+                    <p className="mt-1 text-lg font-bold font-display">{session.first_name || t('journey.first')}</p>
                   </div>
                   <div className="rounded-2xl bg-background p-4">
-                    <p className="text-xs font-semibold uppercase text-muted-foreground">Partner 2</p>
-                    <p className="mt-1 text-lg font-bold font-display">{session.second_name || 'Partner 2'}</p>
+                    <p className="text-xs font-semibold uppercase text-muted-foreground">{t('journey.second')}</p>
+                    <p className="mt-1 text-lg font-bold font-display">{session.second_name || t('journey.second')}</p>
                   </div>
                 </div>
                 <p className="mt-4 text-sm text-muted-foreground">
-                  Exact answer matches count toward the percentage. Every question below shows what both people picked.
+                  {t('couple_result.explanation')}
                 </p>
               </div>
             </div>
@@ -179,26 +181,26 @@ export default function CoupleResult() {
 
         {!waiting && (
           <section className="rounded-3xl border border-border bg-card/90 p-6 shadow-soft">
-            <h2 className="mb-4 text-xl font-bold font-display">Question-by-question</h2>
+            <h2 className="mb-4 text-xl font-bold font-display">{t('couple_result.detail')}</h2>
             <div className="space-y-3">
               {details.map((detail) => (
                 <div key={detail.questionId} className="rounded-2xl border border-border bg-muted/40 p-4">
                   <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                     <div>
-                      <p className="text-xs font-semibold uppercase text-muted-foreground">{detail.category}</p>
+                      <p className="text-xs font-semibold uppercase text-muted-foreground">{t(`categories.${detail.category}`, { defaultValue: detail.category })}</p>
                       <p className="text-lg font-semibold font-display">{detail.questionText}</p>
                     </div>
                     <Badge variant={detail.isMatch ? 'default' : 'secondary'}>
-                      {detail.isMatch ? 'Match' : 'Different'}
+                      {detail.isMatch ? t('couple_result.match') : t('couple_result.different')}
                     </Badge>
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
                     <div className="rounded-2xl bg-background p-4">
-                      <p className="text-xs font-semibold uppercase text-muted-foreground">{session.first_name || 'Partner 1'}</p>
+                      <p className="text-xs font-semibold uppercase text-muted-foreground">{session.first_name || t('journey.first')}</p>
                       <p className="mt-1 text-sm font-medium">{detail.firstAnswer}</p>
                     </div>
                     <div className="rounded-2xl bg-background p-4">
-                      <p className="text-xs font-semibold uppercase text-muted-foreground">{session.second_name || 'Partner 2'}</p>
+                      <p className="text-xs font-semibold uppercase text-muted-foreground">{session.second_name || t('journey.second')}</p>
                       <p className="mt-1 text-sm font-medium">{detail.secondAnswer}</p>
                     </div>
                   </div>
@@ -210,7 +212,7 @@ export default function CoupleResult() {
 
         <div className="flex justify-center">
           <Button onClick={() => navigate('/')} className="gradient-coral text-primary-foreground">
-            <Home className="mr-2 h-4 w-4" /> Home
+            <Home className="mr-2 h-4 w-4" /> {t('journey.home')}
           </Button>
         </div>
       </div>

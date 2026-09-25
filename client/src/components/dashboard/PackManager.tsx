@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,7 @@ interface PackManagerProps {
 const EMOJI_OPTIONS = ['📦', '🎯', '💡', '🔥', '⭐', '🎲', '🧩', '🎭', '💬', '🌟', '🎪', '🏆'];
 
 export default function PackManager({ userId }: PackManagerProps) {
+  const { t } = useTranslation();
   const [packs, setPacks] = useState<QuestionPack[]>([]);
   const [editingPack, setEditingPack] = useState<QuestionPack | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -102,9 +104,9 @@ export default function PackManager({ userId }: PackManagerProps) {
 
   const savePack = async () => {
     if (!editingPack) return;
-    if (!editingPack.title.trim()) { toast.error('Pack needs a title'); return; }
+    if (!editingPack.title.trim()) { toast.error(t('pack_manager.title_required')); return; }
     const validQuestions = editingPack.questions.filter(q => q.text.trim());
-    if (validQuestions.length < 1) { toast.error('Add at least 1 question'); return; }
+    if (validQuestions.length < 1) { toast.error(t('pack_manager.question_required')); return; }
 
     const payload = {
       user_id: userId,
@@ -118,13 +120,13 @@ export default function PackManager({ userId }: PackManagerProps) {
     try {
       if (isCreating) {
         await packsApi.create(payload);
-        toast.success('Pack created!');
+        toast.success(t('pack_manager.created'));
       } else {
         await packsApi.update(editingPack.id, payload);
-        toast.success('Pack updated!');
+        toast.success(t('pack_manager.updated'));
       }
     } catch (err: any) {
-      toast.error(err.message || 'Failed to save pack');
+      toast.error(t('pack_manager.save_failed'));
       return;
     }
     setEditingPack(null);
@@ -134,21 +136,21 @@ export default function PackManager({ userId }: PackManagerProps) {
   const deletePack = async (id: string) => {
     try {
       await packsApi.remove(id);
-      toast.success('Pack deleted');
+      toast.success(t('pack_manager.deleted'));
       fetchPacks();
     } catch (err: any) {
-      toast.error(err.message || 'Failed to delete pack');
+      toast.error(t('pack_manager.delete_failed'));
     }
   };
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
         <h3 className="text-lg font-bold font-display flex items-center gap-2">
-          <Package className="h-5 w-5 text-primary" /> Question Packs
+          <Package className="h-5 w-5 text-primary" /> {t('pack_manager.title')}
         </h3>
         <Button size="sm" variant="outline" onClick={startCreate}>
-          <Plus className="mr-1 h-3 w-3" /> New Pack
+          <Plus className="mr-1 h-3 w-3" /> {t('pack_manager.new')}
         </Button>
       </div>
 
@@ -177,20 +179,20 @@ export default function PackManager({ userId }: PackManagerProps) {
             <Input
               value={editingPack.title}
               onChange={e => setEditingPack({ ...editingPack, title: e.target.value })}
-              placeholder="Pack title"
+              placeholder={t('pack_manager.name')}
               className="rounded-xl text-sm font-bold"
               maxLength={50}
             />
             <Input
               value={editingPack.description}
               onChange={e => setEditingPack({ ...editingPack, description: e.target.value })}
-              placeholder="Short description"
+              placeholder={t('pack_manager.description')}
               className="rounded-xl text-sm"
               maxLength={100}
             />
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-muted-foreground">Questions</label>
+              <label className="text-xs font-semibold text-muted-foreground">{t('studio.short_phases.select')}</label>
               {editingPack.questions.map((q, idx) => (
                 <div key={idx} className="space-y-1">
                   <div className="flex gap-2 items-center">
@@ -198,12 +200,12 @@ export default function PackManager({ userId }: PackManagerProps) {
                     <Input
                       value={q.text}
                       onChange={e => updateQuestion(idx, e.target.value)}
-                      placeholder={`Question ${idx + 1}`}
+                      placeholder={t('journey.question', { number: idx + 1 })}
                       className="rounded-lg text-xs flex-1"
                       maxLength={200}
                     />
                     {editingPack.questions.length > 1 && (
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive shrink-0" onClick={() => removeQuestion(idx)}>
+                      <Button variant="ghost" size="icon" className="h-11 w-11 text-destructive shrink-0" aria-label={t('common.remove')} onClick={() => removeQuestion(idx)}>
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     )}
@@ -212,7 +214,7 @@ export default function PackManager({ userId }: PackManagerProps) {
                     <Input
                       value={q.options.join(', ')}
                       onChange={e => updateOptions(idx, e.target.value)}
-                      placeholder="Options (comma-separated, e.g. Red, Blue, Green)"
+                      placeholder={t('pack_manager.options')}
                       className="rounded-lg text-[11px] h-8"
                       maxLength={300}
                     />
@@ -221,17 +223,17 @@ export default function PackManager({ userId }: PackManagerProps) {
               ))}
               {editingPack.questions.length < 10 && (
                 <Button variant="ghost" size="sm" onClick={addQuestion} className="text-xs">
-                  <Plus className="mr-1 h-3 w-3" /> Add Question
+                  <Plus className="mr-1 h-3 w-3" /> {t('pack_manager.add')}
                 </Button>
               )}
             </div>
 
             <div className="flex gap-2 justify-end">
               <Button variant="ghost" size="sm" onClick={() => setEditingPack(null)}>
-                <X className="mr-1 h-3 w-3" /> Cancel
+                <X className="mr-1 h-3 w-3" /> {t('common.cancel')}
               </Button>
               <Button size="sm" onClick={savePack} className="gradient-coral text-primary-foreground">
-                <Save className="mr-1 h-3 w-3" /> {isCreating ? 'Create' : 'Save'}
+                <Save className="mr-1 h-3 w-3" /> {isCreating ? t('journey.create') : t('journey.save')}
               </Button>
             </div>
           </motion.div>
@@ -239,7 +241,7 @@ export default function PackManager({ userId }: PackManagerProps) {
       </AnimatePresence>
 
       {packs.length === 0 && !editingPack ? (
-        <p className="text-sm text-muted-foreground">No custom packs yet. Create one to quickly reuse questions!</p>
+        <p className="text-sm text-muted-foreground">{t('pack_manager.empty')}</p>
       ) : (
         <div className="space-y-2">
           {packs.map(pack => (
@@ -248,14 +250,14 @@ export default function PackManager({ userId }: PackManagerProps) {
                 <span className="text-lg">{pack.emoji}</span>
                 <div className="min-w-0">
                   <span className="font-medium text-sm block truncate">{pack.title}</span>
-                  <span className="text-xs text-muted-foreground">{pack.questions.length} questions</span>
+                  <span className="text-xs text-muted-foreground">{t('common.questions', { count: pack.questions.length })}</span>
                 </div>
               </div>
               <div className="flex gap-1 shrink-0">
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => startEdit(pack)}>
+                <Button variant="ghost" size="icon" className="h-11 w-11" aria-label={t('journey.edit')} onClick={() => startEdit(pack)}>
                   <Pencil className="h-3 w-3" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deletePack(pack.id)}>
+                <Button variant="ghost" size="icon" className="h-11 w-11 text-destructive" aria-label={t('journey.delete')} onClick={() => deletePack(pack.id)}>
                   <Trash2 className="h-3 w-3" />
                 </Button>
               </div>

@@ -3,28 +3,28 @@
   "questions": [
     {
       "id": 1,
-      "category": "Giải trí",
-      "text": "Sở thích nào bạn đời của bạn thích nhất khi rảnh rỗi?",
+      "category": "Leisure",
+      "text": "Người ấy thích làm gì nhất lúc rảnh rỗi?",
       "options": [
         "Đọc sách",
         "Chơi game",
-        "Thể thao",
+        "Chơi thể thao",
         "Nghe nhạc",
-        "Nghệ thuật",
+        "Sáng tạo nghệ thuật",
         "Nấu ăn",
-        "Làm đồ thủ công",
+        "Tự làm đồ dùng",
         "Sưu tầm"
       ]
     },
     {
       "id": 2,
-      "category": "Giải trí",
-      "text": "Hoạt động sáng tạo nào bạn đời của bạn thích nhất?",
+      "category": "Leisure",
+      "text": "Hoạt động sáng tạo nào khiến người ấy hào hứng nhất?",
       "options": [
-        "Vẽ",
+        "Vẽ tranh",
         "Viết lách",
-        "Thủ công",
-        "Nhiếp ảnh",
+        "Làm đồ thủ công",
+        "Chụp ảnh",
         "Sáng tác nhạc",
         "Trang trí",
         "Thiết kế",
@@ -33,98 +33,98 @@
     },
     {
       "id": 3,
-      "category": "Giải trí",
-      "text": "Hoạt động trong nhà nào phù hợp nhất?",
+      "category": "Leisure",
+      "text": "Ở nhà thì người ấy thích làm gì nhất?",
       "options": [
         "Xem phim",
         "Đọc sách",
         "Chơi game",
         "Nấu ăn",
-        "Thủ công",
+        "Làm đồ thủ công",
         "Nghe nhạc",
-        "Lướt web",
-        "Học tập"
+        "Lướt mạng",
+        "Học điều mới"
       ]
     },
     {
       "id": 4,
-      "category": "Giải trí",
-      "text": "Hoạt động ngoài trời nào phù hợp nhất?",
+      "category": "Leisure",
+      "text": "Hoạt động ngoài trời nào hợp với người ấy nhất?",
       "options": [
         "Đi dạo",
         "Đạp xe",
         "Leo núi",
-        "Thể thao",
-        "Nhiếp ảnh",
-        "Dã ngoại",
-        "Khám phá",
+        "Chơi thể thao",
+        "Chụp ảnh",
+        "Đi dã ngoại",
+        "Du lịch khám phá",
         "Làm vườn"
       ]
     },
     {
       "id": 5,
-      "category": "Giải trí",
-      "text": "Thể loại game nào họ thích hơn?",
+      "category": "Leisure",
+      "text": "Người ấy thích kiểu trò chơi nào nhất?",
       "options": [
         "Trò chơi điện tử",
-        "Cờ bàn",
+        "Trò chơi trên bàn",
         "Giải đố",
         "Trò chơi tiệc tùng",
         "Trò chơi chiến thuật",
         "Chơi bài",
-        "Game di động",
-        "Đố vui"
+        "Game trên điện thoại",
+        "Đố vui kiến thức"
       ]
     },
     {
       "id": 6,
-      "category": "Ẩm thực",
-      "text": "Món ăn nào họ thèm nhất?",
+      "category": "Food",
+      "text": "Người ấy mê nền ẩm thực nào nhất?",
       "options": [
-        "Việt Nam",
-        "Hàn Quốc",
-        "Nhật Bản",
-        "Ý",
-        "Thái Lan",
-        "Trung Quốc",
-        "Phương Tây",
-        "Ẩm thực đường phố"
+        "Món Việt",
+        "Món Hàn",
+        "Món Nhật",
+        "Món Ý",
+        "Món Thái",
+        "Món Trung",
+        "Món Âu Mỹ",
+        "Đồ ăn đường phố"
       ]
     },
     {
       "id": 7,
-      "category": "Ẩm thực",
-      "text": "Món ăn an ủi tinh thần nào phù hợp nhất?",
+      "category": "Food",
+      "text": "Món gì giúp người ấy thấy dễ chịu hơn sau một ngày mệt mỏi?",
       "options": [
         "Mì",
-        "Cơm",
+        "Các món cơm",
         "Súp",
         "Đồ chiên",
         "Đồ nướng",
         "Lẩu",
         "Bánh mì",
-        "Tráng miệng"
+        "Món tráng miệng"
       ]
     },
     {
       "id": 8,
-      "category": "Ẩm thực",
-      "text": "Họ thích loại đồ ăn vặt nào nhất?",
+      "category": "Food",
+      "text": "Người ấy thích kiểu đồ ăn vặt nào nhất?",
       "options": [
-        "Ngọt",
-        "Mặn",
-        "Giòn",
+        "Đồ ngọt",
+        "Đồ ăn đậm vị",
+        "Đồ giòn rụm",
         "Sô-cô-la",
         "Trái cây",
-        "Nướng",
-        "Béo ngậy",
-        "Mặn"
+        "Bánh nướng",
+        "Đồ béo ngậy",
+        "Đồ có vị muối"
       ]
     },
     {
       "id": 9,
-      "category": "Ẩm thực",
-      "text": "Vị tráng miệng nào họ thích hơn?",
+      "category": "Food",
+      "text": "Người ấy thích món tráng miệng có vị gì?",
       "options": [
         "Sô-cô-la",
         "Vani",
@@ -138,8 +138,8 @@
     },
     {
       "id": 10,
-      "category": "Ẩm thực",
-      "text": "Thức uống nào họ thường gọi nhất?",
+      "category": "Food",
+      "text": "Người ấy thường chọn đồ uống nào nhất?",
       "options": [
         "Cà phê",
         "Trà",
@@ -153,1802 +153,1802 @@
     },
     {
       "id": 11,
-      "category": "Giải trí (Media)",
-      "text": "Thể loại phim nào họ thích xem?",
+      "category": "Entertainment",
+      "text": "Người ấy thích thể loại phim nào nhất?",
       "options": [
-        "Lãng mạn",
-        "Hài hước",
+        "Tình cảm",
+        "Hài",
         "Hành động",
         "Giật gân",
         "Chính kịch",
-        "Viễn tưởng",
+        "Khoa học viễn tưởng",
         "Hoạt hình",
         "Tài liệu"
       ]
     },
     {
       "id": 12,
-      "category": "Giải trí (Media)",
-      "text": "Họ thích thể loại phim truyền hình nào?",
+      "category": "Entertainment",
+      "text": "Người ấy thích xem thể loại phim hoặc chương trình dài tập nào?",
       "options": [
-        "Hài kịch tình huống",
+        "Hài tình huống",
         "Tội phạm",
         "Kỳ ảo",
-        "Thực tế",
+        "Truyền hình thực tế",
         "Lịch sử",
-        "Lãng mạn",
+        "Tình cảm",
         "Bí ẩn",
         "Hoạt hình Nhật Bản"
       ]
     },
     {
       "id": 13,
-      "category": "Giải trí (Media)",
-      "text": "Họ hay xem nội dung video gì nhất?",
+      "category": "Entertainment",
+      "text": "Người ấy hay xem video về chủ đề gì nhất?",
       "options": [
-        "Blog video",
-        "Giáo dục",
+        "Nhật ký đời sống",
+        "Kiến thức",
         "Hài hước",
-        "Chơi game",
+        "Trò chơi điện tử",
         "Phong cách sống",
-        "Nghe nhạc",
+        "Âm nhạc",
         "Du lịch",
         "Ẩm thực"
       ]
     },
     {
       "id": 14,
-      "category": "Giải trí (Media)",
-      "text": "Thể loại nhạc nào hợp với họ nhất?",
+      "category": "Entertainment",
+      "text": "Thể loại nhạc nào hợp gu người ấy nhất?",
       "options": [
-        "Nhạc Pop",
-        "Acoustic",
-        "Indie",
-        "R&B",
-        "Rock",
-        "EDM",
-        "Cổ điển",
-        "Lo-fi"
+        "Nhạc pop",
+        "Nhạc acoustic",
+        "Nhạc indie",
+        "Nhạc R&B",
+        "Nhạc rock",
+        "Nhạc điện tử",
+        "Nhạc cổ điển",
+        "Nhạc lo-fi"
       ]
     },
     {
       "id": 15,
-      "category": "Giải trí (Media)",
-      "text": "Phong cách hài hước nào họ thích nhất?",
+      "category": "Entertainment",
+      "text": "Kiểu hài hước nào khiến người ấy bật cười?",
       "options": [
-        "Vui nhộn",
-        "Mỉa mai",
+        "Trêu đùa vui vẻ",
+        "Châm biếm",
         "Hài đen",
-        "Ngốc nghếch",
-        "Sắc sảo",
-        "Quan sát",
-        "Hành động vật lý",
-        "Phi lý"
+        "Ngô nghê đáng yêu",
+        "Chơi chữ thông minh",
+        "Hài từ chuyện đời thường",
+        "Hài hình thể",
+        "Hài phi lý"
       ]
     },
     {
       "id": 16,
-      "category": "Du lịch",
-      "text": "Loại hình du lịch nào khiến họ phấn khích nhất?",
+      "category": "Travel",
+      "text": "Chuyến đi kiểu nào khiến người ấy háo hức nhất?",
       "options": [
-        "Biển",
-        "Núi",
-        "Thành phố",
-        "Nghỉ dưỡng thiên nhiên",
-        "Du lịch ẩm thực",
-        "Phiêu lưu",
-        "Sang trọng",
-        "Du lịch tại chỗ"
+        "Đi biển",
+        "Lên núi",
+        "Khám phá thành phố",
+        "Nghỉ giữa thiên nhiên",
+        "Khám phá ẩm thực",
+        "Du lịch mạo hiểm",
+        "Nghỉ dưỡng sang trọng",
+        "Nghỉ dưỡng ngay gần nhà"
       ]
     },
     {
       "id": 17,
-      "category": "Du lịch",
-      "text": "Họ thích phong cảnh nào nhất?",
+      "category": "Travel",
+      "text": "Người ấy thích ngắm cảnh gì nhất?",
       "options": [
-        "Biển",
-        "Rừng",
-        "Núi",
-        "Nông thôn",
-        "Quang cảnh thành phố",
-        "Sông",
+        "Biển xanh",
+        "Rừng cây",
+        "Núi non",
+        "Đồng quê",
+        "Toàn cảnh thành phố",
+        "Sông nước",
         "Sa mạc",
         "Đảo"
       ]
     },
     {
       "id": 18,
-      "category": "Du lịch",
-      "text": "Nhịp độ du lịch nào phù hợp với họ?",
+      "category": "Travel",
+      "text": "Người ấy thích đi du lịch với lịch trình như thế nào?",
       "options": [
-        "Thư giãn",
-        "Cân bằng",
-        "Nhanh chóng",
-        "Ngẫu hứng",
-        "Lên kế hoạch",
-        "Linh hoạt",
-        "Tối giản",
-        "Sang trọng"
+        "Thong thả nghỉ ngơi",
+        "Cân bằng chơi và nghỉ",
+        "Đi thật nhiều nơi",
+        "Tùy hứng",
+        "Lên kế hoạch sẵn",
+        "Linh hoạt điều chỉnh",
+        "Tối giản lịch trình",
+        "Tận hưởng sang trọng"
       ]
     },
     {
       "id": 19,
-      "category": "Du lịch",
-      "text": "Họ thích ở loại hình lưu trú nào?",
+      "category": "Travel",
+      "text": "Đi du lịch, người ấy thích ở đâu?",
       "options": [
         "Khách sạn",
         "Khu nghỉ dưỡng",
-        "Homestay",
-        "Nhà trọ",
+        "Ở cùng người dân địa phương",
+        "Nhà nghỉ tập thể",
         "Căn hộ",
         "Biệt thự",
-        "Cắm trại",
-        "Khu sinh thái"
+        "Lều cắm trại",
+        "Nhà nghỉ sinh thái"
       ]
     },
     {
       "id": 20,
-      "category": "Du lịch",
-      "text": "Họ thích khí hậu nào nhất?",
+      "category": "Travel",
+      "text": "Người ấy thích kiểu thời tiết nào nhất?",
       "options": [
-        "Nhiệt đới",
+        "Nóng ẩm nhiệt đới",
         "Mát mẻ",
         "Lạnh",
         "Ôn hòa",
-        "Nắng",
-        "Mưa",
-        "Khô",
-        "Gió"
+        "Nhiều nắng",
+        "Có mưa",
+        "Khô ráo",
+        "Lộng gió"
       ]
     },
     {
       "id": 21,
-      "category": "Giao tiếp",
-      "text": "Họ thích social nào nhất?",
+      "category": "Social",
+      "text": "Người ấy thấy thoải mái nhất trong buổi gặp gỡ nào?",
       "options": [
-        "One-on-one",
-        "Small group",
-        "Party",
-        "Family",
-        "Work events",
-        "Community",
-        "Online",
-        "Quiet hangout"
+        "Trò chuyện riêng hai người",
+        "Tụ tập nhóm nhỏ",
+        "Tiệc đông người",
+        "Sum họp gia đình",
+        "Sự kiện công ty",
+        "Hoạt động cộng đồng",
+        "Giao lưu trực tuyến",
+        "Hẹn nhau ở nơi yên tĩnh"
       ]
     },
     {
       "id": 22,
-      "category": "Giao tiếp",
-      "text": "Họ thích group nào nhất?",
+      "category": "Social",
+      "text": "Người ấy thích nhóm đi chơi có bao nhiêu người?",
       "options": [
-        "2 people",
-        "3-4",
-        "5-6",
-        "Small group",
-        "Medium group",
-        "Large group",
-        "Crowd",
-        "Alone"
+        "Hai người",
+        "Ba đến bốn người",
+        "Năm đến sáu người",
+        "Một nhóm nhỏ",
+        "Một nhóm vừa",
+        "Một nhóm lớn",
+        "Càng đông càng vui",
+        "Thích ở một mình"
       ]
     },
     {
       "id": 23,
-      "category": "Giao tiếp",
-      "text": "Họ thích time nào nhất?",
+      "category": "Social",
+      "text": "Người ấy hào hứng trò chuyện nhất vào lúc nào?",
       "options": [
-        "Morning (vi)",
-        "Late morning (vi)",
-        "Afternoon",
-        "Evening (vi)",
-        "Night",
-        "Late night",
-        "Anytime",
-        "Rarely"
+        "Sáng sớm",
+        "Gần trưa",
+        "Buổi chiều",
+        "Đầu buổi tối",
+        "Tối muộn",
+        "Đêm khuya",
+        "Lúc nào cũng được",
+        "Ít khi muốn giao lưu"
       ]
     },
     {
       "id": 24,
-      "category": "Giao tiếp",
-      "text": "Họ thích celebration nào nhất?",
+      "category": "Social",
+      "text": "Người ấy thích ăn mừng dịp đặc biệt theo cách nào?",
       "options": [
-        "Intimate",
-        "Family",
-        "Friends",
-        "Party",
-        "Romantic",
-        "Quiet",
-        "Outdoor",
-        "Surprise"
+        "Buổi gặp thân mật",
+        "Bên gia đình",
+        "Cùng bạn bè",
+        "Tiệc tưng bừng",
+        "Buổi hẹn lãng mạn",
+        "Yên tĩnh nhẹ nhàng",
+        "Tổ chức ngoài trời",
+        "Một bất ngờ thú vị"
       ]
     },
     {
       "id": 25,
-      "category": "Giao tiếp",
-      "text": "Họ thích conversation nào nhất?",
+      "category": "Social",
+      "text": "Người ấy thích trò chuyện về điều gì?",
       "options": [
-        "Deep talk",
-        "Fun chat",
-        "Ideas",
-        "Stories",
-        "Jokes",
-        "Debates",
-        "Dreams",
-        "Memories"
+        "Tâm sự sâu sắc",
+        "Chuyện vui nhẹ nhàng",
+        "Ý tưởng mới",
+        "Những câu chuyện",
+        "Chuyện cười",
+        "Tranh luận quan điểm",
+        "Ước mơ",
+        "Kỷ niệm"
       ]
     },
     {
       "id": 26,
-      "category": "Thói quen",
-      "text": "Câu hỏi về daily habit is hardest for them to skip?",
+      "category": "Habits",
+      "text": "Thói quen hằng ngày nào người ấy khó bỏ nhất?",
       "options": [
-        "Coffee/tea",
-        "Phone",
+        "Uống cà phê hoặc trà",
+        "Dùng điện thoại",
         "Nghe nhạc",
-        "Exercise",
-        "Snacks",
-        "Social media",
-        "News",
+        "Tập thể dục",
+        "Ăn vặt",
+        "Lướt mạng xã hội",
+        "Đọc tin tức",
         "Chơi game"
       ]
     },
     {
       "id": 27,
-      "category": "Thói quen",
-      "text": "Câu hỏi về morning style fits them?",
+      "category": "Habits",
+      "text": "Buổi sáng của người ấy thường như thế nào?",
       "options": [
-        "Slow",
-        "Energetic",
-        "Quiet",
-        "Routine",
-        "Rushed",
-        "Mindful",
-        "Lazy",
-        "Focused"
+        "Chậm rãi",
+        "Tràn đầy năng lượng",
+        "Yên lặng",
+        "Theo nếp quen",
+        "Vội vàng",
+        "Thư thái chú tâm",
+        "Lười biếng một chút",
+        "Tập trung làm việc"
       ]
     },
     {
       "id": 28,
-      "category": "Thói quen",
-      "text": "Câu hỏi về evening routine suits them?",
+      "category": "Habits",
+      "text": "Buổi tối, người ấy thường thích làm gì?",
       "options": [
-        "TV",
-        "Phone",
+        "Xem tivi",
+        "Dùng điện thoại",
         "Đọc sách",
         "Nghe nhạc",
-        "Chatting (vi)",
+        "Trò chuyện",
         "Chơi game",
-        "Work",
-        "Relaxing (vi)"
+        "Làm việc",
+        "Nghỉ ngơi thư giãn"
       ]
     },
     {
       "id": 29,
-      "category": "Thói quen",
-      "text": "Câu hỏi về productivity style fits them?",
+      "category": "Habits",
+      "text": "Người ấy làm việc hiệu quả nhất theo kiểu nào?",
       "options": [
-        "Planner",
-        "Ngẫu hứng",
-        "Focused",
-        "Multitask",
-        "Deadline-driven",
-        "Steady",
-        "Burst",
-        "Linh hoạt"
+        "Lên kế hoạch trước",
+        "Làm theo cảm hứng",
+        "Tập trung một việc",
+        "Làm nhiều việc cùng lúc",
+        "Sát hạn mới bứt tốc",
+        "Đều đặn mỗi ngày",
+        "Tập trung từng đợt",
+        "Linh hoạt theo tình hình"
       ]
     },
     {
       "id": 30,
-      "category": "Thói quen",
-      "text": "Họ thích break nào nhất?",
+      "category": "Habits",
+      "text": "Đến giờ giải lao, người ấy thường làm gì?",
       "options": [
-        "Phone",
-        "Snack",
-        "Walk",
-        "Chat",
+        "Lướt điện thoại",
+        "Ăn nhẹ",
+        "Đi dạo",
+        "Trò chuyện",
         "Nghe nhạc",
-        "Stretch",
-        "Cà phê",
-        "Rest"
+        "Giãn cơ",
+        "Uống cà phê",
+        "Nghỉ ngơi"
       ]
     },
     {
       "id": 31,
-      "category": "Chi tiêu",
-      "text": "Họ thích would nào nhất?",
+      "category": "Spending",
+      "text": "Nếu có thêm một khoản tiền, người ấy sẽ chi vào việc gì?",
       "options": [
-        "Ẩm thực",
+        "Ăn uống",
         "Du lịch",
-        "Gadgets",
-        "Clothes",
-        "Hobbies",
-        "Gia đình",
-        "Experiences",
-        "Gifts"
+        "Thiết bị công nghệ",
+        "Quần áo",
+        "Sở thích cá nhân",
+        "Chăm chút nhà cửa",
+        "Trải nghiệm mới",
+        "Mua quà"
       ]
     },
     {
       "id": 32,
-      "category": "Chi tiêu",
-      "text": "Câu hỏi về purchase excites them most?",
+      "category": "Spending",
+      "text": "Mua món gì khiến người ấy vui nhất?",
       "options": [
-        "Tech",
-        "Fashion",
-        "Decor",
-        "Nghệ thuật",
-        "Ẩm thực",
-        "Tickets",
-        "Courses",
-        "Accessories"
+        "Đồ công nghệ",
+        "Đồ thời trang",
+        "Đồ trang trí",
+        "Tác phẩm nghệ thuật",
+        "Đồ ăn",
+        "Vé xem biểu diễn",
+        "Khóa học",
+        "Phụ kiện"
       ]
     },
     {
       "id": 33,
-      "category": "Chi tiêu",
-      "text": "Câu hỏi về comfort item matters most?",
+      "category": "Spending",
+      "text": "Món đồ nào mang lại sự thoải mái quan trọng nhất với người ấy?",
       "options": [
-        "Blanket",
-        "Clothes",
-        "Chair",
-        "Bed",
-        "Pillow",
-        "Shoes",
-        "Bag",
-        "Lighting (vi)"
+        "Chăn",
+        "Quần áo",
+        "Ghế ngồi",
+        "Giường",
+        "Gối",
+        "Giày",
+        "Túi xách",
+        "Đèn chiếu sáng"
       ]
     },
     {
       "id": 34,
-      "category": "Chi tiêu",
-      "text": "Họ thích hobby nào nhất?",
+      "category": "Spending",
+      "text": "Người ấy sẽ mua món gì để phục vụ sở thích của mình?",
       "options": [
-        "Art s (vi)upplies",
-        "Instruments",
-        "Tools",
-        "Books",
-        "Games",
-        "Sports gear",
-        "Camera",
-        "Craft kits"
+        "Dụng cụ mỹ thuật",
+        "Nhạc cụ",
+        "Bộ dụng cụ sửa chữa",
+        "Sách",
+        "Trò chơi",
+        "Đồ thể thao",
+        "Máy ảnh",
+        "Bộ làm đồ thủ công"
       ]
     },
     {
       "id": 35,
-      "category": "Chi tiêu",
-      "text": "Họ thích gift nào nhất?",
+      "category": "Spending",
+      "text": "Người ấy thích nhận kiểu quà nào nhất?",
       "options": [
-        "Useful",
-        "Personal",
-        "Experiences",
-        "Handmade",
-        "Sang trọng",
-        "Fun",
-        "Romantic",
-        "Practical"
+        "Món đồ hữu ích",
+        "Quà mang dấu ấn riêng",
+        "Một trải nghiệm",
+        "Quà tự làm",
+        "Quà sang trọng",
+        "Quà vui nhộn",
+        "Quà lãng mạn",
+        "Đồ dùng thiết yếu"
       ]
     },
     {
       "id": 36,
-      "category": "Cảm xúc",
-      "text": "Họ thích gesture nào nhất?",
+      "category": "Emotion",
+      "text": "Cử chỉ nào khiến người ấy hạnh phúc nhất?",
       "options": [
-        "Words",
-        "Time",
-        "Gifts",
-        "Touch",
-        "Help",
-        "Surprises",
-        "Support",
-        "Listening (vi)"
+        "Lời nói yêu thương",
+        "Dành thời gian bên nhau",
+        "Tặng quà",
+        "Ôm ấp gần gũi",
+        "Giúp đỡ việc nhỏ",
+        "Tạo bất ngờ",
+        "Ủng hộ động viên",
+        "Lắng nghe chân thành"
       ]
     },
     {
       "id": 37,
-      "category": "Cảm xúc",
-      "text": "Câu hỏi về appreciation style suits them?",
+      "category": "Emotion",
+      "text": "Người ấy thích được trân trọng theo cách nào?",
       "options": [
-        "Praise",
-        "Thanks",
-        "Recognition",
-        "Affection",
-        "Encouragement",
-        "Respect",
-        "Attention",
-        "Trust"
+        "Được khen",
+        "Được cảm ơn",
+        "Được ghi nhận",
+        "Được thể hiện tình cảm",
+        "Được động viên",
+        "Được tôn trọng",
+        "Được chú ý",
+        "Được tin tưởng"
       ]
     },
     {
       "id": 38,
-      "category": "Cảm xúc",
-      "text": "Họ thích support nào nhất?",
+      "category": "Emotion",
+      "text": "Khi cần hỗ trợ, người ấy trân trọng điều gì nhất?",
       "options": [
-        "Advice",
-        "Listening (vi)",
-        "Help",
-        "Comfort",
-        "Hành động",
-        "Presence",
-        "Solutions",
-        "Reassurance"
+        "Lời khuyên",
+        "Sự lắng nghe",
+        "Một bàn tay giúp đỡ",
+        "Lời an ủi",
+        "Hành động thiết thực",
+        "Có người ở bên",
+        "Giải pháp cụ thể",
+        "Lời trấn an"
       ]
     },
     {
       "id": 39,
-      "category": "Cảm xúc",
-      "text": "Câu hỏi về shared moment matters most?",
+      "category": "Emotion",
+      "text": "Khoảnh khắc bên nhau nào có ý nghĩa nhất với người ấy?",
       "options": [
-        "Meals",
-        "Trips",
-        "Talks",
-        "Activities",
-        "Celebrations",
-        "Memories",
-        "Relaxing (vi)",
-        "Laughing (vi)"
+        "Cùng ăn cơm",
+        "Cùng đi du lịch",
+        "Cùng trò chuyện",
+        "Cùng làm điều yêu thích",
+        "Cùng ăn mừng",
+        "Cùng ôn kỷ niệm",
+        "Cùng nghỉ ngơi",
+        "Cùng cười thật vui"
       ]
     },
     {
       "id": 40,
-      "category": "Cảm xúc",
-      "text": "Câu hỏi về affection style fits them?",
+      "category": "Emotion",
+      "text": "Người ấy thích thể hiện tình cảm theo cách nào?",
       "options": [
-        "Hugs",
-        "Holding (vi) hands",
-        "Words",
-        "Acts",
-        "Gifts",
-        "Closeness",
-        "Vui nhộn",
-        "Gentle"
+        "Ôm nhau",
+        "Nắm tay",
+        "Nói lời yêu thương",
+        "Làm điều quan tâm",
+        "Tặng quà",
+        "Ở sát bên nhau",
+        "Trêu đùa âu yếm",
+        "Cử chỉ dịu dàng"
       ]
     },
     {
       "id": 41,
-      "category": "Giải trí",
-      "text": "Câu hỏi về art form attracts them most?",
+      "category": "Leisure",
+      "text": "Loại hình nghệ thuật nào thu hút người ấy nhất?",
       "options": [
-        "Painting (vi)",
-        "Nghe nhạc",
-        "Dance",
+        "Hội họa",
+        "Âm nhạc",
+        "Nhảy múa",
         "Viết lách",
-        "Film",
-        "Craft",
+        "Điện ảnh",
+        "Thủ công",
         "Thiết kế",
         "Nhiếp ảnh"
       ]
     },
     {
       "id": 42,
-      "category": "Giải trí",
-      "text": "Câu hỏi về solo hobby suits them best?",
+      "category": "Leisure",
+      "text": "Khi ở một mình, người ấy thích theo đuổi sở thích nào?",
       "options": [
         "Đọc sách",
         "Chơi game",
-        "Nghệ thuật",
+        "Sáng tạo nghệ thuật",
         "Nghe nhạc",
-        "Làm đồ thủ công",
+        "Tự làm đồ dùng",
         "Sưu tầm",
-        "Học tập",
-        "Exercise"
+        "Học điều mới",
+        "Tập thể dục"
       ]
     },
     {
       "id": 43,
-      "category": "Giải trí",
-      "text": "Câu hỏi về social hobby suits them best?",
+      "category": "Leisure",
+      "text": "Người ấy thích cùng mọi người làm gì?",
       "options": [
-        "Thể thao",
-        "Cờ bàn",
-        "Nghe nhạc",
-        "Dance",
+        "Chơi thể thao",
+        "Chơi trò chơi trên bàn",
+        "Chơi nhạc",
+        "Nhảy múa",
         "Nấu ăn",
-        "Clubs",
-        "Du lịch",
-        "Events"
+        "Tham gia câu lạc bộ",
+        "Đi du lịch",
+        "Tham dự sự kiện"
       ]
     },
     {
       "id": 44,
-      "category": "Giải trí",
-      "text": "Họ thích skill nào nhất?",
+      "category": "Leisure",
+      "text": "Người ấy muốn học thêm kỹ năng nào?",
       "options": [
-        "Language",
-        "Instrument",
+        "Ngoại ngữ",
+        "Chơi nhạc cụ",
         "Nấu ăn",
-        "Nghệ thuật",
-        "Coding (vi)",
-        "Craft",
-        "Sport",
+        "Mỹ thuật",
+        "Lập trình",
+        "Làm đồ thủ công",
+        "Một môn thể thao",
         "Viết lách"
       ]
     },
     {
       "id": 45,
-      "category": "Giải trí",
-      "text": "Họ thích relaxing nào nhất?",
+      "category": "Leisure",
+      "text": "Người ấy thích thư giãn bằng cách nào nhất?",
       "options": [
         "Nghe nhạc",
-        "Bath",
-        "Walk",
-        "Trà",
+        "Ngâm mình trong bồn tắm",
+        "Đi dạo",
+        "Uống trà",
         "Đọc sách",
-        "TV",
-        "Meditation",
-        "Nature"
+        "Xem tivi",
+        "Thiền",
+        "Hòa mình vào thiên nhiên"
       ]
     },
     {
       "id": 46,
-      "category": "Ẩm thực",
-      "text": "Họ thích meal nào nhất?",
+      "category": "Food",
+      "text": "Người ấy mong chờ bữa ăn nào nhất?",
       "options": [
-        "Breakfast",
-        "Brunch",
-        "Lunch",
-        "Snack",
-        "Dinner",
-        "Late night",
-        "Anytime",
-        "Tráng miệng"
+        "Bữa sáng",
+        "Bữa sáng muộn",
+        "Bữa trưa",
+        "Bữa ăn nhẹ",
+        "Bữa tối",
+        "Bữa khuya",
+        "Bữa nào cũng thích",
+        "Bữa tráng miệng"
       ]
     },
     {
       "id": 47,
-      "category": "Ẩm thực",
-      "text": "Họ thích flavor nào nhất?",
+      "category": "Food",
+      "text": "Khẩu vị yêu thích của người ấy là gì?",
       "options": [
         "Ngọt",
         "Mặn",
-        "Spicy",
-        "Sour",
-        "Umami",
-        "Bitter",
-        "Ôn hòa",
-        "Rich"
+        "Cay",
+        "Chua",
+        "Ngọt thanh vị thịt",
+        "Đắng",
+        "Thanh nhẹ",
+        "Đậm đà béo ngậy"
       ]
     },
     {
       "id": 48,
-      "category": "Ẩm thực",
-      "text": "Họ thích street nào nhất?",
+      "category": "Food",
+      "text": "Dạo phố ăn vặt, người ấy sẽ chọn món nào đầu tiên?",
       "options": [
-        "Banh mi",
-        "Pho",
-        "BBQ s (vi)kewers",
-        "Fried s (vi)nacks",
-        "Rice paper",
+        "Bánh mì",
+        "Phở",
+        "Xiên nướng",
+        "Đồ chiên ăn vặt",
+        "Bánh tráng",
         "Mì",
-        "Sweet s (vi)oup",
-        "Grilled corn"
+        "Chè",
+        "Bắp nướng"
       ]
     },
     {
       "id": 49,
-      "category": "Ẩm thực",
-      "text": "Họ thích dining nào nhất?",
+      "category": "Food",
+      "text": "Người ấy thích ăn uống trong không gian như thế nào?",
       "options": [
-        "Cozy",
-        "Fancy",
-        "Street",
-        "Nature",
-        "Modern",
-        "Traditional",
-        "Quiet",
-        "Lively"
+        "Ấm cúng",
+        "Sang trọng",
+        "Quán ven đường",
+        "Gần thiên nhiên",
+        "Hiện đại",
+        "Truyền thống",
+        "Yên tĩnh",
+        "Nhộn nhịp"
       ]
     },
     {
       "id": 50,
-      "category": "Ẩm thực",
-      "text": "Họ thích ingredient nào nhất?",
+      "category": "Food",
+      "text": "Người ấy thích nguyên liệu nào nhất?",
       "options": [
         "Phô mai",
         "Sô-cô-la",
-        "Chili",
-        "Herbs",
-        "Garlic",
-        "Seafood",
-        "Meat",
-        "Vegetables"
+        "Ớt",
+        "Rau thơm",
+        "Tỏi",
+        "Hải sản",
+        "Thịt",
+        "Rau củ"
       ]
     },
     {
       "id": 51,
-      "category": "Giải trí (Media)",
-      "text": "Câu hỏi về book genre suits them best?",
+      "category": "Entertainment",
+      "text": "Thể loại sách nào hợp với người ấy nhất?",
       "options": [
-        "Lãng mạn",
+        "Tình cảm",
         "Kỳ ảo",
-        "Bí ẩn",
-        "Self-help",
-        "History",
-        "Viễn tưởng",
-        "Chính kịch",
-        "Poetry"
+        "Trinh thám",
+        "Phát triển bản thân",
+        "Lịch sử",
+        "Khoa học viễn tưởng",
+        "Kịch",
+        "Thơ"
       ]
     },
     {
       "id": 52,
-      "category": "Giải trí (Media)",
-      "text": "Họ thích live nào nhất?",
+      "category": "Entertainment",
+      "text": "Người ấy muốn đi xem chương trình nào trực tiếp?",
       "options": [
-        "Concert",
-        "Theater",
-        "Hài hước",
-        "Dance",
-        "Festival",
-        "Talk",
-        "Exhibit",
-        "Cinema"
+        "Hòa nhạc",
+        "Sân khấu kịch",
+        "Biểu diễn hài",
+        "Biểu diễn múa",
+        "Lễ hội",
+        "Buổi nói chuyện",
+        "Triển lãm",
+        "Chiếu phim"
       ]
     },
     {
       "id": 53,
-      "category": "Giải trí (Media)",
-      "text": "Họ thích screen nào nhất?",
+      "category": "Entertainment",
+      "text": "Người ấy thường dành thời gian trước màn hình để làm gì?",
       "options": [
-        "Movies",
-        "Series",
-        "YouTube",
+        "Xem phim lẻ",
+        "Xem phim dài tập",
+        "Xem YouTube",
         "Chơi game",
-        "Giao tiếp",
+        "Lướt mạng xã hội",
         "Nghe nhạc",
-        "News",
-        "Học tập"
+        "Đọc tin tức",
+        "Học trực tuyến"
       ]
     },
     {
       "id": 54,
-      "category": "Giải trí (Media)",
-      "text": "Họ thích audio nào nhất?",
+      "category": "Entertainment",
+      "text": "Người ấy thích nghe nội dung âm thanh nào?",
       "options": [
-        "Nghe nhạc",
-        "Podcasts",
-        "Audiobooks",
-        "Radio",
-        "Talks",
-        "Meditation",
-        "Stories",
-        "None"
+        "Âm nhạc",
+        "Chương trình trò chuyện âm thanh",
+        "Sách nói",
+        "Đài phát thanh",
+        "Bài diễn thuyết",
+        "Hướng dẫn thiền",
+        "Kể chuyện",
+        "Không thích nghe gì"
       ]
     },
     {
       "id": 55,
-      "category": "Giải trí (Media)",
-      "text": "Câu hỏi về story type moves them most?",
+      "category": "Entertainment",
+      "text": "Kiểu câu chuyện nào dễ chạm đến cảm xúc của người ấy nhất?",
       "options": [
-        "Romantic",
-        "Inspiring (vi)",
-        "Tragic",
-        "Heroic",
-        "Real",
+        "Lãng mạn",
+        "Truyền cảm hứng",
+        "Bi thương",
+        "Anh hùng",
+        "Chuyện có thật",
         "Kỳ ảo",
-        "Funny",
-        "Emotional"
+        "Hài hước",
+        "Giàu cảm xúc"
       ]
     },
     {
       "id": 56,
-      "category": "Du lịch",
-      "text": "Câu hỏi về local experience excites them?",
+      "category": "Travel",
+      "text": "Đến một nơi mới, người ấy muốn trải nghiệm điều gì nhất?",
       "options": [
-        "Ẩm thực",
-        "Culture",
-        "Nature",
-        "Markets",
+        "Ẩm thực địa phương",
+        "Văn hóa",
+        "Thiên nhiên",
+        "Chợ địa phương",
         "Nghệ thuật",
-        "Festivals",
-        "History",
-        "People"
+        "Lễ hội",
+        "Lịch sử",
+        "Gặp gỡ người dân"
       ]
     },
     {
       "id": 57,
-      "category": "Du lịch",
-      "text": "Họ thích transport nào nhất?",
+      "category": "Travel",
+      "text": "Người ấy thích di chuyển bằng phương tiện nào?",
       "options": [
-        "Plane",
-        "Train",
-        "Car",
-        "Motorbike",
-        "Boat",
-        "Đi dạo",
-        "Đạp xe",
-        "Mixed"
+        "Máy bay",
+        "Tàu hỏa",
+        "Ô tô",
+        "Xe máy",
+        "Thuyền",
+        "Đi bộ",
+        "Xe đạp",
+        "Kết hợp nhiều phương tiện"
       ]
     },
     {
       "id": 58,
-      "category": "Du lịch",
-      "text": "Câu hỏi về trip length suits them best?",
+      "category": "Travel",
+      "text": "Chuyến đi dài bao lâu là lý tưởng với người ấy?",
       "options": [
-        "Day trip",
-        "Weekend",
-        "3-5 days",
-        "1 week",
-        "2 weeks",
-        "Long",
-        "Linh hoạt",
-        "Short"
+        "Đi về trong ngày",
+        "Một cuối tuần",
+        "Ba đến năm ngày",
+        "Một tuần",
+        "Hai tuần",
+        "Đi thật dài ngày",
+        "Tùy tình hình",
+        "Một chuyến ngắn thôi"
       ]
     },
     {
       "id": 59,
-      "category": "Du lịch",
-      "text": "Câu hỏi về travel activity excites them?",
+      "category": "Travel",
+      "text": "Đi du lịch, người ấy hào hứng nhất với hoạt động nào?",
       "options": [
-        "Sightseeing (vi)",
-        "Ẩm thực",
-        "Phiêu lưu",
-        "Relax",
-        "Shopping (vi)",
-        "Nhiếp ảnh",
-        "Culture",
-        "Nature"
+        "Tham quan danh thắng",
+        "Thưởng thức món ngon",
+        "Thử thách mạo hiểm",
+        "Nghỉ ngơi",
+        "Mua sắm",
+        "Chụp ảnh",
+        "Tìm hiểu văn hóa",
+        "Khám phá thiên nhiên"
       ]
     },
     {
       "id": 60,
-      "category": "Du lịch",
-      "text": "Câu hỏi về destination vibe fits them?",
+      "category": "Travel",
+      "text": "Điểm đến mang không khí nào hợp với người ấy?",
       "options": [
-        "Calm",
-        "Vibrant",
-        "Romantic",
-        "Wild",
-        "Historic",
-        "Modern",
-        "Remote",
-        "Luxurious"
+        "Yên bình",
+        "Sôi động",
+        "Lãng mạn",
+        "Hoang sơ",
+        "Đậm dấu ấn lịch sử",
+        "Hiện đại",
+        "Hẻo lánh",
+        "Xa hoa"
       ]
     },
     {
       "id": 61,
-      "category": "Giao tiếp",
-      "text": "Câu hỏi về weekend social plan fits them?",
+      "category": "Social",
+      "text": "Cuối tuần, người ấy muốn dành thời gian như thế nào?",
       "options": [
-        "Date",
-        "Friends",
-        "Family",
-        "Events",
-        "Gia đình",
-        "Outing (vi)",
-        "Du lịch",
-        "Rest"
+        "Đi hẹn hò",
+        "Gặp bạn bè",
+        "Bên gia đình",
+        "Tham dự sự kiện",
+        "Tụ tập tại nhà",
+        "Ra ngoài chơi",
+        "Đi du lịch",
+        "Nghỉ ngơi một mình"
       ]
     },
     {
       "id": 62,
-      "category": "Giao tiếp",
-      "text": "Câu hỏi về friendship style fits them?",
+      "category": "Social",
+      "text": "Người ấy là kiểu bạn như thế nào?",
       "options": [
-        "Deep",
-        "Fun",
-        "Loyal",
-        "Supportive",
-        "Adventurous",
-        "Calm",
-        "Talkative",
-        "Quiet"
+        "Tâm giao sâu sắc",
+        "Vui vẻ hài hước",
+        "Trung thành",
+        "Luôn hỗ trợ",
+        "Thích cùng khám phá",
+        "Điềm đạm",
+        "Hay trò chuyện",
+        "Ít nói nhưng gắn bó"
       ]
     },
     {
       "id": 63,
-      "category": "Giao tiếp",
-      "text": "Câu hỏi về gathering atmosphere suits them?",
+      "category": "Social",
+      "text": "Buổi tụ họp có không khí nào khiến người ấy thích nhất?",
       "options": [
-        "Cozy",
-        "Lively",
-        "Elegant",
-        "Casual",
-        "Creative",
-        "Outdoor",
-        "Indoor",
-        "Festive"
+        "Ấm cúng",
+        "Náo nhiệt",
+        "Thanh lịch",
+        "Thoải mái tự nhiên",
+        "Đầy sáng tạo",
+        "Ngoài trời",
+        "Trong nhà",
+        "Rộn ràng lễ hội"
       ]
     },
     {
       "id": 64,
-      "category": "Giao tiếp",
-      "text": "Câu hỏi về hosting style fits them?",
+      "category": "Social",
+      "text": "Khi mời khách đến chơi, người ấy thường đón tiếp thế nào?",
       "options": [
-        "Warm",
-        "Organized",
-        "Fun",
-        "Thư giãn",
-        "Creative",
-        "Elegant",
-        "Simple",
-        "Generous"
+        "Nồng hậu",
+        "Chuẩn bị chu đáo",
+        "Vui nhộn",
+        "Thoải mái",
+        "Sáng tạo",
+        "Thanh lịch",
+        "Đơn giản",
+        "Hào phóng"
       ]
     },
     {
       "id": 65,
-      "category": "Giao tiếp",
-      "text": "Họ thích outing nào nhất?",
+      "category": "Social",
+      "text": "Một buổi gặp gỡ lý tưởng với người ấy sẽ là gì?",
       "options": [
-        "Cafe",
-        "Dining (vi)",
-        "Walk",
-        "Movies",
-        "Events",
-        "Shopping (vi)",
-        "Nature",
-        "Gia đình"
+        "Đi cà phê",
+        "Đi ăn",
+        "Đi dạo",
+        "Đi xem phim",
+        "Dự sự kiện",
+        "Đi mua sắm",
+        "Ra ngoài thiên nhiên",
+        "Ở nhà cùng nhau"
       ]
     },
     {
       "id": 66,
-      "category": "Thói quen",
-      "text": "Họ thích comfort nào nhất?",
+      "category": "Habits",
+      "text": "Người ấy thường làm gì để tự xoa dịu bản thân?",
       "options": [
         "Nghe nhạc",
-        "Ẩm thực",
-        "Bath",
-        "Sleep",
-        "Phone",
-        "Chat",
-        "Walk",
-        "TV"
+        "Ăn món ngon",
+        "Tắm thư giãn",
+        "Ngủ một giấc",
+        "Lướt điện thoại",
+        "Trò chuyện",
+        "Đi dạo",
+        "Xem tivi"
       ]
     },
     {
       "id": 67,
-      "category": "Thói quen",
-      "text": "Họ thích digital nào nhất?",
+      "category": "Habits",
+      "text": "Khi dùng thiết bị số, người ấy thường làm gì nhất?",
       "options": [
-        "Giao tiếp",
-        "Video",
-        "Chat",
-        "News",
-        "Games",
-        "Shopping (vi)",
+        "Lướt mạng xã hội",
+        "Xem video",
+        "Nhắn tin",
+        "Đọc tin tức",
+        "Chơi game",
+        "Mua sắm trực tuyến",
         "Nghe nhạc",
-        "Work"
+        "Làm việc"
       ]
     },
     {
       "id": 68,
-      "category": "Thói quen",
-      "text": "Câu hỏi về self-care habit fits them?",
+      "category": "Habits",
+      "text": "Người ấy thích chăm sóc bản thân bằng cách nào?",
       "options": [
-        "Skincare",
-        "Exercise",
-        "Meditation",
-        "Rest",
-        "Grooming (vi)",
-        "Spa",
-        "Nature",
-        "Journaling (vi)"
+        "Chăm sóc da",
+        "Tập thể dục",
+        "Thiền",
+        "Nghỉ ngơi",
+        "Chăm chút ngoại hình",
+        "Đi spa",
+        "Gần gũi thiên nhiên",
+        "Viết nhật ký"
       ]
     },
     {
       "id": 69,
-      "category": "Thói quen",
-      "text": "Câu hỏi về organization style suits them?",
+      "category": "Habits",
+      "text": "Người ấy thường sắp xếp đồ đạc theo kiểu nào?",
       "options": [
-        "Neat",
-        "Tối giản",
-        "Visual",
-        "Linh hoạt",
-        "Messy",
-        "Detailed",
-        "Simple",
-        "Structured"
+        "Gọn gàng ngăn nắp",
+        "Chỉ giữ đồ cần thiết",
+        "Bày ra để dễ thấy",
+        "Linh hoạt tùy lúc",
+        "Bừa bộn có chủ đích",
+        "Tỉ mỉ từng chi tiết",
+        "Đơn giản dễ tìm",
+        "Phân loại có hệ thống"
       ]
     },
     {
       "id": 70,
-      "category": "Thói quen",
-      "text": "Câu hỏi về planning style fits them?",
+      "category": "Habits",
+      "text": "Người ấy thường lên kế hoạch ra sao?",
       "options": [
-        "Planner",
-        "Ngẫu hứng",
-        "Checklist",
-        "Calendar",
-        "Loose",
-        "Detailed",
-        "Adaptive",
-        "None"
+        "Ghi vào sổ kế hoạch",
+        "Làm theo hứng",
+        "Lập danh sách việc cần làm",
+        "Đánh dấu trên lịch",
+        "Chỉ phác thảo sơ bộ",
+        "Chi tiết từng bước",
+        "Điều chỉnh theo hoàn cảnh",
+        "Không lên kế hoạch"
       ]
     },
     {
       "id": 71,
-      "category": "Chi tiêu",
-      "text": "Họ thích upgrade nào nhất?",
+      "category": "Spending",
+      "text": "Nếu được nâng cấp một thứ, người ấy sẽ chọn gì?",
       "options": [
-        "Phone",
-        "Clothes",
-        "Gia đình",
-        "Du lịch",
-        "Ẩm thực",
-        "Hobby",
-        "Comfort",
-        "Tech"
+        "Điện thoại",
+        "Tủ quần áo",
+        "Nhà cửa",
+        "Chuyến du lịch",
+        "Bữa ăn",
+        "Đồ phục vụ sở thích",
+        "Đồ dùng tạo sự thoải mái",
+        "Thiết bị công nghệ khác"
       ]
     },
     {
       "id": 72,
-      "category": "Chi tiêu",
-      "text": "Câu hỏi về luxury appeals most?",
+      "category": "Spending",
+      "text": "Điều xa xỉ nào hấp dẫn người ấy nhất?",
       "options": [
-        "Khách sạn",
-        "Dining (vi)",
-        "Fashion",
-        "Spa",
-        "Tech",
-        "Du lịch",
-        "Decor",
-        "Experiences"
+        "Khách sạn cao cấp",
+        "Bữa ăn sang trọng",
+        "Thời trang hàng hiệu",
+        "Spa cao cấp",
+        "Đồ công nghệ xịn",
+        "Du lịch sang trọng",
+        "Nội thất cao cấp",
+        "Trải nghiệm độc đáo"
       ]
     },
     {
       "id": 73,
-      "category": "Chi tiêu",
-      "text": "Câu hỏi về saving goal motivates them?",
+      "category": "Spending",
+      "text": "Mục tiêu nào tạo động lực tiết kiệm cho người ấy?",
       "options": [
-        "Gia đình",
-        "Du lịch",
-        "Security",
-        "Family",
-        "Giáo dục",
-        "Business",
-        "Freedom",
-        "Phong cách sống"
+        "Mua nhà",
+        "Đi du lịch",
+        "Có quỹ dự phòng",
+        "Chăm lo gia đình",
+        "Đầu tư học tập",
+        "Kinh doanh",
+        "Tự do tài chính",
+        "Nâng cao chất lượng sống"
       ]
     },
     {
       "id": 74,
-      "category": "Chi tiêu",
-      "text": "Câu hỏi về personal item matters most?",
+      "category": "Spending",
+      "text": "Vật dụng cá nhân nào quan trọng nhất với người ấy?",
       "options": [
-        "Phone",
-        "Bag",
-        "Clothes",
-        "Shoes",
-        "Jewelry",
-        "Watch",
-        "Notebook",
-        "Headphones"
+        "Điện thoại",
+        "Túi xách",
+        "Quần áo",
+        "Giày",
+        "Trang sức",
+        "Đồng hồ",
+        "Sổ tay",
+        "Tai nghe"
       ]
     },
     {
       "id": 75,
-      "category": "Chi tiêu",
-      "text": "Câu hỏi về experience is worth paying for?",
+      "category": "Spending",
+      "text": "Người ấy thấy trải nghiệm nào đáng để chi tiền nhất?",
       "options": [
         "Du lịch",
-        "Ẩm thực",
-        "Concert",
-        "Course",
-        "Events",
-        "Spa",
-        "Phiêu lưu",
+        "Ăn uống",
+        "Hòa nhạc",
+        "Khóa học",
+        "Sự kiện",
+        "Spa thư giãn",
+        "Hoạt động mạo hiểm",
         "Nghệ thuật"
       ]
     },
     {
       "id": 76,
-      "category": "Cảm xúc",
-      "text": "Câu hỏi về reassurance helps them most?",
+      "category": "Emotion",
+      "text": "Điều gì giúp người ấy cảm thấy yên tâm nhất?",
       "options": [
-        "Words",
-        "Touch",
-        "Presence",
-        "Help",
-        "Promises",
-        "Plans",
-        "Time",
-        "Calm"
+        "Lời trấn an",
+        "Cái ôm hoặc cái nắm tay",
+        "Có người ở bên",
+        "Được giúp đỡ",
+        "Một lời hứa",
+        "Kế hoạch rõ ràng",
+        "Có thêm thời gian",
+        "Sự bình tĩnh của người bên cạnh"
       ]
     },
     {
       "id": 77,
-      "category": "Cảm xúc",
-      "text": "Câu hỏi về bonding activity fits them?",
+      "category": "Emotion",
+      "text": "Hoạt động nào giúp người ấy cảm thấy gắn kết hơn?",
       "options": [
-        "Talk",
-        "Cook",
-        "Du lịch",
-        "Walk",
-        "Watch",
-        "Play",
-        "Create",
-        "Relax"
+        "Trò chuyện cùng nhau",
+        "Cùng nấu ăn",
+        "Cùng du lịch",
+        "Cùng đi dạo",
+        "Cùng xem phim",
+        "Cùng chơi trò chơi",
+        "Cùng sáng tạo",
+        "Cùng thư giãn"
       ]
     },
     {
       "id": 78,
-      "category": "Cảm xúc",
-      "text": "Họ thích memory nào nhất?",
+      "category": "Emotion",
+      "text": "Người ấy trân trọng kiểu kỷ niệm nào nhất?",
       "options": [
-        "Trips",
-        "Milestones",
-        "Daily",
-        "Romantic",
-        "Family",
-        "Fun",
-        "Achievements",
-        "Moments"
+        "Những chuyến đi",
+        "Cột mốc quan trọng",
+        "Chuyện nhỏ hằng ngày",
+        "Khoảnh khắc lãng mạn",
+        "Kỷ niệm gia đình",
+        "Lúc vui đùa",
+        "Thành tựu đạt được",
+        "Khoảnh khắc bất chợt"
       ]
     },
     {
       "id": 79,
-      "category": "Cảm xúc",
-      "text": "Câu hỏi về makes them feel understood?",
+      "category": "Emotion",
+      "text": "Điều gì khiến người ấy cảm thấy mình được thấu hiểu?",
       "options": [
-        "Listening (vi)",
-        "Empathy",
-        "Support",
-        "Time",
-        "Attention",
-        "Respect",
-        "Care",
-        "Trust"
+        "Được lắng nghe",
+        "Được đồng cảm",
+        "Được ủng hộ",
+        "Được dành thời gian",
+        "Được chú ý đến",
+        "Được tôn trọng",
+        "Được chăm sóc",
+        "Được tin tưởng"
       ]
     },
     {
       "id": 80,
-      "category": "Cảm xúc",
-      "text": "Câu hỏi về affection intensity suits them?",
+      "category": "Emotion",
+      "text": "Người ấy thích tình cảm được thể hiện ở mức độ nào?",
       "options": [
-        "Subtle",
-        "Gentle",
-        "Warm",
-        "Vui nhộn",
-        "Passionate",
-        "Calm",
-        "Frequent",
-        "Private"
+        "Kín đáo tinh tế",
+        "Nhẹ nhàng",
+        "Ấm áp",
+        "Vui đùa âu yếm",
+        "Nồng nhiệt",
+        "Điềm đạm",
+        "Thường xuyên",
+        "Chỉ khi riêng tư"
       ]
     },
     {
       "id": 81,
-      "category": "Giải trí",
-      "text": "Câu hỏi về collection would interest them?",
+      "category": "Leisure",
+      "text": "Người ấy sẽ hứng thú sưu tầm thứ gì?",
       "options": [
-        "Books",
-        "Nghệ thuật",
-        "Figures",
-        "Clothes",
-        "Plants",
-        "Nghe nhạc",
-        "Photos",
-        "Crafts"
+        "Sách",
+        "Tác phẩm nghệ thuật",
+        "Mô hình nhân vật",
+        "Quần áo",
+        "Cây cảnh",
+        "Đĩa nhạc",
+        "Ảnh",
+        "Đồ thủ công"
       ]
     },
     {
       "id": 82,
-      "category": "Giải trí",
-      "text": "Câu hỏi về hands-on activity suits them?",
+      "category": "Leisure",
+      "text": "Người ấy thích tự tay làm việc gì nhất?",
       "options": [
         "Nấu ăn",
-        "Craft",
         "Làm đồ thủ công",
+        "Tự chế đồ dùng",
         "Làm vườn",
-        "Nghệ thuật",
-        "Repair",
-        "Building (vi)",
-        "Decor"
+        "Sáng tạo nghệ thuật",
+        "Sửa chữa",
+        "Lắp ráp",
+        "Trang trí"
       ]
     },
     {
       "id": 83,
-      "category": "Giải trí",
-      "text": "Câu hỏi về weekend activity excites them?",
+      "category": "Leisure",
+      "text": "Hoạt động cuối tuần nào khiến người ấy hào hứng?",
       "options": [
-        "Outing (vi)",
-        "Gia đình",
-        "Friends",
-        "Nature",
-        "Events",
-        "Du lịch",
-        "Hobby",
-        "Rest"
+        "Ra ngoài chơi",
+        "Ở nhà",
+        "Gặp bạn bè",
+        "Khám phá thiên nhiên",
+        "Tham gia sự kiện",
+        "Đi du lịch",
+        "Theo đuổi sở thích",
+        "Nghỉ ngơi"
       ]
     },
     {
       "id": 84,
-      "category": "Giải trí",
-      "text": "Họ thích hobby nào nhất?",
+      "category": "Leisure",
+      "text": "Sở thích nào người ấy có thể làm mãi không chán?",
       "options": [
-        "Nghệ thuật",
+        "Sáng tạo nghệ thuật",
         "Nghe nhạc",
-        "Games",
+        "Chơi trò chơi",
         "Nấu ăn",
-        "Thể thao",
+        "Chơi thể thao",
         "Đọc sách",
-        "Craft",
+        "Làm đồ thủ công",
         "Sưu tầm"
       ]
     },
     {
       "id": 85,
-      "category": "Giải trí",
-      "text": "Họ thích music nào nhất?",
+      "category": "Leisure",
+      "text": "Với âm nhạc, người ấy thích làm gì nhất?",
       "options": [
-        "Listening (vi)",
-        "Sing (vi)ing (vi)",
-        "Playing (vi)",
-        "Dancing (vi)",
-        "Concerts",
-        "Creating (vi)",
-        "Học tập",
-        "Sharing (vi)"
+        "Nghe nhạc",
+        "Ca hát",
+        "Chơi nhạc cụ",
+        "Nhảy theo nhạc",
+        "Đi xem hòa nhạc",
+        "Sáng tác",
+        "Học nhạc",
+        "Chia sẻ bài hát"
       ]
     },
     {
       "id": 86,
-      "category": "Ẩm thực",
-      "text": "Câu hỏi về breakfast style suits them best?",
+      "category": "Food",
+      "text": "Bữa sáng kiểu nào hợp với người ấy nhất?",
       "options": [
-        "Light",
-        "Full",
-        "Ngọt",
-        "Mặn",
-        "Healthy",
-        "Quick",
-        "Cà phê",
-        "Brunch"
+        "Ăn nhẹ",
+        "Ăn thật no",
+        "Món ngọt",
+        "Món mặn",
+        "Ăn lành mạnh",
+        "Ăn nhanh gọn",
+        "Chỉ uống cà phê",
+        "Ăn sáng muộn kiêm bữa trưa"
       ]
     },
     {
       "id": 87,
-      "category": "Ẩm thực",
-      "text": "Họ thích late-night nào nhất?",
+      "category": "Food",
+      "text": "Đói bụng lúc khuya, người ấy muốn ăn gì?",
       "options": [
         "Mì",
-        "Snacks",
-        "Rice",
+        "Đồ ăn vặt",
+        "Cơm",
         "Súp",
-        "Fast food",
-        "Tráng miệng",
+        "Đồ ăn nhanh",
+        "Món tráng miệng",
         "Trái cây",
-        "None"
+        "Không ăn khuya"
       ]
     },
     {
       "id": 88,
-      "category": "Ẩm thực",
-      "text": "Họ thích restaurant nào nhất?",
+      "category": "Food",
+      "text": "Người ấy thích kiểu quán ăn nào?",
       "options": [
-        "Casual",
-        "Fine",
-        "Street",
-        "Buffet",
-        "Cafe",
-        "Family",
-        "Vegetarian",
-        "Đồ nướng"
+        "Quán bình dân",
+        "Nhà hàng cao cấp",
+        "Quán vỉa hè",
+        "Nhà hàng tự chọn",
+        "Quán cà phê",
+        "Quán ăn gia đình",
+        "Quán chay",
+        "Quán nướng"
       ]
     },
     {
       "id": 89,
-      "category": "Ẩm thực",
-      "text": "Họ thích food nào nhất?",
+      "category": "Food",
+      "text": "Người ấy thích cảm giác nào khi ăn?",
       "options": [
-        "Giòn",
-        "Soft",
-        "Chewy",
+        "Giòn chắc",
+        "Mềm",
+        "Dai",
         "Béo ngậy",
-        "Juicy",
-        "Crispy",
-        "Smooth",
-        "Mixed"
+        "Mọng nước",
+        "Giòn tan",
+        "Mịn mượt",
+        "Kết hợp nhiều kết cấu"
       ]
     },
     {
       "id": 90,
-      "category": "Ẩm thực",
-      "text": "Câu hỏi về dessert type suits them?",
+      "category": "Food",
+      "text": "Món tráng miệng nào hợp gu người ấy nhất?",
       "options": [
-        "Cake",
-        "Ice cream",
-        "Pastry",
+        "Bánh kem",
+        "Kem lạnh",
+        "Bánh ngọt nướng",
         "Trái cây",
-        "Pudding (vi)",
+        "Bánh pudding",
         "Sô-cô-la",
-        "Sweet s (vi)oup",
-        "Cookies"
+        "Chè",
+        "Bánh quy"
       ]
     },
     {
       "id": 91,
-      "category": "Giải trí (Media)",
-      "text": "Câu hỏi về fandom theme attracts them?",
+      "category": "Entertainment",
+      "text": "Người ấy dễ trở thành người hâm mộ của chủ đề nào?",
       "options": [
-        "Kỳ ảo",
-        "Viễn tưởng",
+        "Thế giới kỳ ảo",
+        "Khoa học viễn tưởng",
         "Hoạt hình Nhật Bản",
-        "Chính kịch",
-        "Lãng mạn",
-        "History",
-        "Games",
-        "Nghe nhạc"
+        "Phim chính kịch",
+        "Chuyện tình cảm",
+        "Lịch sử",
+        "Trò chơi điện tử",
+        "Âm nhạc"
       ]
     },
     {
       "id": 92,
-      "category": "Giải trí (Media)",
-      "text": "Họ thích rewatchable nào nhất?",
+      "category": "Entertainment",
+      "text": "Người ấy thích xem đi xem lại nội dung nào?",
       "options": [
-        "Hài hước",
-        "Lãng mạn",
-        "Hành động",
-        "Chính kịch",
-        "Hoạt hình",
-        "Shows",
-        "Movies",
-        "Clips"
+        "Phim hài",
+        "Phim tình cảm",
+        "Phim hành động",
+        "Phim chính kịch",
+        "Phim hoạt hình",
+        "Chương trình truyền hình",
+        "Phim điện ảnh",
+        "Video ngắn"
       ]
     },
     {
       "id": 93,
-      "category": "Giải trí (Media)",
-      "text": "Họ thích entertainment nào nhất?",
+      "category": "Entertainment",
+      "text": "Khi giải trí, người ấy thích nội dung mang cảm xúc nào?",
       "options": [
-        "Light",
-        "Emotional",
-        "Exciting (vi)",
-        "Calm",
-        "Funny",
-        "Deep",
-        "Inspiring (vi)",
-        "Hài đen"
+        "Nhẹ nhàng",
+        "Xúc động",
+        "Hào hứng",
+        "Bình yên",
+        "Hài hước",
+        "Sâu sắc",
+        "Truyền cảm hứng",
+        "U tối"
       ]
     },
     {
       "id": 94,
-      "category": "Giải trí (Media)",
-      "text": "Câu hỏi về fictional world attracts them?",
+      "category": "Entertainment",
+      "text": "Thế giới hư cấu nào hấp dẫn người ấy nhất?",
       "options": [
-        "Magic",
-        "Future",
-        "Lịch sử",
-        "Urban",
-        "Nature",
-        "Space",
-        "Myth",
-        "Phiêu lưu"
+        "Thế giới phép thuật",
+        "Thế giới tương lai",
+        "Bối cảnh lịch sử",
+        "Đô thị",
+        "Thiên nhiên",
+        "Vũ trụ",
+        "Thần thoại",
+        "Thế giới phiêu lưu"
       ]
     },
     {
       "id": 95,
-      "category": "Giải trí (Media)",
-      "text": "Câu hỏi về humor tone suits them?",
+      "category": "Entertainment",
+      "text": "Người ấy hợp với kiểu hài hước nào?",
       "options": [
-        "Cute",
-        "Mỉa mai",
-        "Sắc sảo",
-        "Ngốc nghếch",
-        "Khô",
+        "Dễ thương",
+        "Châm biếm",
+        "Dí dỏm thông minh",
+        "Ngô nghê",
+        "Tỉnh bơ",
         "Hài đen",
-        "Vui nhộn",
+        "Tinh nghịch",
         "Phi lý"
       ]
     },
     {
       "id": 96,
-      "category": "Du lịch",
-      "text": "Câu hỏi về travel companion style suits them?",
+      "category": "Travel",
+      "text": "Người ấy thích đi du lịch cùng ai?",
       "options": [
-        "Partner",
-        "Friends",
-        "Family",
-        "Solo",
-        "Group",
-        "Tour",
-        "Linh hoạt",
-        "Any"
+        "Người yêu hoặc bạn đời",
+        "Bạn bè",
+        "Gia đình",
+        "Đi một mình",
+        "Một nhóm cùng sở thích",
+        "Đoàn du lịch có hướng dẫn",
+        "Tùy từng chuyến",
+        "Ai cũng được"
       ]
     },
     {
       "id": 97,
-      "category": "Du lịch",
-      "text": "Câu hỏi về trip memory matters most?",
+      "category": "Travel",
+      "text": "Sau chuyến đi, người ấy nhớ nhất điều gì?",
       "options": [
-        "Views",
-        "Ẩm thực",
-        "People",
-        "Moments",
-        "Photos",
-        "Stories",
-        "Feeling (vi)s",
-        "Experiences"
+        "Cảnh đẹp",
+        "Món ăn",
+        "Những người đã gặp",
+        "Khoảnh khắc đặc biệt",
+        "Những bức ảnh",
+        "Câu chuyện trên đường",
+        "Cảm xúc lúc ấy",
+        "Trải nghiệm mới"
       ]
     },
     {
       "id": 98,
-      "category": "Du lịch",
-      "text": "Câu hỏi về travel energy fits them?",
+      "category": "Travel",
+      "text": "Khi đi du lịch, người ấy thường mang tâm thế nào?",
       "options": [
         "Thư giãn",
-        "Curious",
-        "Adventurous",
-        "Romantic",
-        "Vui nhộn",
-        "Calm",
-        "Giao tiếp",
-        "Free"
+        "Tò mò khám phá",
+        "Ưa mạo hiểm",
+        "Lãng mạn",
+        "Vui tươi",
+        "Bình thản",
+        "Thích giao lưu",
+        "Tự do phóng khoáng"
       ]
     },
     {
       "id": 99,
-      "category": "Du lịch",
-      "text": "Câu hỏi về place type attracts them?",
+      "category": "Travel",
+      "text": "Người ấy bị thu hút bởi nơi nào nhất?",
       "options": [
-        "Biển",
-        "Núi",
+        "Bãi biển",
+        "Núi non",
         "Thành phố",
-        "Village",
+        "Làng quê",
         "Rừng",
-        "Island",
+        "Đảo",
         "Sa mạc",
-        "Lake"
+        "Hồ nước"
       ]
     },
     {
       "id": 100,
-      "category": "Du lịch",
-      "text": "Câu hỏi về exploration style suits them?",
+      "category": "Travel",
+      "text": "Người ấy thích khám phá theo cách nào?",
       "options": [
-        "Lên kế hoạch",
-        "Ngẫu hứng",
-        "Slow",
-        "Active",
-        "Comfort",
-        "Budget",
-        "Deep",
-        "Wide"
+        "Theo kế hoạch",
+        "Tùy hứng",
+        "Chậm rãi cảm nhận",
+        "Năng động liên tục",
+        "Ưu tiên tiện nghi",
+        "Tiết kiệm chi phí",
+        "Tìm hiểu thật sâu một nơi",
+        "Đi thật nhiều nơi"
       ]
     },
     {
       "id": 101,
-      "category": "Gia đình",
-      "text": "Câu hỏi về is their ideal home aesthetic?",
+      "category": "Home",
+      "text": "Ngôi nhà lý tưởng của người ấy mang phong cách nào?",
       "options": [
-        "Minimalist",
-        "Bohemian",
-        "Industrial",
-        "Classic Cozy",
-        "Modern",
-        "Rustic",
-        "Art Deco",
-        "Eclectic"
+        "Tối giản",
+        "Du mục phóng khoáng",
+        "Công nghiệp thô mộc",
+        "Cổ điển ấm cúng",
+        "Hiện đại",
+        "Mộc mạc đồng quê",
+        "Nghệ thuật trang trí hình học",
+        "Pha trộn nhiều phong cách"
       ]
     },
     {
       "id": 102,
-      "category": "Gia đình",
-      "text": "Họ thích chore nào nhất?",
+      "category": "Home",
+      "text": "Việc nhà nào người ấy ít ngại làm nhất?",
       "options": [
         "Nấu ăn",
-        "Laundry",
-        "Organizing (vi)",
-        "Vacuuming (vi)",
-        "Dishwashing (vi)",
+        "Giặt giũ",
+        "Sắp xếp đồ đạc",
+        "Hút bụi",
+        "Rửa bát",
         "Làm vườn",
-        "Trash",
-        "Pet care"
+        "Đổ rác",
+        "Chăm thú cưng"
       ]
     },
     {
       "id": 103,
-      "category": "Gia đình",
-      "text": "Câu hỏi về is their favorite spot in the house?",
+      "category": "Home",
+      "text": "Góc nào trong nhà được người ấy yêu thích nhất?",
       "options": [
-        "The bed",
-        "The kitchen",
-        "Balcony",
-        "Sofa",
-        "Home office",
-        "Bathtub",
-        "Dining (vi) table",
-        "Garden"
+        "Giường ngủ",
+        "Căn bếp",
+        "Ban công",
+        "Ghế dài phòng khách",
+        "Góc làm việc",
+        "Bồn tắm",
+        "Bàn ăn",
+        "Khu vườn"
       ]
     },
     {
       "id": 104,
-      "category": "Gia đình",
-      "text": "Câu hỏi về scent makes them feel most at home?",
+      "category": "Home",
+      "text": "Mùi hương nào khiến người ấy cảm thấy thân thuộc như ở nhà?",
       "options": [
-        "Fresh linen",
+        "Vải mới giặt",
         "Cà phê",
         "Vani",
-        "Woods & Rain",
-        "Citrus",
-        "Flowers",
-        "Sandalwood",
-        "Baked goods"
+        "Hương gỗ và mưa",
+        "Cam chanh",
+        "Hoa",
+        "Gỗ đàn hương",
+        "Bánh mới nướng"
       ]
     },
     {
       "id": 105,
-      "category": "Gia đình",
-      "text": "Họ thích do nào nhất?",
+      "category": "Home",
+      "text": "Người ấy nghĩ sao khi có khách ghé nhà bất chợt?",
       "options": [
-        "Love it",
-        "Heads-up only",
-        "Scheduled",
-        "No pop-ins",
-        "Family only",
-        "Weekends only",
-        "Short visits",
-        "Depends on mood"
+        "Rất thích",
+        "Chỉ cần báo trước một tiếng",
+        "Phải hẹn lịch trước",
+        "Không thích ghé đột xuất",
+        "Chỉ thoải mái với người nhà",
+        "Chỉ vào cuối tuần",
+        "Ghé một lát thì được",
+        "Tùy tâm trạng"
       ]
     },
     {
       "id": 106,
-      "category": "Gia đình",
-      "text": "Câu hỏi về is their lighting preference?",
+      "category": "Home",
+      "text": "Người ấy thích ánh sáng trong nhà như thế nào?",
       "options": [
-        "Bright & s (vi)unny",
-        "Dim & moody",
-        "Warm lamps",
-        "RGB & Neon",
-        "Natural light",
-        "Ceiling (vi) lights",
-        "Fairy lights",
-        "Candles"
+        "Sáng bừng đầy nắng",
+        "Mờ dịu có chiều sâu",
+        "Đèn ánh vàng ấm",
+        "Đèn nhiều màu rực rỡ",
+        "Ánh sáng tự nhiên",
+        "Đèn trần",
+        "Dây đèn lung linh",
+        "Ánh nến"
       ]
     },
     {
       "id": 107,
-      "category": "Gia đình",
-      "text": "Họ thích kind nào nhất?",
+      "category": "Home",
+      "text": "Người ấy thuộc kiểu người trồng cây nào?",
       "options": [
-        "Jungalist",
-        "Easy ones only",
-        "Artificial",
-        "Plant s (vi)layer",
-        "Succulents",
-        "Veggie gardener",
-        "Flowers",
-        "None"
+        "Biến nhà thành khu rừng",
+        "Chỉ trồng cây dễ chăm",
+        "Chọn cây giả cho tiện",
+        "Trồng cây nào héo cây đó",
+        "Mê sen đá",
+        "Thích trồng rau",
+        "Thích trồng hoa",
+        "Không trồng cây"
       ]
     },
     {
       "id": 108,
-      "category": "Gia đình",
-      "text": "Câu hỏi về is their temperature 'sweet spot'?",
+      "category": "Home",
+      "text": "Không khí trong nhà thế nào thì người ấy thấy dễ chịu nhất?",
       "options": [
-        "Ice box",
-        "Nhiệt đới",
-        "Perfect 24°C",
-        "Cool breeze",
-        "Cozy warmth",
-        "Humidity",
-        "Crisp air",
-        "AC always"
+        "Lạnh như tủ đá",
+        "Ấm kiểu nhiệt đới",
+        "Đúng 24°C là chuẩn",
+        "Có gió mát",
+        "Ấm áp dễ chịu",
+        "Có độ ẩm",
+        "Se lạnh trong lành",
+        "Luôn bật điều hòa"
       ]
     },
     {
       "id": 109,
-      "category": "Gia đình",
-      "text": "Họ thích do nào nhất?",
+      "category": "Home",
+      "text": "Người ấy thích trang trí nhà bằng gì?",
       "options": [
-        "Family photos",
-        "Art prints",
-        "Books",
-        "Records",
-        "Functional items",
-        "Travel s (vi)ouvenirs",
-        "Minimalist",
-        "Plants"
+        "Ảnh gia đình",
+        "Tranh nghệ thuật",
+        "Sách",
+        "Đĩa nhạc",
+        "Đồ dùng có công năng",
+        "Quà lưu niệm du lịch",
+        "Càng ít đồ càng tốt",
+        "Cây xanh"
       ]
     },
     {
       "id": 110,
-      "category": "Gia đình",
-      "text": "Câu hỏi về is their sleep environment requirement?",
+      "category": "Home",
+      "text": "Người ấy cần điều gì để ngủ ngon?",
       "options": [
-        "Total s (vi)ilence",
-        "White noise",
-        "TV on",
-        "Window open",
-        "Pitch black",
-        "Fan on",
-        "Weighted blanket",
-        "Soft music"
+        "Yên lặng hoàn toàn",
+        "Tiếng ồn trắng",
+        "Tivi đang bật",
+        "Cửa sổ mở",
+        "Tối hoàn toàn",
+        "Quạt đang chạy",
+        "Chăn có trọng lượng",
+        "Nhạc nhẹ"
       ]
     },
     {
       "id": 111,
-      "category": "Phát triển",
-      "text": "Câu hỏi về is their primary motivator at work?",
+      "category": "Growth",
+      "text": "Động lực lớn nhất của người ấy trong công việc là gì?",
       "options": [
-        "Money",
-        "Impact",
-        "Creative freedom",
-        "Recognition",
-        "Stability",
-        "Phát triển",
-        "Community",
-        "Flexibility"
+        "Thu nhập",
+        "Tạo ảnh hưởng tích cực",
+        "Tự do sáng tạo",
+        "Được ghi nhận",
+        "Sự ổn định",
+        "Phát triển bản thân",
+        "Gắn kết cộng đồng",
+        "Sự linh hoạt"
       ]
     },
     {
       "id": 112,
-      "category": "Phát triển",
-      "text": "Câu hỏi về is their 'dream' career pivot?",
+      "category": "Growth",
+      "text": "Nếu được đổi nghề theo mơ ước, người ấy sẽ chọn gì?",
       "options": [
-        "Artist",
-        "Small business",
-        "Tech mogul",
-        "Charity",
-        "Travel blogger",
-        "Teacher",
-        "Writer",
-        "Farmer"
+        "Nghệ sĩ",
+        "Chủ cửa hàng nhỏ",
+        "Doanh nhân công nghệ",
+        "Làm thiện nguyện",
+        "Người viết về du lịch",
+        "Giáo viên",
+        "Nhà văn",
+        "Nông dân"
       ]
     },
     {
       "id": 113,
-      "category": "Phát triển",
-      "text": "Họ thích do nào nhất?",
+      "category": "Growth",
+      "text": "Gặp một thất bại lớn, người ấy thường phản ứng thế nào?",
       "options": [
-        "Analyze & pivot",
-        "Vent",
-        "Sleep it off",
-        "Quiet s (vi)tress",
-        "Ask for help",
-        "Try harder",
-        "Distract",
-        "Journal"
+        "Phân tích rồi đổi hướng",
+        "Trút bầu tâm sự",
+        "Ngủ một giấc cho qua",
+        "Âm thầm chịu áp lực",
+        "Nhờ giúp đỡ",
+        "Cố gắng hơn nữa",
+        "Tìm việc khác để quên đi",
+        "Viết nhật ký"
       ]
     },
     {
       "id": 114,
-      "category": "Phát triển",
-      "text": "Họ thích kind nào nhất?",
+      "category": "Growth",
+      "text": "Người ấy muốn để lại điều gì có ý nghĩa cho đời?",
       "options": [
-        "Knowledge",
-        "Wealth",
-        "Kindness",
+        "Tri thức",
+        "Tài sản",
+        "Lòng tốt",
         "Nghệ thuật",
-        "Family",
-        "Innovation",
-        "Justice",
-        "Memories"
+        "Một gia đình gắn bó",
+        "Sự đổi mới",
+        "Công bằng",
+        "Những kỷ niệm đẹp"
       ]
     },
     {
       "id": 115,
-      "category": "Phát triển",
-      "text": "Câu hỏi về is their learning style?",
+      "category": "Growth",
+      "text": "Người ấy học hiệu quả nhất bằng cách nào?",
       "options": [
-        "Visual",
-        "Videos",
-        "Đọc sách",
-        "Hands-on",
-        "Discussing (vi)",
-        "Listening (vi)",
-        "Viết lách",
-        "Trial & error"
+        "Nhìn hình ảnh và sơ đồ",
+        "Xem video",
+        "Đọc tài liệu",
+        "Thực hành",
+        "Thảo luận",
+        "Lắng nghe",
+        "Viết ghi chép",
+        "Thử và rút kinh nghiệm"
       ]
     },
     {
       "id": 116,
-      "category": "Phát triển",
-      "text": "Câu hỏi về is their biggest 'bucket list' goal?",
+      "category": "Growth",
+      "text": "Điều lớn nhất người ấy muốn làm được trong đời là gì?",
       "options": [
-        "Financial freedom",
-        "Writing (vi) a book",
-        "New language",
-        "Extreme s (vi)port",
-        "World travel",
-        "House",
-        "Skill mastery",
-        "Philanthropy"
+        "Tự do tài chính",
+        "Viết một cuốn sách",
+        "Học một ngoại ngữ mới",
+        "Thử thể thao mạo hiểm",
+        "Du lịch vòng quanh thế giới",
+        "Có ngôi nhà riêng",
+        "Thành thạo một kỹ năng",
+        "Làm từ thiện"
       ]
     },
     {
       "id": 117,
-      "category": "Phát triển",
-      "text": "Họ thích do nào nhất?",
+      "category": "Growth",
+      "text": "Người ấy cảm thấy thế nào khi nói trước đám đông?",
       "options": [
-        "Natural pro",
-        "Terrified",
-        "Doable with prep",
-        "Avoid at all costs",
-        "Excited",
-        "Nervous but good",
-        "Short & s (vi)weet",
-        "Confident"
+        "Có năng khiếu tự nhiên",
+        "Rất sợ",
+        "Chuẩn bị kỹ thì làm được",
+        "Tránh bằng mọi giá",
+        "Rất hào hứng",
+        "Run nhưng vẫn làm tốt",
+        "Chỉ muốn nói ngắn gọn",
+        "Tự tin"
       ]
     },
     {
       "id": 118,
-      "category": "Phát triển",
-      "text": "Câu hỏi về is their definition of success?",
+      "category": "Growth",
+      "text": "Với người ấy, thành công nghĩa là gì?",
       "options": [
-        "Peace of mind",
-        "Social s (vi)tatus",
-        "Family help",
-        "Constant growth",
-        "Du lịch",
-        "Creative output",
-        "Wealth",
-        "Happiness"
+        "Tâm trí bình yên",
+        "Có vị thế xã hội",
+        "Giúp được gia đình",
+        "Không ngừng tiến bộ",
+        "Được đi nhiều nơi",
+        "Tạo ra điều sáng tạo",
+        "Giàu có",
+        "Hạnh phúc"
       ]
     },
     {
       "id": 119,
-      "category": "Phát triển",
-      "text": "Họ thích skill nào nhất?",
+      "category": "Growth",
+      "text": "Nếu có thể giỏi ngay một kỹ năng, người ấy sẽ chọn gì?",
       "options": [
-        "Coding (vi)",
-        "Multi-ling (vi)ual",
-        "Musical",
+        "Lập trình",
+        "Nói nhiều ngoại ngữ",
+        "Chơi nhạc",
         "Nấu ăn",
-        "Martial arts",
-        "Investing (vi)",
+        "Võ thuật",
+        "Đầu tư",
         "Viết lách",
-        "Public s (vi)peaking (vi)"
+        "Nói trước đám đông"
       ]
     },
     {
       "id": 120,
-      "category": "Phát triển",
-      "text": "Câu hỏi về is their biggest productivity hurdle?",
+      "category": "Growth",
+      "text": "Điều gì cản trở hiệu suất làm việc của người ấy nhiều nhất?",
       "options": [
-        "Procrastination",
-        "Perfectionism",
-        "Distractions",
-        "Overthinking (vi)",
-        "Lack of energy",
-        "Multitasking (vi)",
-        "Burnout",
-        "Disorganization"
+        "Trì hoãn",
+        "Cầu toàn",
+        "Dễ xao nhãng",
+        "Suy nghĩ quá nhiều",
+        "Thiếu năng lượng",
+        "Ôm đồm nhiều việc",
+        "Kiệt sức",
+        "Thiếu ngăn nắp"
       ]
     },
     {
       "id": 121,
-      "category": "Giá trị",
-      "text": "Câu hỏi về is their primary love language?",
+      "category": "Values",
+      "text": "Người ấy cảm nhận tình yêu rõ nhất qua điều gì?",
       "options": [
-        "Acts of Service",
-        "Words of Affirmation",
-        "Quality Time",
-        "Gifts",
-        "Physical Touch",
-        "Support",
-        "Loyalty",
-        "Space"
+        "Hành động quan tâm",
+        "Lời nói yêu thương",
+        "Thời gian chất lượng bên nhau",
+        "Quà tặng",
+        "Cử chỉ gần gũi",
+        "Sự ủng hộ",
+        "Lòng chung thủy",
+        "Không gian riêng"
       ]
     },
     {
       "id": 122,
-      "category": "Giá trị",
-      "text": "Họ thích do nào nhất?",
+      "category": "Values",
+      "text": "Người ấy nhìn về tương lai với tâm thế nào?",
       "options": [
-        "Optimistic",
-        "Realistic",
-        "Lên kế hoạch",
-        "Anxious",
-        "Ngẫu hứng",
-        "Excited",
-        "Cautious",
-        "Idealistic"
+        "Lạc quan",
+        "Thực tế",
+        "Có kế hoạch rõ ràng",
+        "Lo lắng",
+        "Đến đâu hay đến đó",
+        "Háo hức",
+        "Thận trọng",
+        "Đầy lý tưởng"
       ]
     },
     {
       "id": 123,
-      "category": "Giá trị",
-      "text": "Họ thích quality nào nhất?",
+      "category": "Values",
+      "text": "Người ấy ngưỡng mộ phẩm chất nào nhất ở người khác?",
       "options": [
-        "Honesty",
-        "Resilience",
-        "Humor",
-        "Intelligence",
-        "Kindness",
-        "Ambition",
-        "Loyalty",
-        "Authenticity"
+        "Trung thực",
+        "Kiên cường",
+        "Hài hước",
+        "Thông minh",
+        "Tử tế",
+        "Có hoài bão",
+        "Trung thành",
+        "Sống thật với mình"
       ]
     },
     {
       "id": 124,
-      "category": "Giá trị",
-      "text": "Câu hỏi về is their stance on 'second chances'?",
+      "category": "Values",
+      "text": "Người ấy nghĩ sao về việc cho ai đó cơ hội thứ hai?",
       "options": [
-        "Always give",
-        "Case-by-case",
-        "Rarely",
-        "One chance only",
-        "For family only",
-        "If earned",
-        "Never",
-        "Soft-hearted"
+        "Luôn sẵn lòng",
+        "Tùy từng trường hợp",
+        "Hiếm khi",
+        "Chỉ thêm một cơ hội nữa",
+        "Chỉ với người nhà",
+        "Khi họ chứng tỏ xứng đáng",
+        "Không bao giờ",
+        "Dễ mềm lòng"
       ]
     },
     {
       "id": 125,
-      "category": "Giá trị",
-      "text": "Họ thích do nào nhất?",
+      "category": "Values",
+      "text": "Khi có mâu thuẫn, người ấy thường xử lý thế nào?",
       "options": [
-        "Address immediately",
-        "Give s (vi)pace",
-        "Avoid",
-        "Logical debate",
-        "Compromise",
-        "Vent",
-        "Mediation",
-        "Silence"
+        "Nói rõ ngay",
+        "Cho nhau không gian",
+        "Né tránh",
+        "Tranh luận bằng lý lẽ",
+        "Tìm cách thỏa hiệp",
+        "Trút cảm xúc ra",
+        "Nhờ người hòa giải",
+        "Giữ im lặng"
       ]
     },
     {
       "id": 126,
-      "category": "Giá trị",
-      "text": "Họ thích do nào nhất?",
+      "category": "Values",
+      "text": "Người ấy coi trọng điều gì nhất trong cuộc sống?",
       "options": [
-        "Experiences",
-        "Stability",
-        "Knowledge",
-        "Relationships",
-        "Career",
+        "Trải nghiệm",
+        "Sự ổn định",
+        "Tri thức",
+        "Các mối quan hệ",
+        "Sự nghiệp",
         "Phiêu lưu",
-        "Peace",
-        "Purpose"
+        "Bình yên",
+        "Sống có mục đích"
       ]
     },
     {
       "id": 127,
-      "category": "Giá trị",
-      "text": "Câu hỏi về is their 'pet peeve' level?",
+      "category": "Values",
+      "text": "Người ấy thường khó chịu với những điều nhỏ nhặt ở mức nào?",
       "options": [
-        "Chill",
-        "Easily annoyed",
-        "Selective",
-        "Clean freak",
-        "Noise s (vi)ensitive",
-        "Time s (vi)ensitive",
-        "Highly observant",
-        "Thư giãn"
+        "Dễ tính, ít để bụng",
+        "Rất dễ bực mình",
+        "Chỉ khó chịu vài chuyện",
+        "Khó chịu khi bừa bộn",
+        "Nhạy cảm với tiếng ồn",
+        "Khó chịu khi trễ giờ",
+        "Để ý từng chi tiết",
+        "Biết bỏ qua cho nhẹ lòng"
       ]
     },
     {
       "id": 128,
-      "category": "Giá trị",
-      "text": "Họ thích do nào nhất?",
+      "category": "Values",
+      "text": "Khi căng thẳng, người ấy thường có biểu hiện gì?",
       "options": [
-        "Quiet",
-        "Irritable",
-        "Overwork",
-        "Procrastinate",
-        "Fidgety",
-        "Emotional",
-        "Logical",
-        "Sleepy"
+        "Ít nói",
+        "Dễ cáu",
+        "Làm việc quá sức",
+        "Trì hoãn mọi thứ",
+        "Bồn chồn",
+        "Dễ xúc động",
+        "Cố phân tích lý trí",
+        "Buồn ngủ"
       ]
     },
     {
       "id": 129,
-      "category": "Giá trị",
-      "text": "Câu hỏi về makes them feel most 'alive'?",
+      "category": "Values",
+      "text": "Điều gì khiến người ấy cảm thấy mình đang sống trọn vẹn nhất?",
       "options": [
-        "Adrenaline",
-        "Deep connection",
-        "Solving (vi) problems",
-        "Creating (vi)",
-        "Nature",
-        "Du lịch",
-        "Competition",
-        "Học tập"
+        "Cảm giác mạnh",
+        "Kết nối sâu sắc",
+        "Giải quyết vấn đề",
+        "Sáng tạo",
+        "Hòa mình vào thiên nhiên",
+        "Đi du lịch",
+        "Thi đấu cạnh tranh",
+        "Học điều mới"
       ]
     },
     {
       "id": 130,
-      "category": "Giá trị",
-      "text": "Câu hỏi về is their 'spirit animal' vibe?",
+      "category": "Values",
+      "text": "Nếu ví tính cách người ấy với một con vật, bạn sẽ chọn gì?",
       "options": [
-        "Golden Retriever",
-        "Independent Cat",
-        "Busy Bee",
-        "Wise Owl",
-        "Lone Wolf",
-        "Playful Dolphin",
-        "Steady Bear",
-        "Free Bird"
+        "Chú chó thân thiện",
+        "Mèo độc lập",
+        "Ong chăm chỉ",
+        "Cú thông thái",
+        "Sói đơn độc",
+        "Cá heo tinh nghịch",
+        "Gấu điềm tĩnh",
+        "Chim tự do"
       ]
     }
   ]

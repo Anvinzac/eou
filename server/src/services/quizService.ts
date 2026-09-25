@@ -31,11 +31,17 @@ const questionSchema = z.object({
   correctAnswer: z.string().optional().default(''),
   distractors: z.array(z.string()).optional().default([]),
   isCustom: z.boolean().optional(),
+  emoji: z.string().max(16).optional().default(''),
 });
 
 export const createQuizBodySchema = z.object({
-  title: z.string().min(1).max(80),
+  title: z.string().trim().min(1).max(80),
   questions: z.array(questionSchema).min(1).max(MAX_QUESTIONS),
+  appearance: z.object({
+    theme: z.enum(['peach', 'lavender', 'mint', 'sunshine', 'midnight', 'rose']),
+    style: z.enum(['playful', 'editorial', 'minimal']),
+  }).optional(),
+  isOpen: z.boolean().optional(),
 });
 
 export type CreateQuizBody = z.infer<typeof createQuizBodySchema>;
@@ -58,6 +64,7 @@ function toQuestionRows(quizId: string, questions: CreateQuizBody['questions']) 
     correct_answers: [q.correctAnswer || ''],
     distractor_answers: (q.distractors || []).slice(0, 3),
     is_custom: !!q.isCustom,
+    emoji: q.emoji || '',
   }));
 }
 
@@ -77,6 +84,8 @@ export const QuizService = {
       user_id: userId,
       title: body.title.trim(),
       max_questions: MAX_QUESTIONS,
+      ...(body.appearance ? { appearance: body.appearance } : {}),
+      ...(body.isOpen !== undefined ? { is_open: body.isOpen } : {}),
     });
     const questions = await QuizModel.insertQuestions(toQuestionRows(quiz.id, body.questions));
     TelemetryService.emitSafe({
@@ -96,6 +105,8 @@ export const QuizService = {
       user_id: null,
       title: body.title.trim(),
       max_questions: MAX_QUESTIONS,
+      ...(body.appearance ? { appearance: body.appearance } : {}),
+      ...(body.isOpen !== undefined ? { is_open: body.isOpen } : {}),
       draft_token: draftToken,
     });
     const questions = await QuizModel.insertQuestions(toQuestionRows(quiz.id, body.questions));
@@ -132,6 +143,7 @@ export const QuizService = {
       category: q.category,
       question_text: q.question_text,
       order_number: q.order_number,
+      emoji: q.emoji || '',
       distractor_answers: q.distractor_answers,
       // Include all choices without revealing which are correct:
       choices: [...(q.correct_answers || []), ...(q.distractor_answers || [])],

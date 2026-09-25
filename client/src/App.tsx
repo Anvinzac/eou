@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { AppLanguageSwitcher } from "@/components/LanguageSwitcher";
 import Index from "./views/Index";
 import Auth from "./views/Auth";
 import CreateQuiz from "./views/CreateQuiz";
@@ -31,8 +31,8 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <LanguageSwitcher />
         <BrowserRouter>
+          <AppLanguageSwitcher />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />

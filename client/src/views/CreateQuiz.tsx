@@ -1,63 +1,87 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { motion, AnimatePresence, MotionConfig, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import {
   ArrowLeft, ArrowRight, Check, Trash2, ArrowUp, ArrowDown, Pencil, X, Shuffle, Plus,
-  Package, ListChecks, MoveVertical, KeyRound, Eye, Sparkles, Wand2, Heart, PartyPopper,
+  Package, ListChecks, Sparkles, Wand2, Heart, PartyPopper,
   Loader2,
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { authApi, catalogApi, distractorsApi, quizzesApi } from '@/api';
 import { containsProfanity } from '@/lib/profanity';
 import { CATEGORIES, getCategoryMeta } from '@/lib/categories';
 import type { QuestionData, SelectedQuestion } from '@/types/quiz';
 import PacksStep from '@/components/quiz/PacksStep';
+import { VibeStep, StudioPreview, StudioActions, EmojiPicker, PublishSettings, PublishedQuiz } from '@/components/quiz/QuizStudio';
+import { QUIZ_THEMES, QUIZ_STYLES, resolveQuizAppearance, type QuizAppearance } from '@/lib/quizAppearance';
 
 const MIN_QUESTIONS = 5;
 const MAX_QUESTIONS = 10;
-const INTRO_SEEN_KEY = 'quiz_intro_seen_v1';
-
-type Step = 'intro' | 'packs' | 'select' | 'reorder' | 'answers' | 'review';
-
-const STEP_META: Record<Exclude<Step, 'intro'>, { label: string; icon: any }> = {
-  packs:   { label: 'Pack',     icon: Package },
-  select:  { label: 'Pick',     icon: ListChecks },
-  reorder: { label: 'Order',    icon: MoveVertical },
-  answers: { label: 'Answer',   icon: KeyRound },
-  review:  { label: 'Review',   icon: Eye },
-};
-const STEP_ORDER: Exclude<Step, 'intro'>[] = ['packs', 'select', 'reorder', 'answers', 'review'];
+type Step = 'vibe' | 'packs' | 'select' | 'reorder' | 'answers' | 'review';
+const STUDIO_PHASES = [
+  { step: 'vibe' },
+  { step: 'select' },
+  { step: 'answers' },
+  { step: 'review' },
+] as const;
 
 const DRAFT_TOKEN_KEY = 'quiz_draft_token';
 const DRAFT_QUIZ_ID_KEY = 'quiz_draft_id';
 
 export default function CreateQuiz() {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const [step, setStep] = useState<Step>(() => {
-    if (typeof window === 'undefined') return 'packs';
-    return localStorage.getItem(INTRO_SEEN_KEY) ? 'packs' : 'intro';
-  });
+  const [step, setStep] = useState<Step>('vibe');
+  const [appearance, setAppearance] = useState<QuizAppearance>(() => resolveQuizAppearance({
+    theme: QUIZ_THEMES.find(theme => theme.id === searchParams.get('theme'))?.id,
+    style: QUIZ_STYLES.find(style => style.id === searchParams.get('style'))?.id,
+  }));
+  const [isOpen, setIsOpen] = useState(false);
+  const [publishedId, setPublishedId] = useState<string | null>(null);
+  const [previewId, setPreviewId] = useState<number>();
+  const savingRef = useRef(false);
+  const stepHeading = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<SelectedQuestion[]>([]);
   const [allQuestions, setAllQuestions] = useState<QuestionData[]>([]);
   const [activeCategoryIdx, setActiveCategoryIdx] = useState(0);
-  const [quizTitle, setQuizTitle] = useState('My Quiz');
-  const [editingTitle, setEditingTitle] = useState(false);
-  const [tempTitle, setTempTitle] = useState('');
-  const titleInputRef = useRef<HTMLInputElement>(null);
+  const [customTitle, setQuizTitle] = useState<string | null>(null);
+  const quizTitle = customTitle ?? t('studio.default_title');
+  const [catalogLoading, setCatalogLoading] = useState(true);
+  const [catalogError, setCatalogError] = useState(false);
+  const [catalogRetry, setCatalogRetry] = useState(0);
+  const locale = i18n.resolvedLanguage === 'en' ? 'en' : 'vi';
 
   useEffect(() => {
-    catalogApi.preferenceQuestions().then((data) => {
-      setAllQuestions((data.questions || []) as QuestionData[]);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    stepHeading.current?.focus({ preventScroll: true });
+  }, [step]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setCatalogLoading(true);
+    setCatalogError(false);
+    setAllQuestions([]);
+    catalogApi.preferenceQuestions(locale).then((data) => {
+      if (!cancelled) setAllQuestions((data.questions || []) as QuestionData[]);
     }).catch(() => {
-      toast.error('Unable to load question catalog');
+      if (!cancelled) {
+        setCatalogError(true);
+        toast.error(t('studio.catalog_failed'));
+      }
+    }).finally(() => {
+      if (!cancelled) setCatalogLoading(false);
     });
-  }, []);
+    return () => { cancelled = true; };
+  }, [locale, catalogRetry, t]);
 
   const questionsByCategory = useMemo(() => {
     const map: Record<string, QuestionData[]> = {};
@@ -75,7 +99,7 @@ export default function CreateQuiz() {
   const addCustomQuestion = useCallback((text: string) => {
     setSelected(prev => {
       if (prev.length >= MAX_QUESTIONS) {
-        toast.error(`Maximum ${MAX_QUESTIONS} questions allowed`);
+        toast.error(t('studio.max_questions', { count: MAX_QUESTIONS }));
         return prev;
       }
       customIdCounter.current += 1;
@@ -90,7 +114,7 @@ export default function CreateQuiz() {
         isCustom: true,
       }];
     });
-  }, []);
+  }, [t]);
 
   // Link draft quiz to user after login
   useEffect(() => {
@@ -111,10 +135,10 @@ export default function CreateQuiz() {
     setSelected(prev => {
       const exists = prev.find(s => s.questionId === q.id);
       if (exists) {
-        return prev.filter(s => s.questionId !== q.id);
+        return prev.filter(s => s.questionId !== q.id).map((question, i) => ({ ...question, orderNumber: i + 1 }));
       }
       if (prev.length >= MAX_QUESTIONS) {
-        toast.error(`Maximum ${MAX_QUESTIONS} questions allowed`);
+        toast.error(t('studio.max_questions', { count: MAX_QUESTIONS }));
         return prev;
       }
       return [...prev, {
@@ -128,7 +152,7 @@ export default function CreateQuiz() {
         isCustom: false,
       }];
     });
-  }, []);
+  }, [t]);
 
   const fillRandomQuestions = useCallback(() => {
     setSelected(prev => {
@@ -175,179 +199,116 @@ export default function CreateQuiz() {
     const catIdx = CATEGORIES.findIndex(c => c.key === q.category);
     if (catIdx >= 0) setActiveCategoryIdx(catIdx);
     setStep('select');
-    toast.info(`Removed "${q.text.slice(0, 40)}..." — pick a replacement!`);
+    toast.info(t('studio.removed', { text: q.text.slice(0, 40) }));
   };
 
   const handleNextToReorder = () => {
-    if (selected.length === 0) {
-      toast.error('Select at least 1 question');
-      return;
-    }
     if (selected.length < MIN_QUESTIONS) {
-      const needed = MIN_QUESTIONS - selected.length;
-      toast(`You need at least ${MIN_QUESTIONS} questions. Adding ${needed} random questions.`, {
-        action: {
-          label: 'Fill & Continue',
-          onClick: () => {
-            fillRandomQuestions();
-            setStep('reorder');
-          },
-        },
-      });
+      toast.info(t('studio.min_questions', { count: MIN_QUESTIONS }));
       return;
     }
     setStep('reorder');
   };
 
   const handleSelectPack = (questions: SelectedQuestion[]) => {
-    setSelected(questions);
+    setSelected(questions.slice(0, MAX_QUESTIONS));
+    setPreviewId(undefined);
     setStep('select');
-    toast.success('Pack loaded! Add more questions or proceed.');
+    toast.success(t('studio.pack_loaded'));
   };
 
   const toApiQuestions = () =>
-    selected.map((q) => ({
+    selected.map((q, index) => ({
       questionId: q.questionId,
       category: q.category,
       text: q.text,
-      orderNumber: q.orderNumber,
+      orderNumber: index + 1,
+      emoji: q.emoji || '',
       correctAnswer: q.isCustom && q.customCorrect ? q.customCorrect : q.correctAnswer,
       distractors: q.isCustom && q.customDistractors?.length === 3 ? q.customDistractors : q.distractors,
       isCustom: q.isCustom,
     }));
 
   const saveQuiz = async () => {
+    if (savingRef.current) return;
+    if (!quizTitle.trim() || selected.length < MIN_QUESTIONS || selected.some(q => !q.correctAnswer.trim() || q.distractors.filter(d => d.trim()).length !== 3)) {
+      toast.error(t('studio.incomplete'));
+      return;
+    }
+    savingRef.current = true;
     if (!user) {
       try {
-        const { quiz, draftToken } = await quizzesApi.createDraft(quizTitle, toApiQuestions());
+        const { quiz, draftToken } = await quizzesApi.createDraft(quizTitle, toApiQuestions(), { appearance, isOpen });
         localStorage.setItem(DRAFT_TOKEN_KEY, draftToken);
         localStorage.setItem(DRAFT_QUIZ_ID_KEY, quiz.id);
-        toast.success('Quiz saved as draft! Sign in to manage it.');
+        toast.success(t('create_quiz.toast.draft_saved'));
         navigate('/auth');
       } catch (err: any) {
-        toast.error(err.message || 'Failed to save draft');
+        toast.error(t('create_quiz.toast.draft_failed'));
+      } finally {
+        savingRef.current = false;
       }
       return;
     }
 
-    const incomplete = selected.find(q => !q.correctAnswer || q.distractors.length < 3);
-    if (incomplete) {
-      toast.error('Please set answers for all questions');
-      return;
-    }
     try {
-      await quizzesApi.create(quizTitle, toApiQuestions());
-      toast.success('Quiz saved!');
-      navigate('/dashboard');
+      const { quiz } = await quizzesApi.create(quizTitle, toApiQuestions(), { appearance, isOpen });
+      setPublishedId(quiz.id);
+      window.scrollTo({ top: 0, behavior: 'instant' });
     } catch (err: any) {
-      toast.error(err.message || 'Failed to save quiz');
+      toast.error(t('create_quiz.toast.save_failed'));
+    } finally {
+      savingRef.current = false;
     }
   };
 
-  const stepIndex = STEP_ORDER.indexOf(step as any);
-  const showStepper = step !== 'intro';
-
+  const phase = step === 'vibe' ? 0 : step === 'answers' ? 2 : step === 'review' ? 3 : 1;
+  const answersReady = selected.length >= MIN_QUESTIONS && selected.every(q => q.correctAnswer.trim() && q.distractors.length === 3 && q.distractors.every(d => d.trim()));
   const handleBack = () => {
-    if (step === 'intro') navigate('/');
-    else if (step === 'packs') {
-      // Allow re-entering the intro if user wants
-      localStorage.removeItem(INTRO_SEEN_KEY);
-      setStep('intro');
-    }
-    else if (step === 'select') setStep('packs');
-    else if (step === 'reorder') setStep('select');
+    if (step === 'vibe') navigate('/');
+    else if (step === 'select') setStep('vibe');
+    else if (step === 'packs' || step === 'reorder') setStep('select');
     else if (step === 'answers') setStep('reorder');
     else setStep('answers');
   };
-
-  const dismissIntro = () => {
-    localStorage.setItem(INTRO_SEEN_KEY, '1');
-    setStep('packs');
+  const updateEmoji = (questionId: number, emoji: string) => {
+    setSelected(prev => prev.map(q => q.questionId === questionId ? { ...q, emoji } : q));
+    setPreviewId(questionId);
   };
 
   return (
-    <div className="relative min-h-screen bg-background overflow-hidden">
-      {/* Ambient backdrop (subtle on creator screens, vivid on intro) */}
-      <div className={`pointer-events-none fixed inset-0 -z-10 transition-opacity duration-700 ${step === 'intro' ? 'opacity-100' : 'opacity-40'}`}>
-        <div className="absolute inset-0 aurora-bg" />
-        <div className="absolute inset-0 mesh-dots" />
-      </div>
-
-      {/* Header with editable title + segmented stepper */}
-      {showStepper && (
-        <header className="sticky top-0 z-20 border-b border-border/60 glass px-4 py-3">
-          <div className="mx-auto flex max-w-3xl items-center justify-between gap-2">
-            <Button variant="ghost" size="sm" onClick={handleBack} className="rounded-full">
-              <ArrowLeft className="mr-1 h-4 w-4" /> Back
-            </Button>
-
-            <div className="flex-1 mx-2 text-center">
-              {editingTitle ? (
-                <div className="flex items-center justify-center gap-2">
-                  <Input
-                    ref={titleInputRef}
-                    value={tempTitle}
-                    onChange={e => setTempTitle(e.target.value)}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter') {
-                        setQuizTitle(tempTitle.trim() || 'My Quiz');
-                        setEditingTitle(false);
-                      }
-                      if (e.key === 'Escape') setEditingTitle(false);
-                    }}
-                    className="h-8 max-w-[200px] text-center text-sm font-bold rounded-lg"
-                    maxLength={50}
-                    autoFocus
-                  />
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => {
-                    setQuizTitle(tempTitle.trim() || 'My Quiz');
-                    setEditingTitle(false);
-                  }}>
-                    <Check className="h-3 w-3" />
-                  </Button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => { setTempTitle(''); setEditingTitle(true); }}
-                  className="inline-flex items-center gap-1.5 group"
-                >
-                  <span className="text-sm font-bold font-display">{quizTitle}</span>
-                  <Pencil className="h-3 w-3 text-muted-foreground transition-transform group-hover:rotate-12" />
-                </button>
-              )}
-
-              {/* Segmented animated stepper */}
-              <SegmentedStepper currentIdx={stepIndex} />
-            </div>
-
-            {step === 'select' && (
-              remaining > 0 ? (
-                <Badge variant="secondary" className="text-sm font-bold rounded-full">
-                  {remaining} left
-                </Badge>
-              ) : (
-                <Button size="sm" onClick={handleNextToReorder} className="gradient-coral text-primary-foreground text-xs rounded-full shimmer-sweep overflow-hidden relative">
-                  Next <ArrowRight className="ml-1 h-3 w-3" />
-                </Button>
-              )
-            )}
-            {step !== 'select' && <div className="w-16" />}
+    <MotionConfig reducedMotion="user">
+    <div className="quiz-studio min-h-screen">
+      <header className="studio-header">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+          <button onClick={() => navigate('/')} className="flex items-center gap-2.5" aria-label={t('common.home')}><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#e8dcf2] text-xl">✳</span><span className="font-display text-xl font-bold tracking-tight">eou<span className="text-[#a17caf]">.</span></span><span className="ml-2 hidden border-l border-[#ded5e4] pl-4 text-xs text-[#827788] sm:block">{t('studio.name')}</span></button>
+          <div className="flex items-center gap-4"><span className="hidden items-center gap-2 text-[11px] text-[#827788] lg:flex"><Heart className="h-3.5 w-3.5" /> {t('studio.tagline')}</span><LanguageSwitcher /></div>
+        </div>
+      </header>
+      {publishedId ? <main className="px-4 py-8 sm:px-5 sm:py-16"><PublishedQuiz id={publishedId} title={quizTitle} appearance={appearance} isOpen={isOpen} onDashboard={() => navigate('/dashboard')} /></main> : <>
+      <nav className="studio-nav" aria-label={t('studio.navigation')}>
+        <div className="studio-nav-inner mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 sm:px-8">
+          <button onClick={handleBack} className="studio-back flex min-h-11 min-w-11 items-center justify-center gap-1 py-5 text-xs text-[#827788]" aria-label={t('common.back')}><ArrowLeft className="h-3.5 w-3.5" /><span className="hidden sm:inline">{t('common.back')}</span></button>
+          <div className="studio-phases flex flex-1 justify-center gap-3 sm:gap-8">
+            {STUDIO_PHASES.map((item, index) => <button key={item.step} type="button" onClick={() => setStep(item.step)} aria-label={t(`studio.phases.${item.step}`)} aria-current={phase === index ? 'step' : undefined} disabled={(index > 0 && !quizTitle.trim()) || (index === 2 && selected.length < MIN_QUESTIONS) || (index === 3 && !answersReady)} className={`studio-nav-item ${phase === index ? 'is-active' : ''}`}><span className="studio-step-number">{index < phase ? <Check className="h-3 w-3" /> : `0${index + 1}`}</span><span className="hidden md:inline">{t(`studio.phases.${item.step}`)}</span><span className="md:hidden">{t(`studio.short_phases.${item.step}`)}</span></button>)}
           </div>
-        </header>
-      )}
-
-      <div className={`relative mx-auto max-w-3xl px-4 ${showStepper ? 'py-6' : 'py-0'}`}>
+          <span className="hidden w-12 text-right text-[10px] text-[#a294aa] md:block">{phase + 1} / 4</span>
+        </div>
+      </nav>
+      <main className="studio-layout">
+        <div ref={stepHeading} tabIndex={-1} className="min-w-0 outline-none" aria-label={t(`studio.phases.${STUDIO_PHASES[phase].step}`)}>
+        {step === 'select' && <div className="mb-5 flex flex-wrap items-center justify-between gap-2"><button onClick={() => setStep('packs')} className="studio-tool"><Package className="h-3.5 w-3.5" /> {t('studio.pack_start')}</button><button onClick={fillRandomQuestions} disabled={selected.length >= MIN_QUESTIONS || allQuestions.length === 0} className="studio-tool disabled:opacity-40"><Shuffle className="h-3.5 w-3.5" /> {t('studio.random_five')}</button></div>}
+        {step === 'select' && <>
+          {selected.length > 0 && <p className="mb-4 text-xs leading-5 text-muted-foreground">{t('studio.selection_language')}</p>}
+          {catalogLoading && <p role="status" className="mb-4 text-sm">{t('studio.catalog_loading')}</p>}
+          {catalogError && <div role="alert" className="mb-4 flex flex-wrap items-center gap-3 text-sm"><span>{t('studio.catalog_failed')}</span><Button variant="outline" onClick={() => setCatalogRetry(value => value + 1)}>{t('studio.retry')}</Button></div>}
+        </>}
         <AnimatePresence mode="wait">
-          {step === 'intro' && (
-            <IntroStep
-              key="intro"
-              onStart={dismissIntro}
-              onExit={() => navigate('/')}
-            />
-          )}
+          {step === 'vibe' && <VibeStep key="vibe" appearance={appearance} onChange={setAppearance} title={quizTitle} onTitleChange={setQuizTitle} onNext={() => setStep('select')} />}
           {step === 'packs' && (
             <PacksStep
               key="packs"
+              catalog={allQuestions}
               onSelectPack={handleSelectPack}
               onSkip={() => setStep('select')}
             />
@@ -356,8 +317,9 @@ export default function CreateQuiz() {
             <SelectStep
               key="select"
               questionsByCategory={questionsByCategory}
+              catalogLoading={catalogLoading || catalogError}
               selectedIds={selectedIds}
-              toggleQuestion={toggleQuestion}
+              toggleQuestion={(q: QuestionData) => { toggleQuestion(q); setPreviewId(q.id); }}
               remaining={remaining}
               activeCategoryIdx={activeCategoryIdx}
               setActiveCategoryIdx={setActiveCategoryIdx}
@@ -372,6 +334,7 @@ export default function CreateQuiz() {
               moveUp={moveUp}
               moveDown={moveDown}
               deleteQuestion={deleteQuestion}
+              onEmojiChange={updateEmoji}
               onNext={() => setStep('answers')}
             />
           )}
@@ -380,7 +343,9 @@ export default function CreateQuiz() {
               key="answers"
               selected={selected}
               setSelected={setSelected}
-              onNext={() => setStep('review')}
+              onFocusQuestion={setPreviewId}
+              onEmojiChange={updateEmoji}
+              onNext={() => { setPreviewId(undefined); setStep('review'); }}
             />
           )}
           {step === 'review' && (
@@ -390,243 +355,31 @@ export default function CreateQuiz() {
               onSave={saveQuiz}
               user={user}
               onLogin={saveQuiz}
+              appearance={appearance}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              title={quizTitle}
+              setTitle={setQuizTitle}
+              onEditLook={() => setStep('vibe')}
             />
           )}
         </AnimatePresence>
-      </div>
+        </div>
+        <StudioPreview key={step} selected={selected} appearance={appearance} title={quizTitle} focusId={step === 'vibe' || step === 'review' ? undefined : previewId} />
+      </main>
+      <footer className="pb-7 text-center text-[10px] tracking-wide text-[#a294aa]">{t('studio.footer')}</footer>
+      </>}
     </div>
-  );
-}
-
-/* ============= SEGMENTED STEPPER ============= */
-function SegmentedStepper({ currentIdx }: { currentIdx: number }) {
-  return (
-    <div className="mt-2 flex items-center justify-center gap-1.5">
-      {STEP_ORDER.map((s, i) => {
-        const meta = STEP_META[s];
-        const Icon = meta.icon;
-        const done = i < currentIdx;
-        const active = i === currentIdx;
-        return (
-          <div key={s} className="flex items-center gap-1.5">
-            <div className="relative">
-              <motion.div
-                initial={false}
-                animate={{
-                  scale: active ? 1.15 : 1,
-                  backgroundColor: active
-                    ? 'hsl(var(--coral))'
-                    : done
-                      ? 'hsl(var(--teal))'
-                      : 'hsl(var(--muted))',
-                }}
-                transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-                className={`flex h-6 w-6 items-center justify-center rounded-full ${
-                  active ? 'shadow-glow' : ''
-                }`}
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  {done ? (
-                    <motion.span
-                      key="check"
-                      initial={{ scale: 0, rotate: -90 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      exit={{ scale: 0 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 18 }}
-                    >
-                      <Check className="h-3.5 w-3.5 text-white" strokeWidth={3.5} />
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="icon"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                    >
-                      <Icon className={`h-3 w-3 ${active ? 'text-white' : 'text-muted-foreground'}`} />
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-              {active && (
-                <span className="absolute -inset-1 rounded-full bg-primary/40 blur-md animate-pulse-soft -z-10" />
-              )}
-            </div>
-            {i < STEP_ORDER.length - 1 && (
-              <div className="relative h-[3px] w-6 overflow-hidden rounded-full bg-muted sm:w-10">
-                <motion.div
-                  initial={false}
-                  animate={{ width: done ? '100%' : '0%' }}
-                  transition={{ duration: 0.45, ease: 'easeInOut' }}
-                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-teal to-coral"
-                />
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ============= INTRO STEP ============= */
-function IntroStep({ onStart, onExit }: { onStart: () => void; onExit: () => void }) {
-  const reduce = useReducedMotion();
-  const phases = [
-    { icon: Package, label: 'Pick a pack', color: 'from-coral to-rose' },
-    { icon: ListChecks, label: 'Choose questions', color: 'from-rose to-lavender' },
-    { icon: KeyRound, label: 'Set the answers', color: 'from-lavender to-teal' },
-    { icon: Eye, label: 'Review & share', color: 'from-teal to-gold' },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="relative min-h-[calc(100vh-1px)] flex flex-col items-center justify-center px-4 py-16"
-    >
-      {/* Floating blobs */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div
-          className="blob animate-drift-y"
-          style={{ width: 380, height: 380, top: '-4rem', left: '-6rem', background: 'hsl(var(--coral) / 0.55)' }}
-        />
-        <div
-          className="blob animate-drift-x"
-          style={{ width: 320, height: 320, top: '20%', right: '-4rem', background: 'hsl(var(--teal) / 0.45)', animationDelay: '1.5s' }}
-        />
-        <div
-          className="blob animate-drift-y"
-          style={{ width: 280, height: 280, bottom: '-4rem', left: '30%', background: 'hsl(var(--lavender) / 0.45)', animationDelay: '3s' }}
-        />
-      </div>
-
-      {/* Exit button */}
-      <button
-        onClick={onExit}
-        className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full glass px-3 py-1.5 text-xs font-medium text-foreground/70 hover:text-foreground transition-colors"
-      >
-        <ArrowLeft className="h-3 w-3" /> Home
-      </button>
-
-      <div className="relative mx-auto max-w-2xl text-center">
-        {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full glass px-4 py-2 text-xs font-semibold uppercase tracking-widest text-foreground/80"
-        >
-          <Sparkles className="h-3.5 w-3.5 text-primary" />
-          Let's make something great together
-        </motion.div>
-
-        {/* Title — staggered words */}
-        <h1 className="mb-5 text-4xl md:text-5xl lg:text-6xl font-bold font-display leading-tight">
-          {['Your', 'quiz,'].map((w, i) => (
-            <motion.span
-              key={i}
-              initial={{ y: '110%', opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 + i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="inline-block mr-3"
-            >
-              {w}
-            </motion.span>
-          ))}
-          <br />
-          <motion.span
-            initial={{ y: '110%', opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="inline-block text-gradient-warm italic"
-          >
-            in four playful steps.
-          </motion.span>
-        </h1>
-
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
-          className="mb-10 text-base md:text-lg text-muted-foreground max-w-lg mx-auto"
-        >
-          We'll guide you the whole way. No accounts needed to start — just pick, click, and you're done.
-        </motion.p>
-
-        {/* Phase preview */}
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={{
-            hidden: {},
-            show: { transition: { staggerChildren: 0.1, delayChildren: 0.8 } },
-          }}
-          className="mb-12 grid grid-cols-2 gap-3 md:grid-cols-4"
-        >
-          {phases.map((p, i) => (
-            <motion.div
-              key={i}
-              variants={{
-                hidden: { opacity: 0, y: 30, scale: 0.9 },
-                show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 200, damping: 20 } },
-              }}
-              whileHover={reduce ? undefined : { y: -4, scale: 1.03 }}
-              className="tilt-card glass relative overflow-hidden rounded-2xl p-4 text-left shadow-soft"
-            >
-              <div className={`absolute inset-x-0 -top-px h-[3px] bg-gradient-to-r ${p.color}`} />
-              <div className="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl gradient-coral text-white shadow-soft">
-                <p.icon className="h-4 w-4" />
-              </div>
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/70 font-semibold mb-0.5">
-                Step {i + 1}
-              </p>
-              <p className="text-sm font-bold font-display">{p.label}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.3, type: 'spring', stiffness: 200, damping: 18 }}
-          className="flex flex-col items-center gap-3"
-        >
-          <motion.div
-            whileHover={reduce ? undefined : { scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="relative"
-          >
-            <div className="absolute -inset-1 rounded-full ring-conic opacity-60 blur-md" />
-            <Button
-              onClick={onStart}
-              size="lg"
-              className="relative shimmer-sweep overflow-hidden gradient-coral text-primary-foreground px-10 py-7 text-base font-bold rounded-full shadow-glow"
-            >
-              <Wand2 className="mr-2 h-5 w-5" />
-              Let's start
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </motion.div>
-          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-            <Heart className="h-3.5 w-3.5 text-primary" /> About 3 minutes · Skippable anytime
-          </p>
-        </motion.div>
-      </div>
-    </motion.div>
+    </MotionConfig>
   );
 }
 
 /* ============= SELECT STEP ============= */
-function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remaining, activeCategoryIdx, setActiveCategoryIdx, onNext, addCustomQuestion }: any) {
+function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remaining, activeCategoryIdx, setActiveCategoryIdx, onNext, addCustomQuestion, catalogLoading }: any) {
+  const { t } = useTranslation();
   const activeCategory = CATEGORIES[activeCategoryIdx];
   const questions = questionsByCategory[activeCategory.key] || [];
   const scrollRef = useRef<HTMLDivElement>(null);
-  const touchStartX = useRef(0);
   const [customText, setCustomText] = useState('');
   const totalSelected = MAX_QUESTIONS - remaining;
   const minReached = totalSelected >= MIN_QUESTIONS;
@@ -636,23 +389,16 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
     const trimmed = customText.trim();
     if (!trimmed) return;
     if (trimmed.length < 5) {
-      toast.error('Question is too short');
+      toast.error(t('studio.too_short'));
       return;
     }
     if (containsProfanity(trimmed)) {
-      toast.error('Please use appropriate language');
+      toast.error(t('create_quiz.toast.profanity'));
       return;
     }
     addCustomQuestion(trimmed);
     setCustomText('');
-    toast.success('Custom question added!');
-  };
-
-  const swipeCategory = (dir: number) => {
-    const newIdx = activeCategoryIdx + dir;
-    if (newIdx >= 0 && newIdx < CATEGORIES.length) {
-      setActiveCategoryIdx(newIdx);
-    }
+    toast.success(t('studio.custom_added'));
   };
 
   // Scroll active category into view
@@ -667,11 +413,6 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
     <motion.div
       initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      onTouchStart={e => { touchStartX.current = e.touches[0].clientX; }}
-      onTouchEnd={e => {
-        const diff = touchStartX.current - e.changedTouches[0].clientX;
-        if (Math.abs(diff) > 50) swipeCategory(diff > 0 ? 1 : -1);
-      }}
     >
       {/* ========== Big animated counter + progress ring ========== */}
       <div className="relative mb-6 overflow-hidden rounded-3xl glass p-5 shadow-soft">
@@ -687,6 +428,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
                 fill="none"
                 strokeLinecap="round"
                 strokeDasharray={2 * Math.PI * 42}
+                initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
                 animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - progressPct / 100) }}
                 transition={{ type: 'spring', stiffness: 100, damping: 20 }}
               />
@@ -712,21 +454,21 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
                   {totalSelected}
                 </motion.span>
               </AnimatePresence>
-              <span className="mt-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">of {MAX_QUESTIONS}</span>
+              <span className="mt-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">{t('studio.of_max', { count: MAX_QUESTIONS })}</span>
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="mb-1 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Step 2 · Pick questions</div>
+            <div className="mb-1 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{t('studio.select_step')}</div>
             <h2 className="text-lg md:text-xl font-bold font-display leading-tight">
-              {totalSelected === 0 && 'What should they answer about you?'}
-              {totalSelected > 0 && totalSelected < MIN_QUESTIONS && `${MIN_QUESTIONS - totalSelected} more to reach the minimum`}
-              {totalSelected >= MIN_QUESTIONS && totalSelected < MAX_QUESTIONS && "Looking great — keep going or move on"}
+              {totalSelected === 0 && t('studio.select_empty')}
+              {totalSelected > 0 && totalSelected < MIN_QUESTIONS && t('studio.more_minimum', { count: MIN_QUESTIONS - totalSelected })}
+              {totalSelected >= MIN_QUESTIONS && totalSelected < MAX_QUESTIONS && t('studio.select_ready')}
               {totalSelected === MAX_QUESTIONS && (
-                <span className="text-gradient-warm">Maxed out — let's lock these in</span>
+                <span className="text-gradient-warm">{t('studio.select_full')}</span>
               )}
             </h2>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              Min {MIN_QUESTIONS} · Max {MAX_QUESTIONS} · Swipe categories below
+              {t('studio.select_hint', { min: MIN_QUESTIONS, max: MAX_QUESTIONS })}
             </p>
           </div>
         </div>
@@ -740,8 +482,9 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
             value={customText}
             onChange={e => setCustomText(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') handleAddCustom(); }}
-            placeholder="Write your own question…"
-            className="flex-1 border-0 bg-transparent text-sm shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+            placeholder={t('studio.custom_placeholder')}
+            aria-label={t('studio.custom_placeholder')}
+            className="min-w-0 flex-1 border-0 bg-transparent text-sm shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
             maxLength={200}
             disabled={remaining === 0}
           />
@@ -750,7 +493,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
             disabled={remaining === 0 || !customText.trim()}
             className="h-9 rounded-full gradient-coral text-primary-foreground text-xs px-4 shrink-0"
           >
-            <Plus className="mr-1 h-3.5 w-3.5" /> Add
+            <Plus className="mr-1 h-3.5 w-3.5" /> {t('common.add')}
           </Button>
         </div>
       </div>
@@ -766,6 +509,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
               <button
                 key={cat.key}
                 onClick={() => setActiveCategoryIdx(idx)}
+                aria-pressed={isActive}
                 className="relative flex flex-shrink-0 flex-col items-center gap-1 rounded-2xl px-4 py-3 transition-colors"
               >
                 {isActive && (
@@ -777,7 +521,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
                 )}
                 <div className={`relative z-10 flex flex-col items-center gap-1 ${isActive ? '' : 'text-muted-foreground'}`}>
                   <Icon className="h-5 w-5" />
-                  <span className="text-xs font-semibold whitespace-nowrap">{cat.key}</span>
+                  <span className="text-xs font-semibold whitespace-nowrap">{t(`categories.${cat.key}`)}</span>
                 </div>
                 <AnimatePresence>
                   {count > 0 && (
@@ -812,11 +556,12 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
           <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${activeCategory.colorClass} border border-current`}>
             <ActiveIcon className="h-3.5 w-3.5" />
           </div>
-          <h3 className="text-sm font-bold font-display">{activeCategory.key}</h3>
-          <span className="text-xs text-muted-foreground">· {questions.length} questions</span>
+          <h3 className="text-sm font-bold font-display">{t(`categories.${activeCategory.key}`)}</h3>
+          <span className="text-xs text-muted-foreground">· {t('common.questions', { count: questions.length })}</span>
         </motion.div>
       </AnimatePresence>
 
+      {!catalogLoading && questions.length === 0 && <p className="py-6 text-sm text-muted-foreground">{t('studio.catalog_empty')}</p>}
       {/* ========== Questions grid ========== */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -839,6 +584,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
                 whileHover={{ y: -2, scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => toggleQuestion(q)}
+                aria-pressed={isSelected}
                 disabled={!isSelected && remaining === 0}
                 className={`group relative overflow-hidden rounded-2xl border-2 p-4 text-left transition-colors ${
                   isSelected
@@ -873,6 +619,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
                   )}
                 </AnimatePresence>
 
+                <span className="mb-3 block text-[10px] font-bold uppercase tracking-widest opacity-60">{isSelected ? t('studio.in_collection') : t('studio.conversation_starter')}</span>
                 <p className="relative pr-8 text-sm font-medium leading-relaxed">{q.text}</p>
               </motion.button>
             );
@@ -881,10 +628,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
       </AnimatePresence>
 
       {/* ========== Sticky-feel bottom action ========== */}
-      <motion.div
-        layout
-        className="mt-8 flex items-center justify-between gap-3 rounded-2xl glass p-3 shadow-soft"
-      >
+      <StudioActions className="studio-selection-actions sticky bottom-4 z-10 mt-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl glass p-3 shadow-soft">
         <div className="flex items-center gap-2 px-2">
           <div className="relative h-2 w-32 overflow-hidden rounded-full bg-muted sm:w-48">
             <motion.div
@@ -905,7 +649,7 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
         <motion.div whileTap={{ scale: 0.96 }}>
           <Button
             onClick={onNext}
-            disabled={selectedIds.size === 0}
+            disabled={!minReached}
             className={`relative overflow-hidden rounded-full ${
               minReached
                 ? 'shimmer-sweep gradient-coral text-primary-foreground shadow-glow'
@@ -914,19 +658,27 @@ function SelectStep({ questionsByCategory, selectedIds, toggleQuestion, remainin
             size="lg"
           >
             {minReached ? (
-              <>Next: Order <ArrowRight className="ml-1.5 h-4 w-4" /></>
+              <>{t('studio.make_yours')} <ArrowRight className="ml-1.5 h-4 w-4" /></>
             ) : (
-              <>Pick {Math.max(0, MIN_QUESTIONS - totalSelected)} more</>
+              <>{t('studio.pick_more', { count: Math.max(0, MIN_QUESTIONS - totalSelected) })}</>
             )}
           </Button>
         </motion.div>
-      </motion.div>
+      </StudioActions>
     </motion.div>
   );
 }
 
 /* ============= REORDER STEP ============= */
-function ReorderStep({ selected, moveUp, moveDown, deleteQuestion, onNext }: any) {
+function ReorderStep({ selected, moveUp, moveDown, deleteQuestion, onNext, onEmojiChange }: {
+  selected: SelectedQuestion[];
+  moveUp: (index: number) => void;
+  moveDown: (index: number) => void;
+  deleteQuestion: (index: number) => void;
+  onNext: () => void;
+  onEmojiChange: (questionId: number, emoji: string) => void;
+}) {
+  const { t } = useTranslation();
   // Build a category-distribution strip
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -946,23 +698,23 @@ function ReorderStep({ selected, moveUp, moveDown, deleteQuestion, onNext }: any
         <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-gradient-to-br from-lavender/40 via-rose/30 to-coral/30 blur-2xl" />
         <div className="relative flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="mb-1 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Step 3 · Arrange</div>
+            <div className="mb-1 text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{t('studio.reorder_step')}</div>
             <h2 className="text-xl md:text-2xl font-bold font-display leading-tight">
-              Set the <span className="text-gradient-warm">story arc</span>
+              {t('studio.reorder_title')} <span className="text-gradient-warm">{t('studio.personality')}</span>
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Drag the arrows to reorder. Delete to swap in another question.
+              {t('studio.reorder_hint')}
             </p>
           </div>
-          <motion.div whileTap={{ scale: 0.96 }}>
+          <StudioActions className="studio-reorder-actions">
             <Button
               onClick={onNext}
               className="relative overflow-hidden shimmer-sweep gradient-coral text-primary-foreground rounded-full shadow-glow"
               size="lg"
             >
-              Done <Check className="ml-1.5 h-4 w-4" />
+              {t('studio.set_answers')} <ArrowRight className="ml-1.5 h-4 w-4" />
             </Button>
-          </motion.div>
+          </StudioActions>
         </div>
 
         {/* Category distribution strip */}
@@ -977,7 +729,7 @@ function ReorderStep({ selected, moveUp, moveDown, deleteQuestion, onNext }: any
                 animate={{ width: `${(count / selected.length) * 100}%` }}
                 transition={{ type: 'spring', stiffness: 120, damping: 22 }}
                 className={meta.bgClass}
-                title={`${key}: ${count}`}
+                title={`${t(`categories.${key}`, { defaultValue: key })}: ${count}`}
               />
             );
           })}
@@ -1002,7 +754,7 @@ function ReorderStep({ selected, moveUp, moveDown, deleteQuestion, onNext }: any
               {/* Color stripe on the left */}
               <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${meta.bgClass}`} />
 
-              <div className="flex items-center gap-3 p-4 pl-5">
+              <div className="studio-reorder-card flex flex-wrap items-center gap-3 p-4 pl-5">
                 {/* Animated number badge */}
                 <div className="relative h-10 w-10 flex-shrink-0">
                   <div className={`absolute inset-0 rounded-xl ${meta.colorClass} border border-current`} />
@@ -1022,20 +774,22 @@ function ReorderStep({ selected, moveUp, moveDown, deleteQuestion, onNext }: any
 
                 {/* Text */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium leading-snug line-clamp-2">{q.text}</p>
+                  <p className="text-sm font-medium leading-snug">{q.emoji && <span className="mr-2 text-xl">{q.emoji}</span>}{q.text}</p>
                   <div className="mt-1 flex items-center gap-1.5">
                     <Icon className="h-3 w-3 opacity-60" />
-                    <span className="text-[11px] font-semibold opacity-70">{q.category}</span>
+                    <span className="text-[11px] font-semibold opacity-70">{t(`categories.${q.category}`, { defaultValue: q.category })}</span>
                   </div>
                 </div>
 
+                <div className="studio-reorder-controls flex flex-wrap items-center gap-2">
+                <EmojiPicker value={q.emoji} onChange={emoji => onEmojiChange(q.questionId, emoji)} label={t('studio.sticker_for', { number: idx + 1 })} />
                 {/* Controls — pill cluster */}
                 <div className="flex items-center gap-0.5 rounded-full bg-muted/60 p-1">
                   <button
                     onClick={() => moveUp(idx)}
                     disabled={idx === 0}
                     className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-card hover:shadow-soft disabled:opacity-30 disabled:cursor-not-allowed"
-                    aria-label="Move up"
+                    aria-label={t('studio.move_up')}
                   >
                     <ArrowUp className="h-3.5 w-3.5" />
                   </button>
@@ -1043,17 +797,18 @@ function ReorderStep({ selected, moveUp, moveDown, deleteQuestion, onNext }: any
                     onClick={() => moveDown(idx)}
                     disabled={idx === selected.length - 1}
                     className="flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-card hover:shadow-soft disabled:opacity-30 disabled:cursor-not-allowed"
-                    aria-label="Move down"
+                    aria-label={t('studio.move_down')}
                   >
                     <ArrowDown className="h-3.5 w-3.5" />
                   </button>
                   <button
                     onClick={() => deleteQuestion(idx)}
                     className="flex h-8 w-8 items-center justify-center rounded-full text-destructive transition-all hover:bg-destructive/10"
-                    aria-label="Remove"
+                    aria-label={t('common.remove')}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
+                </div>
                 </div>
               </div>
             </motion.div>
@@ -1065,7 +820,8 @@ function ReorderStep({ selected, moveUp, moveDown, deleteQuestion, onNext }: any
 }
 
 /* ============= ANSWERS STEP ============= */
-function AnswersStep({ selected, setSelected, onNext }: any) {
+function AnswersStep({ selected, setSelected, onNext, onFocusQuestion, onEmojiChange }: any) {
+  const { t } = useTranslation();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [customMode, setCustomMode] = useState(false);
   const [customCorrect, setCustomCorrect] = useState('');
@@ -1075,6 +831,12 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
   const [generating, setGenerating] = useState(false);
   const q = selected[currentIdx] as SelectedQuestion;
   const isFullyCustom = q.isCustom && q.options.length === 0;
+
+  useEffect(() => {
+    onFocusQuestion(q.questionId);
+    setCustomMode(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [q.questionId, onFocusQuestion]);
 
   const selectCorrect = (opt: string) => {
     if (autoRandomize && opt) {
@@ -1103,7 +865,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
 
   const validateAndSetCustomText = (text: string, setter: (v: string) => void) => {
     if (containsProfanity(text)) {
-      setProfanityWarning('⚠️ Inappropriate language detected! Text cleared.');
+      setProfanityWarning(t('studio.profanity_cleared'));
       setter('');
       setTimeout(() => setProfanityWarning(''), 3000);
       return;
@@ -1115,7 +877,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
   const handleCustomAnswerSubmit = () => {
     const answer = customCorrect.trim();
     if (!answer) {
-      toast.error('Enter a correct answer');
+      toast.error(t('studio.enter_correct'));
       return;
     }
     setGenerating(true);
@@ -1132,7 +894,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
             distractors,
           } : s
         ));
-        toast.success(source === 'llm' ? 'AI-generated distractors ready!' : 'Distractors auto-generated! Edit them if needed.');
+        toast.success(source === 'llm' ? t('studio.ai_ready') : t('studio.generated'));
       })
       .finally(() => setGenerating(false));
   };
@@ -1156,7 +918,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
             distractors,
           } : s
         ));
-        toast.success(source === 'llm' ? 'AI-generated distractors ready!' : 'Distractors generated! Edit them if needed.');
+        toast.success(source === 'llm' ? t('studio.ai_ready') : t('studio.generated'));
       })
       .finally(() => setGenerating(false));
   };
@@ -1184,7 +946,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
 
   const saveCustomCorrectOnly = () => {
     if (!customCorrect.trim()) {
-      toast.error('Enter a correct answer');
+      toast.error(t('studio.enter_correct'));
       return;
     }
     const available = q.options.filter(o => o.toLowerCase() !== customCorrect.trim().toLowerCase());
@@ -1192,7 +954,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
     const autoDistractors = shuffled.slice(0, 3);
 
     if (autoDistractors.length < 3) {
-      toast.error('Not enough options for distractors');
+      toast.error(t('studio.not_enough_options'));
       return;
     }
 
@@ -1207,7 +969,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
       } : s
     ));
     setCustomMode(false);
-    toast.success('Custom answer saved with auto-generated distractors!');
+    toast.success(t('studio.custom_saved'));
   };
 
   const isComplete = q.correctAnswer && q.distractors.length === 3 && q.distractors.every((d: string) => d.trim());
@@ -1223,11 +985,11 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* ===== Header strip ===== */}
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Step 4 · Answers</div>
+          <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{t('studio.answers_step')}</div>
           <h2 className="text-lg md:text-xl font-bold font-display leading-tight">
-            {completedCount}/{selected.length} answered
+            {t('studio.answered', { current: completedCount, total: selected.length })}
           </h2>
         </div>
         {!isFullyCustom && (
@@ -1237,7 +999,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
               onCheckedChange={(checked) => setAutoRandomize(!!checked)}
               className="h-4 w-4"
             />
-            <span className="text-xs font-medium">Auto-pick distractors</span>
+            <span className="text-xs font-medium">{t('studio.auto_distractors')}</span>
           </label>
         )}
       </div>
@@ -1250,7 +1012,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
           animate={{ opacity: 1, rotateY: 0, x: 0 }}
           exit={{ opacity: 0, rotateY: -12, x: -40 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-soft"
+          className="relative overflow-hidden rounded-3xl border border-border bg-card p-4 shadow-soft sm:p-6"
           style={{ transformPerspective: 1000 }}
         >
           {/* Category color wash */}
@@ -1261,11 +1023,12 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
             {/* Category pill */}
             <div className="mb-3 inline-flex items-center gap-1.5 rounded-full glass px-3 py-1 text-[11px] font-semibold">
               <CatIcon className="h-3.5 w-3.5" />
-              {q.category}
+              {t(`categories.${q.category}`, { defaultValue: q.category })}
             </div>
 
             {/* Question text */}
-            <p className="mb-5 text-xl md:text-2xl font-bold font-display leading-tight">{q.text}</p>
+            <p className="mb-4 text-xl md:text-2xl font-bold font-display leading-tight">{q.emoji && <span className="mr-2">{q.emoji}</span>}{q.text}</p>
+            <div className="mb-5"><EmojiPicker value={q.emoji} onChange={emoji => onEmojiChange(q.questionId, emoji)} /></div>
 
             {profanityWarning && (
               <motion.div
@@ -1281,15 +1044,15 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
           /* === Fully custom question: type correct answer + auto-generate distractors === */
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-semibold text-secondary mb-1 block">✅ Correct Answer</label>
+              <label className="text-xs font-semibold text-secondary mb-1 block">✅ {t('studio.correct_answer')}</label>
               <div className="flex gap-2">
                 <Input
                   value={customCorrect}
                   onChange={e => validateAndSetCustomText(e.target.value, setCustomCorrect)}
                   className="rounded-xl border-secondary/30 flex-1"
-                  placeholder="Type the correct answer"
+                  placeholder={t('studio.type_answer')}
+                  aria-label={t('studio.your_correct')}
                   maxLength={100}
-                  autoFocus
                   onKeyDown={e => { if (e.key === 'Enter') handleCustomAnswerSubmit(); }}
                 />
                 <Button
@@ -1299,7 +1062,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                   disabled={!customCorrect.trim() || generating}
                 >
                   {generating ? <Loader2 className="mr-1 h-3 w-3 animate-spin" /> : <Check className="mr-1 h-3 w-3" />}
-                  {generating ? 'Generating…' : 'Set'}
+                  {generating ? t('studio.generating') : t('studio.set')}
                 </Button>
               </div>
             </div>
@@ -1307,7 +1070,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
             {q.correctAnswer && q.distractors.length === 3 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-semibold text-primary">❌ Distractors (wrong answers)</label>
+                  <label className="text-xs font-semibold text-primary">❌ {t('studio.wrong_answers')}</label>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -1316,7 +1079,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                     disabled={generating}
                   >
                     {generating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Shuffle className="h-3 w-3" />}
-                    {generating ? 'Generating…' : 'Regenerate'}
+                    {generating ? t('studio.generating') : t('studio.regenerate')}
                   </Button>
                 </div>
                 <div className="space-y-2">
@@ -1327,20 +1090,21 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                       onChange={e => {
                         const val = e.target.value;
                         if (containsProfanity(val)) {
-                          setProfanityWarning('⚠️ Inappropriate language detected!');
+                          setProfanityWarning(t('studio.profanity'));
                           setTimeout(() => setProfanityWarning(''), 3000);
                           return;
                         }
                         updateCustomDistractor(idx, val);
                       }}
                       className="rounded-xl border-primary/30 text-sm"
-                      placeholder={`Distractor ${idx + 1}`}
+                      placeholder={t('studio.distractor', { number: idx + 1 })}
+                      aria-label={t('studio.distractor', { number: idx + 1 })}
                       maxLength={100}
                     />
                   ))}
                 </div>
                 <p className="mt-2 text-[10px] text-muted-foreground">
-                  💡 Distractors are auto-generated to confuse. Edit or regenerate as needed.
+                  {t('studio.distractor_hint')}
                 </p>
               </div>
             )}
@@ -1349,18 +1113,19 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
           <>
             <p className="mb-3 text-xs text-muted-foreground">
               {autoRandomize ? (
-                <>Tap the <span className="font-bold text-secondary">correct answer</span> — distractors will be picked automatically</>
+                <>{t('studio.auto_hint')}</>
               ) : (
-                <>First tap the <span className="font-bold text-secondary">correct answer</span>, then pick <span className="font-bold text-primary">3 distractors</span></>
+                <>{t('studio.manual_hint')}</>
               )}
             </p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
               {q.options.map((opt, oi) => {
                 const isCorrect = q.correctAnswer === opt;
                 const isDistractor = q.distractors.includes(opt);
                 return (
                   <motion.button
                     key={opt}
+                    aria-pressed={isCorrect || isDistractor}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: oi * 0.05, type: 'spring', stiffness: 300, damping: 24 }}
@@ -1442,23 +1207,23 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
               onClick={() => { setCustomMode(true); setCustomCorrect(q.customCorrect || ''); }}
               className="mt-4 inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
             >
-              <Pencil className="h-3 w-3" /> Write your own answer
+              <Pencil className="h-3 w-3" /> {t('studio.write_answer')}
             </button>
           </>
         ) : (
           <>
             <div className="mb-3">
-              <label className="text-xs font-semibold text-secondary mb-1 block">Your Correct Answer</label>
+              <label className="text-xs font-semibold text-secondary mb-1 block">{t('studio.your_correct')}</label>
               <div className="flex gap-2">
                 <Input
                   value={customCorrect}
                   onChange={e => validateAndSetCustomText(e.target.value, setCustomCorrect)}
                   className="rounded-xl border-secondary/30 flex-1"
-                  placeholder="Type the correct answer"
+                  placeholder={t('studio.type_answer')}
+                  aria-label={t('studio.your_correct')}
                   maxLength={100}
-                  autoFocus
                 />
-                <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0" onClick={() => setCustomMode(false)}>
+                <Button variant="ghost" size="icon" aria-label={t('common.cancel')} className="h-10 w-10 flex-shrink-0" onClick={() => setCustomMode(false)}>
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -1473,23 +1238,24 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                       s.questionId === q.questionId ? { ...s, isCustom: true, customCorrect: customCorrect.trim() } : s
                     ));
                     setCustomMode(false);
-                    toast.success('Custom answer set! Now pick 3 distractors below.');
+                    toast.success(t('studio.custom_set'));
                   }}
                 >
-                  <Check className="mr-1 h-3 w-3" /> Set as correct
+                  <Check className="mr-1 h-3 w-3" /> {t('studio.set_correct')}
                 </Button>
               )}
             </div>
 
             <p className="mb-2 text-xs text-muted-foreground">
-              Pick <span className="font-bold text-primary">3 distractors</span> from below
+              {t('studio.pick_distractors')}
             </p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
               {q.options.map((opt, oi) => {
                 const isDistractor = q.distractors.includes(opt);
                 return (
                   <motion.button
                     key={opt}
+                    aria-pressed={isDistractor}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: oi * 0.04 }}
@@ -1514,20 +1280,23 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
       </AnimatePresence>
 
       {/* ===== Navigation footer ===== */}
-      <div className="mt-6 flex items-center justify-between gap-3">
+      <StudioActions className="studio-answer-actions mt-6 flex items-center justify-between gap-3">
         <motion.button
           whileHover={{ x: -2 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setCurrentIdx(Math.max(0, currentIdx - 1))}
           disabled={currentIdx === 0}
           className="flex h-12 w-12 items-center justify-center rounded-full glass shadow-soft disabled:opacity-30 disabled:cursor-not-allowed"
-          aria-label="Previous question"
+          aria-label={t('common.previous_question')}
         >
           <ArrowLeft className="h-4 w-4" />
         </motion.button>
 
         {/* Progress dots morph */}
-        <div className="flex items-center gap-1.5 px-2">
+        <select aria-label={t('common.question', { current: currentIdx + 1, total: selected.length })} value={currentIdx} onChange={event => setCurrentIdx(Number(event.target.value))} className="h-12 min-w-0 flex-1 rounded-xl border border-border bg-card px-2 text-sm md:hidden">
+          {selected.map((s: SelectedQuestion, i: number) => <option key={s.questionId} value={i}>{t('common.question', { current: i + 1, total: selected.length })}{s.correctAnswer && s.distractors.length === 3 ? ' ✓' : ''}</option>)}
+        </select>
+        <div className="hidden items-center gap-1.5 px-2 md:flex">
           {selected.map((_: any, i: number) => {
             const s = selected[i] as SelectedQuestion;
             const done = s.correctAnswer && s.distractors.length === 3 && s.distractors.every((d: string) => d.trim());
@@ -1546,7 +1315,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
                 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 24 }}
                 className={`h-2 rounded-full ${isActive ? 'shadow-glow' : ''}`}
-                aria-label={`Go to question ${i + 1}`}
+                aria-label={t('common.go_question', { number: i + 1 })}
               />
             );
           })}
@@ -1562,7 +1331,7 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
               isComplete ? 'shimmer-sweep gradient-coral text-primary-foreground' : 'bg-muted text-muted-foreground'
             }`}
           >
-            Next
+            {t('common.next')}
             <ArrowRight className="h-4 w-4" />
           </motion.button>
         ) : (
@@ -1573,16 +1342,17 @@ function AnswersStep({ selected, setSelected, onNext }: any) {
             disabled={selected.some((s: SelectedQuestion) => !s.correctAnswer || s.distractors.length < 3 || s.distractors.some((d: string) => !d.trim()))}
             className="relative flex h-12 items-center gap-2 overflow-hidden rounded-full shimmer-sweep gradient-coral text-primary-foreground px-5 text-sm font-bold shadow-glow disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            Review <ArrowRight className="h-4 w-4" />
+            {t('common.review')} <ArrowRight className="h-4 w-4" />
           </motion.button>
         )}
-      </div>
+      </StudioActions>
     </motion.div>
   );
 }
 
 /* ============= REVIEW STEP ============= */
-function ReviewStep({ selected, onSave, user, onLogin }: any) {
+function ReviewStep({ selected, onSave, user, onLogin, appearance, isOpen, setIsOpen, title, setTitle, onEditLook }: any) {
+  const { t } = useTranslation();
   const reduce = useReducedMotion();
   const [saving, setSaving] = useState(false);
 
@@ -1663,7 +1433,7 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
           transition={{ delay: 0.3 }}
           className="relative mb-1 text-2xl md:text-3xl font-bold font-display drop-shadow"
         >
-          Your quiz is ready
+          {t('studio.review_title')}
         </motion.h2>
         <motion.p
           initial={{ y: 14, opacity: 0 }}
@@ -1671,7 +1441,7 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
           transition={{ delay: 0.4 }}
           className="relative text-sm md:text-base text-white/90"
         >
-          One last look. Then we share it.
+          {t('studio.review_hint')}
         </motion.p>
 
         {/* Stat row */}
@@ -1682,19 +1452,22 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
           className="relative mt-5 flex flex-wrap items-center justify-center gap-2"
         >
           <div className="flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1.5 text-xs font-semibold">
-            <ListChecks className="h-3.5 w-3.5" /> {selected.length} questions
+            <ListChecks className="h-3.5 w-3.5" /> {t('common.questions', { count: selected.length })}
           </div>
           <div className="flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1.5 text-xs font-semibold">
-            <Sparkles className="h-3.5 w-3.5" /> {categories.length} categor{categories.length === 1 ? 'y' : 'ies'}
+            <Sparkles className="h-3.5 w-3.5" /> {t('common.categories', { count: categories.length })}
           </div>
           {customCount > 0 && (
             <div className="flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-3 py-1.5 text-xs font-semibold">
-              <Wand2 className="h-3.5 w-3.5" /> {customCount} custom
+              <Wand2 className="h-3.5 w-3.5" /> {t('common.custom_count', { count: customCount })}
             </div>
           )}
         </motion.div>
       </motion.div>
 
+      <label htmlFor="publish-title" className="mb-2 block text-sm font-bold">{t('studio.quiz_name')}</label>
+      <Input id="publish-title" value={title} onChange={event => setTitle(event.target.value)} maxLength={80} className="mb-5 rounded-xl bg-white/70" />
+      <PublishSettings isOpen={isOpen} onChange={setIsOpen} appearance={appearance} onEdit={onEditLook} />
       {/* ===== Question cards ===== */}
       <motion.div
         initial="hidden"
@@ -1731,12 +1504,12 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
                 <div className="flex-1 min-w-0">
                   <div className="mb-1.5 flex items-center gap-1.5">
                     <Icon className="h-3 w-3 opacity-60" />
-                    <span className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{q.category}</span>
+                    <span className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{t(`categories.${q.category}`, { defaultValue: q.category })}</span>
                     {q.isCustom && (
-                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold text-primary">CUSTOM</span>
+                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold text-primary">{t('studio.custom')}</span>
                     )}
                   </div>
-                  <p className="mb-2 text-sm font-medium leading-snug">{q.text}</p>
+                  <p className="mb-2 text-sm font-medium leading-snug">{q.emoji && <span className="mr-2 text-xl">{q.emoji}</span>}{q.text}</p>
                   <div className="flex flex-wrap gap-1.5">
                     <Badge className="bg-secondary/15 text-secondary border-secondary/30 text-[11px] font-semibold">
                       <Check className="mr-1 h-2.5 w-2.5" strokeWidth={3} />
@@ -1754,18 +1527,13 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
       </motion.div>
 
       {/* ===== Save CTA ===== */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 + selected.length * 0.05 }}
-        className="relative"
-      >
+      <StudioActions className="studio-publish-actions relative">
         {user ? (
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || !title.trim()}
             className="relative w-full overflow-hidden rounded-full shimmer-sweep gradient-coral text-primary-foreground px-6 py-5 text-base font-bold shadow-glow disabled:opacity-60"
           >
             <span className="relative inline-flex items-center justify-center gap-2">
@@ -1776,12 +1544,12 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
                     transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
                     className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
                   />
-                  Saving…
+                  {t('common.saving')}
                 </>
               ) : (
                 <>
                   <PartyPopper className="h-5 w-5" />
-                  Save & Share
+                  {t('studio.publish')}
                   <ArrowRight className="h-5 w-5" />
                 </>
               )}
@@ -1789,14 +1557,14 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
           </motion.button>
         ) : (
           <div className="text-center">
-            <p className="mb-3 text-sm text-muted-foreground">
-              Sign in to keep it forever, or save as a draft first.
+            <p className="mb-3 hidden text-sm text-muted-foreground md:block">
+              {t('studio.draft_hint')}
             </p>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleLogin}
-              disabled={saving}
+              disabled={saving || !title.trim()}
               className="relative w-full overflow-hidden rounded-full shimmer-sweep gradient-coral text-primary-foreground px-6 py-5 text-base font-bold shadow-glow disabled:opacity-60"
             >
               <span className="relative inline-flex items-center justify-center gap-2">
@@ -1807,11 +1575,11 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
                       transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
                       className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
                     />
-                    Saving…
+                    {t('common.saving')}
                   </>
                 ) : (
                   <>
-                    Save Draft & Sign In
+                    {t('studio.save_draft')}
                     <ArrowRight className="h-5 w-5" />
                   </>
                 )}
@@ -1819,7 +1587,7 @@ function ReviewStep({ selected, onSave, user, onLogin }: any) {
             </motion.button>
           </div>
         )}
-      </motion.div>
+      </StudioActions>
     </motion.div>
   );
 }

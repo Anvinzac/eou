@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
@@ -15,6 +16,8 @@ import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { toast } from 'sonner';
 import { KineticCanvas, buildQuizCanvasSpec, quizThemeGradient } from '@/components/kinetic/KineticCanvas';
+import QuestionStage from '@/components/quiz/QuestionStage';
+import { getQuizTheme, resolveQuizAppearance } from '@/lib/quizAppearance';
 
 type QuizRow = any;
 type QuizQuestionRow = {
@@ -22,6 +25,7 @@ type QuizQuestionRow = {
   category: string;
   question_text: string;
   order_number: number;
+  emoji?: string;
   choices?: string[];
   distractor_answers?: string[];
   correct_answers?: string[];
@@ -31,6 +35,7 @@ type CoupleSession = any;
 type CoupleSlot = 'first' | 'second';
 
 export default function TakeQuiz() {
+  const { t } = useTranslation();
   const { quizId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -56,6 +61,7 @@ export default function TakeQuiz() {
   const [sessionBusy, setSessionBusy] = useState(false);
 
   const isVersus = quiz?.title.startsWith('[Versus]') || false;
+  const appearance = quiz?.appearance ? resolveQuizAppearance(quiz.appearance) : null;
   const [timeLeft, setTimeLeft] = useState(15);
   const [hasTakenVersus, setHasTakenVersus] = useState(false);
 
@@ -99,7 +105,7 @@ export default function TakeQuiz() {
     if (!isVersus || !verified || submitting || hasTakenVersus || currentIdx >= questions.length) return;
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        toast.error('Tab switching detected! You failed this question.');
+        toast.error(t('player.tab'));
         const currentQ = questions[currentIdx];
         setAnswers(a => {
           if (!a[currentQ.id]) return { ...a, [currentQ.id]: '___CHEATED___' };
@@ -194,7 +200,7 @@ export default function TakeQuiz() {
       setVerified(true);
       if (result.invitation?.label) setRespondentName(result.invitation.label);
     } catch (err: any) {
-      toast.error(err.message || 'Invalid invitation code');
+      toast.error(t('player.invalid'));
     }
   }
 
@@ -206,7 +212,7 @@ export default function TakeQuiz() {
     if (!quizId) return;
     const name = respondentName.trim();
     if (!name) {
-      toast.error('Add your name before starting couple mode');
+      toast.error(t('player.name_start'));
       return;
     }
     setSessionBusy(true);
@@ -216,9 +222,9 @@ export default function TakeQuiz() {
       setCoupleSlot(slot);
       setCoupleCodeInput(session.session_code);
       saveCoupleState(quizId, { code: session.session_code, slot });
-      toast.success('Couple mode started. Share the code with your partner.');
+      toast.success(t('player.started'));
     } catch (err: any) {
-      toast.error(err.message || 'Unable to create a couple session right now');
+      toast.error(t('player.create_failed'));
     } finally {
       setSessionBusy(false);
     }
@@ -229,11 +235,11 @@ export default function TakeQuiz() {
     const name = respondentName.trim();
     const normalizedCode = coupleCodeInput.trim().toUpperCase();
     if (!name) {
-      toast.error('Add your name before joining couple mode');
+      toast.error(t('player.name_join'));
       return;
     }
     if (!normalizedCode) {
-      toast.error('Enter a couple code to join');
+      toast.error(t('player.enter_code'));
       return;
     }
     setSessionBusy(true);
@@ -242,9 +248,9 @@ export default function TakeQuiz() {
       setCoupleSession(session);
       setCoupleSlot(slot);
       saveCoupleState(quizId, { code: normalizedCode, slot });
-      toast.success('Couple mode joined. Finish the quiz to reveal your match.');
+      toast.success(t('player.joined'));
     } catch (err: any) {
-      toast.error(err.message || 'Unable to join couple session');
+      toast.error(t('player.join_failed'));
     } finally {
       setSessionBusy(false);
     }
@@ -254,12 +260,12 @@ export default function TakeQuiz() {
     if (!quizId) return;
 
     if (Object.keys(answers).length < questions.length && !isVersus) {
-      toast.error('Please answer all questions');
+      toast.error(t('player.all'));
       return;
     }
 
     if (!isVersus && (coupleSession || coupleCodeInput.trim()) && !respondentName.trim()) {
-      toast.error('Add your name before submitting');
+      toast.error(t('player.name_submit'));
       return;
     }
 
@@ -282,7 +288,7 @@ export default function TakeQuiz() {
       if (result.coupleSession) setCoupleSession(result.coupleSession);
       navigate(result.redirectTo);
     } catch (err: any) {
-      toast.error(err?.message || 'Unable to submit quiz');
+      toast.error(t('player.submit_failed'));
     } finally {
       setSubmitting(false);
     }
@@ -303,7 +309,7 @@ export default function TakeQuiz() {
     params.set('pair', coupleSession.session_code);
 
     navigator.clipboard.writeText(`${base}?${params.toString()}`);
-    toast.success('Couple link copied');
+    toast.success(t('player.copied'));
   }
 
   function saveCoupleState(currentQuizId: string, value: StoredCoupleSessionState) {
@@ -341,10 +347,17 @@ export default function TakeQuiz() {
             <span className="absolute inset-2 rounded-full bg-primary/20 animate-ring-ping" style={{ animationDelay: '0.6s' }} />
             <Heart className="relative h-9 w-9 text-primary fill-primary animate-heartbeat" />
           </div>
-          <div className="text-sm font-medium text-muted-foreground">Warming things up…</div>
+          <div className="text-sm font-medium text-muted-foreground">{t('player.warming')}</div>
         </motion.div>
       </div>
     );
+  }
+
+  if (notFound || !quiz || questions.length === 0) {
+    return <div className="consumer-page flex min-h-[calc(100dvh-56px)] flex-col items-center justify-center gap-4 px-4 text-center">
+      <h1 className="text-2xl font-bold">{t('take_quiz.not_found')}</h1>
+      <Button onClick={() => navigate('/')}>{t('journey.go_home')}</Button>
+    </div>;
   }
 
   if (!verified) {
@@ -374,34 +387,34 @@ export default function TakeQuiz() {
   const CategoryIcon = categoryMeta?.icon;
   // Heartfelt micro-copy rotates by question index — gentle, never repeats consecutively
   const promptLines = [
-    'Trust your gut.',
-    'Take your time.',
-    'Think back to the little moments.',
-    'No pressure — just instinct.',
-    "Picture them right now.",
-    'What feels most like them?',
-    'Channel your inner mind-reader.',
-    'Go with the feeling, not the math.',
-    'Listen to your hunch.',
-    'You know more than you think.',
+    t('player.gut'),
+    t('player.time'),
+    t('player.moments'),
+    t('player.instinct'),
+    t('player.picture'),
+    t('player.feels'),
+    t('player.mind'),
+    t('player.feeling'),
+    t('player.hunch'),
+    t('player.know'),
   ];
   const promptLine = question ? promptLines[currentIdx % promptLines.length] : '';
   const milestoneNote =
     completionCount === 0
       ? null
       : completionCount === Math.floor(questions.length / 2)
-        ? "Halfway there — you're doing beautifully."
+        ? t('player.halfway')
         : completionCount === questions.length - 1 && !allAnswered
-          ? 'One more to go.'
+          ? t('player.one_more')
           : allAnswered
-            ? 'Every answer is in. Ready when you are.'
+            ? t('player.ready')
             : null;
   const firstName = (respondentName || invitation?.label || '').trim().split(/\s+/)[0] || '';
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background">
-      <TakeQuizBackdrop dim />
-      {!reduceMotion && canvasSpec && (
+    <div className="consumer-page quiz-player relative min-h-screen overflow-x-hidden bg-background" style={appearance ? { background: getQuizTheme(appearance).wash } : undefined}>
+      {!appearance && <TakeQuizBackdrop dim />}
+      {!appearance && !reduceMotion && canvasSpec && (
         <div className="pointer-events-none absolute inset-0 z-0 opacity-70">
           <KineticCanvas spec={canvasSpec} playKey={currentIdx} />
         </div>
@@ -411,8 +424,8 @@ export default function TakeQuiz() {
       <header className="sticky top-0 z-30 border-b border-border/40 glass px-4 py-3">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">You're answering</div>
-            <div className="truncate text-sm font-bold font-display">{quiz?.title || 'Quiz'}</div>
+            <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{t('player.answering')}</div>
+            <div className="truncate text-sm font-bold font-display">{quiz?.title || t('journey.quiz')}</div>
           </div>
 
           {/* Progress ring */}
@@ -426,6 +439,7 @@ export default function TakeQuiz() {
                 strokeWidth="3"
                 strokeLinecap="round"
                 strokeDasharray={2 * Math.PI * 15}
+                initial={{ strokeDashoffset: 2 * Math.PI * 15 }}
                 animate={{ strokeDashoffset: 2 * Math.PI * 15 * (1 - progressPct / 100) }}
                 transition={{ type: 'spring', stiffness: 120, damping: 22 }}
               />
@@ -437,7 +451,7 @@ export default function TakeQuiz() {
         </div>
       </header>
 
-      <div className="relative mx-auto flex max-w-3xl flex-col gap-5 px-4 pb-28 pt-6">
+      <div className="relative mx-auto flex max-w-3xl flex-col gap-5 px-4 pb-40 sm:pb-28 pt-4 sm:pt-6">
         {/* ===== Welcome banner ===== */}
         <motion.section
           initial={{ opacity: 0, y: 12 }}
@@ -460,17 +474,17 @@ export default function TakeQuiz() {
 
             <div className="min-w-0 flex-1">
               <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] uppercase tracking-widest font-bold text-primary">
-                <Heart className="h-3 w-3 fill-current" /> A quiz made for you
+                <Heart className="h-3 w-3 fill-current" /> {t('player.made_for_you')}
               </div>
               <h1 className="text-xl md:text-2xl font-bold font-display leading-tight">
                 {firstName ? (
-                  <>Hi <span className="text-gradient-warm">{firstName}</span> — how well do you really know them?</>
+                  <span className="text-gradient-warm">{t('player.greeting', { name: firstName })}</span>
                 ) : (
-                  <>How well do you <span className="text-gradient-warm italic">really</span> know them?</>
+                  <span className="text-gradient-warm">{t('player.greeting_plain')}</span>
                 )}
               </h1>
               <p className="mt-1.5 text-xs md:text-sm text-muted-foreground leading-relaxed">
-                There's no right answer to overthink. Tap what feels most like them — we'll add up the score at the end.
+                {t('player.intro')}
               </p>
             </div>
           </div>
@@ -493,7 +507,11 @@ export default function TakeQuiz() {
         {/* ===== Question card ===== */}
         <section className="relative">
           <AnimatePresence mode="wait" initial={false}>
-            {question && categoryMeta && CategoryIcon && (
+            {question && appearance && !isVersus ? (
+              <motion.div key={question.id} initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                <QuestionStage appearance={appearance} text={question.question_text} emoji={question.emoji} category={question.category} choices={shuffledChoices} selectedAnswer={answers[question.id]} onAnswer={option => selectAnswer(question.id, option)} questionNumber={currentIdx + 1} total={questions.length} />
+              </motion.div>
+            ) : question && categoryMeta && CategoryIcon && (
               <motion.div
                 key={question.id}
                 initial={{ opacity: 0, rotateY: 10, x: 40 }}
@@ -518,7 +536,7 @@ export default function TakeQuiz() {
                   <div className="mb-3 flex flex-wrap items-center gap-2">
                     <div className="inline-flex items-center gap-1.5 rounded-full glass px-3 py-1 text-[11px] font-semibold">
                       <CategoryIcon className="h-3.5 w-3.5" />
-                      {question.category}
+                      {t(`categories.${question.category}`, { defaultValue: t(`versus.categories.${question.category}`, { defaultValue: question.category }) })}
                     </div>
                     <AnimatePresence mode="wait">
                       <motion.span
@@ -548,6 +566,7 @@ export default function TakeQuiz() {
                         <motion.button
                           key={option}
                           type="button"
+                          aria-pressed={isSelected}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: oi * 0.05, type: 'spring', stiffness: 280, damping: 24 }}
@@ -611,7 +630,7 @@ export default function TakeQuiz() {
 
                   {/* Gentle reassurance under the options */}
                   <p className="mt-4 text-center text-[11px] text-muted-foreground/80 italic">
-                    You can change your mind anytime before submitting 💛
+                    {t('player.change')}
                   </p>
                 </div>
               </motion.div>
@@ -639,19 +658,22 @@ export default function TakeQuiz() {
         </AnimatePresence>
 
         {/* ===== Navigation + progress dots ===== */}
-        <div className="flex items-center justify-between gap-3">
+        <div className="player-navigation flex items-center justify-between gap-3">
           <motion.button
             whileHover={{ x: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setCurrentIdx(Math.max(0, currentIdx - 1))}
             disabled={currentIdx === 0}
             className="flex h-12 w-12 items-center justify-center rounded-full glass shadow-soft disabled:opacity-30 disabled:cursor-not-allowed"
-            aria-label="Previous question"
+            aria-label={t('common.previous_question')}
           >
             <ArrowLeft className="h-4 w-4" />
           </motion.button>
 
-          <div className="flex items-center gap-1.5 px-2 overflow-x-auto hide-scrollbar">
+          <select className="min-w-0 rounded-xl border border-border bg-card px-2 py-3 text-center sm:hidden" value={currentIdx} onChange={event => setCurrentIdx(Number(event.target.value))} aria-label={t('common.question', { current: currentIdx + 1, total: questions.length })}>
+            {questions.map((item, index) => <option key={item.id} value={index}>{index + 1}/{questions.length}{answers[item.id] ? ' ✓' : ''}</option>)}
+          </select>
+          <div className="hidden sm:flex items-center gap-1.5 px-2 overflow-x-auto hide-scrollbar">
             {questions.map((_, index) => {
               const answered = !!answers[questions[index]?.id];
               const isActive = index === currentIdx;
@@ -670,7 +692,7 @@ export default function TakeQuiz() {
                   }}
                   transition={{ type: 'spring', stiffness: 300, damping: 24 }}
                   className={`h-2 rounded-full flex-shrink-0 ${isActive ? 'shadow-glow' : ''}`}
-                  aria-label={`Go to question ${index + 1}`}
+                  aria-label={t('common.go_question', { number: index + 1 })}
                 />
               );
             })}
@@ -686,7 +708,7 @@ export default function TakeQuiz() {
                 currentAnswered ? 'shimmer-sweep gradient-coral text-primary-foreground shadow-glow' : 'bg-muted text-muted-foreground'
               }`}
             >
-              Next <ArrowRight className="h-4 w-4" />
+              {t('common.next')} <ArrowRight className="h-4 w-4" />
             </motion.button>
           ) : (
             <motion.button
@@ -700,12 +722,12 @@ export default function TakeQuiz() {
               {submitting ? (
                 <>
                   <Heart className="h-4 w-4 fill-white animate-heartbeat" />
-                  Sending with love…
+                  {t('player.sending')}
                 </>
               ) : (
                 <>
                   <Heart className="h-4 w-4 fill-white" />
-                  {coupleSession ? 'Send & Compare' : 'Send my guesses'}
+                  {coupleSession ? t('player.compare') : t('player.send')}
                 </>
               )}
             </motion.button>
@@ -719,7 +741,7 @@ export default function TakeQuiz() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center text-xs text-muted-foreground italic"
           >
-            Just {questions.length - completionCount} more to fill in — every answer counts 💛
+            {t('player.remaining', { count: questions.length - completionCount })}
           </motion.p>
         )}
       </div>
@@ -867,9 +889,10 @@ function LockScreen({
   respondentName: string;
   setRespondentName: (v: string) => void;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6 py-10">
+    <div className="consumer-page relative flex min-h-[calc(100dvh-56px)] items-center justify-center overflow-hidden bg-background px-4 py-6 sm:px-6 sm:py-10">
       <TakeQuizBackdrop />
       <FloatingHearts count={9} />
 
@@ -880,7 +903,7 @@ function LockScreen({
         className="relative w-full max-w-md"
       >
         <div className="absolute -inset-1 rounded-[2rem] ring-conic opacity-50 blur-md" />
-        <div className="relative overflow-hidden rounded-[2rem] glass p-7 md:p-9 text-center shadow-glow">
+        <div className="relative overflow-hidden rounded-[2rem] glass p-4 sm:p-7 md:p-9 text-center shadow-glow">
           <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gradient-to-br from-coral/35 via-rose/25 to-lavender/25 blur-3xl" />
 
           {/* Beating heart icon (with key cameo on hover-like halo) */}
@@ -902,41 +925,41 @@ function LockScreen({
             transition={{ delay: 0.3 }}
           >
             <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] uppercase tracking-widest font-bold text-primary">
-              <Heart className="h-3 w-3 fill-current" /> {isVersus ? 'Versus Mode' : 'Someone special invited you'}
+              <Heart className="h-3 w-3 fill-current" /> {isVersus ? t('home_page.versus') : t('player.invited')}
             </div>
             <h1 className="mb-2 text-2xl md:text-3xl font-bold font-display leading-tight">
-              {isVersus ? 'Ready to accept the challenge?' : 'Ready to prove yourself?'}
+              {isVersus ? t('player.challenge') : t('player.prove')}
             </h1>
             {hasTakenVersus ? (
               <>
                 <p className="mb-6 text-sm text-muted-foreground">
-                  You have already completed this Versus challenge.
+                  {t('player.already')}
                 </p>
                 <Button onClick={() => navigate('/dashboard')} className="w-full rounded-full bg-primary text-primary-foreground">
-                  Return Home
+                  {t('journey.return_home')}
                 </Button>
               </>
             ) : (
               <>
                 <p className="mb-6 text-sm text-muted-foreground">
-                  {isVersus ? 'This is a strict 15s-per-question challenge. Do not switch tabs.' : 'Enter your name to begin the test.'}
+                  {isVersus ? t('player.strict') : t('player.name_begin')}
                 </p>
                 <div className="mb-5 flex items-center gap-2 rounded-full glass p-1.5 pl-4 shadow-soft">
                   <UserCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
                   <Input
                     value={respondentName}
                     onChange={(e) => setRespondentName(e.target.value)}
-                    placeholder="Your name"
+                    placeholder={t('journey.your_name')}
                     className="flex-1 border-0 bg-transparent text-sm shadow-none focus-visible:ring-0"
                     maxLength={30}
-                    autoFocus
+                    aria-label={t('journey.your_name')}
                   />
                   <Button
                     onClick={() => setVerified(true)}
                     disabled={!respondentName.trim()}
                     className="h-9 rounded-full gradient-coral text-primary-foreground px-5 shadow-glow transition-transform hover:scale-105 active:scale-95"
                   >
-                    Start <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                    {t('player.start')} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                   </Button>
                 </div>
               </>
@@ -972,6 +995,7 @@ function CouplePanel({
   copyCoupleShareLink: () => void;
   sessionBusy: boolean;
 }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState<boolean>(!!coupleSession);
   const isActive = !!coupleSession;
 
@@ -997,6 +1021,7 @@ function CouplePanel({
       <button
         type="button"
         onClick={() => setExpanded(v => !v)}
+        aria-expanded={expanded}
         className="relative flex w-full items-center gap-3 p-4 text-left"
       >
         <div className="relative flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl gradient-coral text-white shadow-soft">
@@ -1006,20 +1031,20 @@ function CouplePanel({
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <div className="text-sm font-bold font-display">Couple mode</div>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="text-sm font-bold font-display">{t('player.couple')}</div>
             {isActive ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-secondary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-secondary">
-                <span className="h-1.5 w-1.5 rounded-full bg-secondary animate-pulse" /> Active
+                <span className="h-1.5 w-1.5 rounded-full bg-secondary animate-pulse" /> {t('dashboard.active')}
               </span>
             ) : (
               <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Optional
+                {t('player.optional')}
               </span>
             )}
           </div>
           <div className="text-xs text-muted-foreground truncate">
-            {isActive ? `Code ${coupleSession.session_code} · ${coupleSlot === 'first' ? 'Partner 1' : 'Partner 2'}` : 'Take it together. See how in-sync you really are.'}
+            {isActive ? t('player.code_slot', { code: coupleSession.session_code, partner: coupleSlot === 'first' ? t('journey.first') : t('journey.second') }) : t('player.together')}
           </div>
         </div>
         <motion.div animate={{ rotate: expanded ? 180 : 0 }} transition={{ duration: 0.25 }}>
@@ -1040,18 +1065,19 @@ function CouplePanel({
           >
             <div className="space-y-4 p-4 pt-0">
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Answer privately on your own phones, then we'll show you side-by-side which guesses lined up. It's a sweet little reveal.
+                {t('player.privacy')}
               </p>
 
               {/* Name field */}
               <div className="space-y-1.5">
                 <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  <UserCircle2 className="h-3 w-3" /> Your name
+                  <UserCircle2 className="h-3 w-3" /> {t('journey.your_name')}
                 </label>
                 <Input
+                  aria-label={t('journey.your_name')}
                   value={respondentName}
                   onChange={(event) => setRespondentName(event.target.value)}
-                  placeholder="Your name"
+                  placeholder={t('journey.your_name')}
                   maxLength={40}
                   className="rounded-xl"
                 />
@@ -1063,7 +1089,7 @@ function CouplePanel({
                   {/* Code chip with copy */}
                   <div className="flex items-center gap-2">
                     <div className="flex-1 rounded-xl glass px-4 py-3">
-                      <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Session code</div>
+                      <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{t('player.session_code')}</div>
                       <div className="font-mono text-lg font-bold tracking-[0.35em]">{coupleSession.session_code}</div>
                     </div>
                     <motion.button
@@ -1071,7 +1097,7 @@ function CouplePanel({
                       whileTap={{ scale: 0.95 }}
                       onClick={copyCoupleShareLink}
                       className="flex h-12 w-12 items-center justify-center rounded-xl gradient-coral text-white shadow-soft"
-                      aria-label="Copy share link"
+                      aria-label={t('player.copy')}
                     >
                       <Copy className="h-4 w-4" />
                     </motion.button>
@@ -1080,16 +1106,16 @@ function CouplePanel({
                   {/* Partner names */}
                   <div className="grid grid-cols-2 gap-2">
                     <div className="rounded-xl border border-border bg-card p-3">
-                      <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Partner 1</div>
+                      <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{t('journey.first')}</div>
                       <div className="text-sm font-bold font-display truncate">{coupleSession.first_name || '—'}</div>
                     </div>
                     <div className="rounded-xl border border-border bg-card p-3">
-                      <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Partner 2</div>
+                      <div className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{t('journey.second')}</div>
                       <div className="text-sm font-bold font-display truncate flex items-center gap-1.5">
                         {coupleSession.second_name || (
                           <>
                             <Hourglass className="h-3 w-3 text-muted-foreground animate-pulse" />
-                            <span className="text-muted-foreground italic">Waiting…</span>
+                            <span className="text-muted-foreground italic">{t('journey.waiting_dots')}</span>
                           </>
                         )}
                       </div>
@@ -1098,7 +1124,7 @@ function CouplePanel({
 
                   <p className="rounded-xl bg-secondary/10 p-3 text-xs text-secondary-foreground/80 leading-relaxed">
                     <Heart className="mr-1.5 inline h-3.5 w-3.5 text-secondary fill-secondary/40" />
-                    Finish your answers — we'll cozy up and wait for your partner, then reveal the matches together.
+                    {t('player.finish')}
                   </p>
                 </div>
               ) : (
@@ -1119,8 +1145,8 @@ function CouplePanel({
                         <Sparkles className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-sm font-bold font-display">Start a couple session</div>
-                        <div className="text-[11px] text-muted-foreground">Generates a 6-char code to share with your partner</div>
+                        <div className="text-sm font-bold font-display">{t('player.session_start')}</div>
+                        <div className="text-[11px] text-muted-foreground">{t('player.six_code')}</div>
                       </div>
                       <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     </div>
@@ -1128,18 +1154,19 @@ function CouplePanel({
 
                   <div className="relative flex items-center gap-3">
                     <div className="h-px flex-1 bg-border" />
-                    <span className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">or join</span>
+                    <span className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">{t('player.or_join')}</span>
                     <div className="h-px flex-1 bg-border" />
                   </div>
 
                   {/* Join with code */}
                   <div className="rounded-2xl border border-border bg-card p-4">
                     <label className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                      <KeyRound className="h-3 w-3" /> Partner's code
+                      <KeyRound className="h-3 w-3" /> {t('player.partner_code')}
                     </label>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-3">
                       <InputOTP
                         maxLength={6}
+                        aria-label={t('player.partner_code')}
                         value={coupleCodeInput}
                         onChange={(v) => setCoupleCodeInput(v.toUpperCase())}
                       >
@@ -1159,7 +1186,7 @@ function CouplePanel({
                         disabled={sessionBusy || !coupleCodeInput.trim()}
                         className="ml-auto rounded-full gradient-coral text-primary-foreground"
                       >
-                        Join
+                        {t('player.join')}
                       </Button>
                     </div>
                   </div>

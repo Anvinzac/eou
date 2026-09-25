@@ -1,8 +1,10 @@
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
-const qna = require('../data/qna.json') as { version: string; questions: unknown[] };
-const qnaVi = require('../data/qna.vi.json') as { version: string; questions: unknown[] };
+type PreferenceQuestion = { id: number; category: string; text: string; options: string[] };
+const qna = require('../data/qna.json') as { version: string; questions: PreferenceQuestion[] };
+const qnaVi = require('../data/qna.vi.json') as { version: string; questions: PreferenceQuestion[] };
+const canonicalCategories = new Map(qna.questions.map(question => [question.id, question.category]));
 const academic = require('../data/academic.json') as {
   version: string;
   questions: Array<{
@@ -18,7 +20,14 @@ const academic = require('../data/academic.json') as {
 export const CatalogService = {
   getPreferenceQuestions(locale?: string) {
     if (locale?.toLowerCase().startsWith('vi')) {
-      return qnaVi;
+      // Category identifiers stay stable; only display labels are translated by the client.
+      return {
+        ...qnaVi,
+        questions: qnaVi.questions.map(question => ({
+          ...question,
+          category: canonicalCategories.get(question.id) ?? question.category,
+        })),
+      };
     }
     return qna;
   },
