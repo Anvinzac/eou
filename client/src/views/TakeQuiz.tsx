@@ -27,8 +27,6 @@ type QuizQuestionRow = {
   order_number: number;
   emoji?: string;
   choices?: string[];
-  distractor_answers?: string[];
-  correct_answers?: string[];
 };
 type InvitationRow = any;
 type CoupleSession = any;
@@ -377,7 +375,8 @@ export default function TakeQuiz() {
   }
 
   const question = questions[currentIdx];
-  const shuffledChoices = question ? getShuffledChoices(question) : [];
+  // The server shuffles; reordering here would only make the order predictable again.
+  const shuffledChoices = question?.choices ?? [];
   const completionCount = Object.keys(answers).length;
 
   const progressPct = questions.length ? (completionCount / questions.length) * 100 : 0;
@@ -1219,19 +1218,4 @@ function getStoredCoupleState(quizId: string): StoredCoupleSessionState | null {
   } catch {
     return null;
   }
-}
-
-function getShuffledChoices(question: QuizQuestionRow): string[] {
-  const allChoices = question.choices?.length
-    ? [...question.choices]
-    : [...(question.correct_answers || []), ...(question.distractor_answers || [])];
-  const seed = question.id.split('').reduce((total, char) => total + char.charCodeAt(0), 0);
-  const shuffled = [...allChoices];
-
-  for (let index = shuffled.length - 1; index > 0; index -= 1) {
-    const targetIndex = (seed * (index + 1) * 7) % (index + 1);
-    [shuffled[index], shuffled[targetIndex]] = [shuffled[targetIndex], shuffled[index]];
-  }
-
-  return shuffled;
 }

@@ -3,6 +3,7 @@ import { InvitationModel } from '../models/InvitationModel.js';
 import { QuizModel } from '../models/QuizModel.js';
 import { badRequest, notFound } from '../lib/errors.js';
 import { generateCloudName, generateInviteCode } from './nameGenerator.js';
+import { toPublicQuiz } from './publicQuiz.js';
 import { TelemetryService } from './telemetryService.js';
 
 export const createInvitesSchema = z.object({
@@ -39,12 +40,12 @@ export const InvitationService = {
     const quiz = await QuizModel.findActiveById(quizId);
     if (!quiz) throw notFound('Quiz not found');
     if (quiz.is_open) {
-      return { verified: true, invitation: null, quiz };
+      return { verified: true, invitation: null, quiz: toPublicQuiz(quiz) };
     }
     if (!code) throw badRequest('Invitation code required');
     const invitation = await InvitationModel.findByQuizAndCode(quizId, code);
     if (!invitation) throw badRequest('Invalid invitation code');
     if (invitation.is_used) throw badRequest('Invitation already used');
-    return { verified: true, invitation, quiz };
+    return { verified: true, invitation, quiz: toPublicQuiz(quiz) };
   },
 };

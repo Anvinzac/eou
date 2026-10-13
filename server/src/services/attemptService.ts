@@ -4,6 +4,7 @@ import { InvitationModel } from '../models/InvitationModel.js';
 import { QuizModel } from '../models/QuizModel.js';
 import { CoupleSessionModel } from '../models/CoupleSessionModel.js';
 import { buildCoupleMatchSummary } from './coupleMatching.js';
+import { toPublicQuiz } from './publicQuiz.js';
 import { badRequest, notFound } from '../lib/errors.js';
 import { TelemetryService } from './telemetryService.js';
 
@@ -43,13 +44,17 @@ export const AttemptService = {
       throw badRequest('Please answer all questions');
     }
 
-    let invitationId = body.invitationId || null;
-    if (!invitationId && body.invitationCode) {
-      const invite = await InvitationModel.findByQuizAndCode(quizId, body.invitationCode);
-      if (!invite) throw badRequest('Invalid invitation code');
-      if (invite.is_used) throw badRequest('Invitation already used');
-      invitationId = invite.id;
+    // An id sent by the client is only a lookup key — it gets the same checks as a code.
+    let invitation: { id: string; quiz_id: string; is_used: boolean } | null = null;
+    if (body.invitationId) {
+      invitation = await InvitationModel.findById(body.invitationId);
+      if (!invitation || invitation.quiz_id !== quizId) throw badRequest('Invalid invitation');
+    } else if (body.invitationCode) {
+      invitation = await InvitationModel.findByQuizAndCode(quizId, body.invitationCode);
+      if (!invitation) throw badRequest('Invalid invitation code');
     }
+    if (invitation?.is_used) throw badRequest('Invitation already used');
+    const invitationId = invitation?.id ?? null;
 
     if (!quiz.is_open && !invitationId) {
       throw badRequest('Invitation required for this quiz');
@@ -75,21 +80,36 @@ export const AttemptService = {
       };
     });
 
-    const attempt = await AttemptModel.create({
-      quiz_id: quizId,
-      invitation_id: invitationId,
-      respondent_name: body.respondentName?.trim() || null,
-      score,
-      total_questions: questions.length,
-      completed_at: new Date().toISOString(),
-    });
+    // Claim before saving, so two simultaneous submissions cannot share one invitation.
+    if (invitationId && !(await InvitationModel.claim(invitationId))) {
+      throw badRequest('Invitation already used');
+    }
 
-    const responses = await AttemptModel.insertResponses(
-      responseRows.map((r) => ({ ...r, attempt_id: attempt.id })),
-    );
+    let attempt;
+    let responses;
+    try {
+      attempt = await AttemptModel.create({
+        quiz_id: quizId,
+        invitation_id: invitationId,
+        respondent_name: body.respondentName?.trim() || null,
+        score,
+        total_questions: questions.length,
+        completed_at: new Date().toISOString(),
+      });
 
-    if (invitationId) {
-      await InvitationModel.markUsed(invitationId);
+      const attemptId = attempt.id;
+      responses = await AttemptModel.insertResponses(
+        responseRows.map((r) => ({ ...r, attempt_id: attemptId })),
+      );
+    } catch (err) {
+      if (invitationId) {
+        try {
+          await InvitationModel.release(invitationId);
+        } catch {
+          /* keep the original error */
+        }
+      }
+      throw err;
     }
 
     let coupleSession = null;
@@ -206,7 +226,7 @@ export const AttemptService = {
     const attempt = await AttemptModel.findById(attemptId);
     if (!attempt) throw notFound('Attempt not found');
     const quiz = await QuizModel.findById(attempt.quiz_id);
-    return { attempt, quiz };
+    return { attempt, quiz: quiz ? toPublicQuiz(quiz) : null };
   },
 
   async listForOwner(userId: string, quizId: string) {

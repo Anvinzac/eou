@@ -2,6 +2,7 @@ import { CoupleSessionModel } from '../models/CoupleSessionModel.js';
 import { QuizModel } from '../models/QuizModel.js';
 import { badRequest, conflict, notFound } from '../lib/errors.js';
 import { generateInviteCode } from './nameGenerator.js';
+import { toPublicQuiz } from './publicQuiz.js';
 import { TelemetryService } from './telemetryService.js';
 
 export const CoupleService = {
@@ -61,7 +62,7 @@ export const CoupleService = {
     const session = await CoupleSessionModel.findByCode(code);
     if (!session) throw notFound('Couple session not found');
     const quiz = await QuizModel.findById(session.quiz_id);
-    return { session, quiz };
+    return { session, quiz: quiz ? toPublicQuiz(quiz) : null };
   },
 
   async listForOwner(userId: string, quizId: string) {

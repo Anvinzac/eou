@@ -28,8 +28,26 @@ export const InvitationModel = {
     return data;
   },
 
-  async markUsed(id: string) {
-    const { error } = await supabaseAdmin.from('invitations').update({ is_used: true }).eq('id', id);
+  async findById(id: string) {
+    const { data, error } = await supabaseAdmin.from('invitations').select('*').eq('id', id).maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  /** Marks an unused invitation as used in one statement; false means someone else got there first. */
+  async claim(id: string): Promise<boolean> {
+    const { data, error } = await supabaseAdmin
+      .from('invitations')
+      .update({ is_used: true })
+      .eq('id', id)
+      .eq('is_used', false)
+      .select('id');
+    if (error) throw error;
+    return (data || []).length > 0;
+  },
+
+  async release(id: string) {
+    const { error } = await supabaseAdmin.from('invitations').update({ is_used: false }).eq('id', id);
     if (error) throw error;
   },
 };

@@ -43,8 +43,8 @@ export const quizzesApi = {
         question_text: string;
         order_number: number;
         emoji?: string;
+        /** Every option, already shuffled by the server. */
         choices: string[];
-        distractor_answers: string[];
       }>;
     }>(`/quizzes/${id}`, { auth: false });
   },

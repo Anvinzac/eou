@@ -1,10 +1,11 @@
-import { randomUUID } from 'crypto';
+import { randomInt, randomUUID } from 'crypto';
 import { z } from 'zod';
 import { QuizModel } from '../models/QuizModel.js';
 import { InvitationModel } from '../models/InvitationModel.js';
 import { badRequest, notFound } from '../lib/errors.js';
 import { containsProfanity } from './profanity.js';
 import { generateInviteCode } from './nameGenerator.js';
+import { toPublicQuiz } from './publicQuiz.js';
 import { TelemetryService } from './telemetryService.js';
 import { createRequire } from 'module';
 
@@ -52,6 +53,16 @@ function assertCleanText(...texts: string[]) {
       throw badRequest('Please remove inappropriate language');
     }
   }
+}
+
+/** Unbiased shuffle; must stay unpredictable, since a seeded order could be reversed to find the answer. */
+function shuffled<T>(items: T[]): T[] {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i -= 1) {
+    const j = randomInt(i + 1);
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
 }
 
 function toQuestionRows(quizId: string, questions: CreateQuizBody['questions']) {
@@ -144,13 +155,13 @@ export const QuizService = {
       question_text: q.question_text,
       order_number: q.order_number,
       emoji: q.emoji || '',
-      distractor_answers: q.distractor_answers,
-      // Include all choices without revealing which are correct:
-      choices: [...(q.correct_answers || []), ...(q.distractor_answers || [])],
+      // All choices in random order, so neither position nor a separate
+      // distractor list reveals which are correct:
+      choices: shuffled<string>([...(q.correct_answers || []), ...(q.distractor_answers || [])]),
       is_custom: q.is_custom,
       question_ref_id: q.question_ref_id,
     }));
-    return { quiz, questions: publicQuestions };
+    return { quiz: toPublicQuiz(quiz), questions: publicQuestions };
   },
 
   async patchQuiz(userId: string, quizId: string, patch: { title?: string; is_open?: boolean }) {
