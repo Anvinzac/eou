@@ -156,10 +156,36 @@ describe('music bed', () => {
     expect(fadeSchedule(35.5)).toEqual([[0, 0], [0.5, MUSIC_PEAK], [34.5, MUSIC_PEAK], [35.5, 0]]);
   });
 
+  it('levels quiet and loud tracks to the same loudness without clipping', async () => {
+    const { loudnessGain, MUSIC_PEAK, MUSIC_TARGET_RMS } = await import('@/lib/shareMedia/encode/audio');
+    expect(0.04 * loudnessGain(0.04, 0.22)).toBeCloseTo(MUSIC_TARGET_RMS);
+    expect(0.2 * loudnessGain(0.2, 0.75)).toBeCloseTo(MUSIC_TARGET_RMS);
+    expect(0.8 * loudnessGain(0.09, 0.8)).toBeLessThanOrEqual(MUSIC_PEAK);
+    expect(loudnessGain(0, 0)).toBe(1);
+  });
+
   it('shrinks the fades for very short videos so they never overlap', async () => {
     const { fadeSchedule } = await import('@/lib/shareMedia/encode/audio');
     const times = fadeSchedule(1).map(([time]) => time);
     expect(times).toEqual([...times].sort((a, b) => a - b));
     expect(times.at(-1)).toBe(1);
+  });
+});
+
+describe('bundled music', () => {
+  it('only ships CC0 tracks whose files and provenance are recorded', async () => {
+    const { readFileSync, existsSync } = await import('node:fs');
+    const { resolve } = await import('node:path');
+    const { MUSIC_TRACKS } = await import('@/lib/shareMedia/music');
+    // Tests run from the client folder; jsdom's import.meta.url isn't a file URL.
+    const musicDir = resolve(process.cwd(), 'public/music');
+    const licenses = readFileSync(resolve(musicDir, 'LICENSES.md'), 'utf8');
+    expect(MUSIC_TRACKS.length).toBeGreaterThan(0);
+    for (const track of MUSIC_TRACKS) {
+      expect(track.license).toBe('CC0-1.0');
+      expect(existsSync(resolve(musicDir, track.file)), track.file).toBe(true);
+      expect(licenses, track.file).toContain(`\`${track.file}\``);
+      expect(licenses, track.file).toContain(track.sourceUrl);
+    }
   });
 });
