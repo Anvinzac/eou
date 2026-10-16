@@ -148,3 +148,18 @@ describe('encoder support', () => {
     expect(await canEncodeAac()).toBe(false);
   });
 });
+
+describe('music bed', () => {
+  it('fades in quickly and out slowly, peaking below full scale', async () => {
+    const { fadeSchedule, MUSIC_PEAK } = await import('@/lib/shareMedia/encode/audio');
+    expect(MUSIC_PEAK).toBeLessThan(1);
+    expect(fadeSchedule(35.5)).toEqual([[0, 0], [0.5, MUSIC_PEAK], [34.5, MUSIC_PEAK], [35.5, 0]]);
+  });
+
+  it('shrinks the fades for very short videos so they never overlap', async () => {
+    const { fadeSchedule } = await import('@/lib/shareMedia/encode/audio');
+    const times = fadeSchedule(1).map(([time]) => time);
+    expect(times).toEqual([...times].sort((a, b) => a - b));
+    expect(times.at(-1)).toBe(1);
+  });
+});

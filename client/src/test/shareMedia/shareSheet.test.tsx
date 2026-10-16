@@ -4,7 +4,10 @@ import i18n from '@/i18n/config';
 import ShareMediaButton from '@/components/share/ShareMediaButton';
 import { quizzesApi, adminTelemetryApi, shareApi } from '@/api';
 import { encodeGif } from '@/lib/shareMedia/encode/gif';
-import { pickVideoScale } from '@/lib/shareMedia/encode/support';
+import { encodeMp4 } from '@/lib/shareMedia/encode/mp4';
+import { renderMusicBed } from '@/lib/shareMedia/encode/audio';
+import { canEncodeAac, pickVideoScale } from '@/lib/shareMedia/encode/support';
+import type { MusicTrack } from '@/lib/shareMedia/music';
 import { downloadFiles } from '@/lib/shareMedia/share';
 import { createRecordingContext } from './recordingContext';
 
@@ -15,7 +18,13 @@ vi.mock('@/api', () => ({
 }));
 vi.mock('@/lib/shareMedia/encode/gif', () => ({ encodeGif: vi.fn() }));
 vi.mock('@/lib/shareMedia/encode/mp4', () => ({ encodeMp4: vi.fn(async () => new Blob(['mp4'], { type: 'video/mp4' })) }));
-vi.mock('@/lib/shareMedia/encode/support', () => ({ pickVideoScale: vi.fn() }));
+vi.mock('@/lib/shareMedia/encode/support', () => ({ pickVideoScale: vi.fn(), canEncodeAac: vi.fn() }));
+vi.mock('@/lib/shareMedia/encode/audio', () => ({ renderMusicBed: vi.fn(async () => ({ duration: 23.5 })) }));
+const music = vi.hoisted(() => ({ tracks: [] as MusicTrack[] }));
+vi.mock('@/lib/shareMedia/music', () => ({
+  get MUSIC_TRACKS() { return music.tracks; },
+  musicUrl: (track: MusicTrack) => `/music/${track.file}`,
+}));
 vi.mock('@/lib/shareMedia/share', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/lib/shareMedia/share')>()),
   canShareFiles: () => false,
@@ -40,6 +49,11 @@ beforeEach(async () => {
   vi.mocked(shareApi.createLink).mockResolvedValue({ code: 'ABCDEFG', url: 'https://go.eou.test/s/ABCDEFG' });
   vi.mocked(pickVideoScale).mockResolvedValue(1);
   vi.mocked(encodeGif).mockResolvedValue(new Blob(['gif'], { type: 'image/gif' }));
+  vi.mocked(canEncodeAac).mockResolvedValue(true);
+  music.tracks = [];
+  // Radix Select needs these to open in jsdom.
+  Element.prototype.hasPointerCapture ??= () => false;
+  Element.prototype.scrollIntoView ??= () => undefined;
   HTMLCanvasElement.prototype.getContext = (() => createRecordingContext().ctx) as unknown as typeof originalGetContext;
 });
 
@@ -122,6 +136,33 @@ describe('share as media', () => {
     expect(vi.mocked(adminTelemetryApi.reportClientError).mock.calls[0][0]).toMatchObject({
       severity: 'info', metadata: { kind: 'share_video_unsupported' },
     });
+  });
+
+  it('mixes the chosen music into the video', async () => {
+    music.tracks = [{ id: 'sunny', title: 'Sunny side', file: 'sunny.mp3', author: 'A. Composer', license: 'CC0-1.0', sourceUrl: 'https://example.org/sunny' }];
+    await openSheet();
+    fireEvent.click(screen.getByRole('radio', { name: 'Video' }));
+    const picker = await screen.findByRole('combobox', { name: 'Music' });
+    fireEvent.keyDown(picker, { key: 'Enter' });
+    fireEvent.click(await screen.findByRole('option', { name: 'Sunny side' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Create' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+    await screen.findByRole('status');
+    expect(renderMusicBed).toHaveBeenCalledWith('/music/sunny.mp3', 2.5 + 5 * 3 + 3, expect.any(AbortSignal));
+    expect(vi.mocked(encodeMp4).mock.calls[0][0].music).toEqual({ duration: 23.5 });
+  });
+
+  it('makes a silent video when this browser cannot encode audio', async () => {
+    music.tracks = [{ id: 'sunny', title: 'Sunny side', file: 'sunny.mp3', author: 'A. Composer', license: 'CC0-1.0', sourceUrl: 'https://example.org/sunny' }];
+    vi.mocked(canEncodeAac).mockResolvedValue(false);
+    await openSheet();
+    fireEvent.click(screen.getByRole('radio', { name: 'Video' }));
+    expect(await screen.findByText(/can't add music/i)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Create' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+    await screen.findByRole('status');
+    expect(renderMusicBed).not.toHaveBeenCalled();
+    expect(vi.mocked(encodeMp4).mock.calls[0][0].music).toBeNull();
   });
 
   it('shows a carousel as a cover plus one image per question', async () => {

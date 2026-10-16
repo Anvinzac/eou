@@ -763,6 +763,8 @@
     "music_label": "Nhạc nền",
     "music_none": "Không có nhạc",
     "music_unavailable": "Trình duyệt này chưa ghép được nhạc, video sẽ không có tiếng.",
+    "music_play": "Nghe thử nhạc",
+    "music_pause": "Tạm dừng nhạc",
     "generate": "Tạo",
     "generating": "Đang tạo… {{percent}}%",
     "cancel": "Huỷ",

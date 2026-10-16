@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight, Download, Loader2, Share2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Loader2, Pause, Play, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { adminTelemetryApi, quizzesApi, shareApi } from '@/api';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,11 +9,13 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } f
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ensureExportFonts } from '@/lib/shareMedia/fonts';
 import { getFormat } from '@/lib/shareMedia/formats';
 import { buildShareLabels, categoryLabeler } from '@/lib/shareMedia/labels';
+import { MUSIC_TRACKS, musicUrl } from '@/lib/shareMedia/music';
 import { canShareFiles, downloadFiles, shareFiles, slugify } from '@/lib/shareMedia/share';
 import { buildTimeline, type MediaKind } from '@/lib/shareMedia/timeline';
 import { toShareQuiz } from '@/lib/shareMedia/types';
@@ -57,6 +59,11 @@ function SharePanel({ quizId, title }: { quizId: string; title: string }) {
   const [status, setStatus] = useState<Status>('idle');
   const [progress, setProgress] = useState(0);
   const [files, setFiles] = useState<File[]>([]);
+  const [musicId, setMusicId] = useState('none');
+  // undefined until checked; AAC is what MP4 players everywhere expect.
+  const [aacSupported, setAacSupported] = useState<boolean | undefined>(undefined);
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const musicPreview = useRef<HTMLAudioElement | null>(null);
   const job = useRef<AbortController | null>(null);
   // null until the short link request settles; the plain quiz URL if it can't be created.
   const [shareUrl, setShareUrl] = useState<string | null>(null);
@@ -107,13 +114,30 @@ function SharePanel({ quizId, title }: { quizId: string; title: string }) {
     return () => { cancelled = true; };
   }, [aspect]);
 
+  useEffect(() => {
+    if (kind !== 'video' || aacSupported !== undefined || MUSIC_TRACKS.length === 0) return;
+    import('@/lib/shareMedia/encode/support')
+      .then(({ canEncodeAac }) => canEncodeAac())
+      .then(setAacSupported)
+      .catch(() => setAacSupported(false));
+  }, [kind, aacSupported]);
+
+  // Stop the music preview when the track changes, the format changes, or the sheet closes.
+  useEffect(() => {
+    return () => {
+      musicPreview.current?.pause();
+      musicPreview.current = null;
+      setMusicPlaying(false);
+    };
+  }, [musicId, kind]);
+
   // A finished file no longer matches once the choices change.
   useEffect(() => {
     job.current?.abort();
     setStatus('idle');
     setFiles([]);
     setProgress(0);
-  }, [kind, aspect, hero]);
+  }, [kind, aspect, hero, musicId]);
 
   useEffect(() => setPage(0), [kind, aspect]);
   useEffect(() => () => job.current?.abort(), []);
@@ -161,9 +185,14 @@ function SharePanel({ quizId, title }: { quizId: string; title: string }) {
         output = [new File([blob], `${slug}-${aspect}.gif`, { type: 'image/gif' })];
       } else {
         if (!videoScale) throw new Error('Video export is not supported in this browser');
+        const timeline = buildTimeline('video', count);
+        const track = aacSupported ? MUSIC_TRACKS.find((t) => t.id === musicId) : undefined;
+        const music = track
+          ? await (await import('@/lib/shareMedia/encode/audio')).renderMusicBed(musicUrl(track), timeline.duration, controller.signal)
+          : null;
         const { encodeMp4 } = await import('@/lib/shareMedia/encode/mp4');
         const blob = await encodeMp4({
-          quiz: shareQuiz, timeline: buildTimeline('video', count), format: getFormat(aspect, videoScale),
+          quiz: shareQuiz, timeline, format: getFormat(aspect, videoScale), music,
           signal: controller.signal, onProgress: setProgress,
         });
         output = [new File([blob], `${slug}-${aspect}.mp4`, { type: 'video/mp4' })];
@@ -182,6 +211,19 @@ function SharePanel({ quizId, title }: { quizId: string; title: string }) {
         metadata: { kind: 'share_media_failed', media: kind, aspect },
       }).catch(() => undefined);
     }
+  }
+
+  function toggleMusicPreview() {
+    const track = MUSIC_TRACKS.find((t) => t.id === musicId);
+    if (!track) return;
+    if (musicPlaying) {
+      musicPreview.current?.pause();
+      setMusicPlaying(false);
+      return;
+    }
+    musicPreview.current ??= new Audio(musicUrl(track));
+    musicPreview.current.onended = () => setMusicPlaying(false);
+    void musicPreview.current.play().then(() => setMusicPlaying(true)).catch(() => setMusicPlaying(false));
   }
 
   function cancel() {
@@ -245,6 +287,30 @@ function SharePanel({ quizId, title }: { quizId: string; title: string }) {
       )}
 
       {videoUnavailable && <p role="status" className="rounded-xl bg-muted p-3 text-sm">{t('share_media.video_unsupported')}</p>}
+
+      {kind === 'video' && !videoUnavailable && MUSIC_TRACKS.length > 0 && (
+        <div className="space-y-2">
+          <Label htmlFor="share-media-music">{t('share_media.music_label')}</Label>
+          {aacSupported === false ? (
+            <p className="text-sm text-muted-foreground">{t('share_media.music_unavailable')}</p>
+          ) : (
+            <div className="flex gap-2">
+              <Select value={musicId} onValueChange={setMusicId}>
+                <SelectTrigger id="share-media-music" className="h-11 flex-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">{t('share_media.music_none')}</SelectItem>
+                  {MUSIC_TRACKS.map((track) => <SelectItem key={track.id} value={track.id}>{track.title}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              {musicId !== 'none' && (
+                <Button type="button" variant="outline" size="icon" className="h-11 w-11 shrink-0" aria-label={t(musicPlaying ? 'share_media.music_pause' : 'share_media.music_play')} onClick={toggleMusicPreview}>
+                  {musicPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {status === 'working' ? (
         <div className="space-y-2">

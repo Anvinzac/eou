@@ -763,6 +763,8 @@
     "music_label": "Music",
     "music_none": "No music",
     "music_unavailable": "This browser can't add music, so the video will be silent.",
+    "music_play": "Play music",
+    "music_pause": "Pause music",
     "generate": "Create",
     "generating": "Creating… {{percent}}%",
     "cancel": "Cancel",
