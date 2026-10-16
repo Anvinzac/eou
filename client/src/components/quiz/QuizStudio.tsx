@@ -5,6 +5,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Check, Copy, Eye, Heart, Lock, Shuffle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import ShareMediaButton from '@/components/share/ShareMediaButton';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -222,7 +223,7 @@ export function PublishedQuiz({ id, title, isOpen, appearance, onDashboard }: { 
       {isOpen && <div className="mt-7 flex flex-col gap-3"><Input aria-label={t('studio.share_link')} value={url} readOnly className="bg-white/80 text-[#44394d]" onFocus={event => event.target.select()} /><Button className="studio-primary rounded-full" onClick={async () => {
         try { await navigator.clipboard.writeText(url); toast.success(t('studio.link_copied')); }
         catch { toast.error(t('studio.copy_failed')); }
-      }}><Copy className="mr-2 h-4 w-4" /> {t('studio.copy_link')}</Button></div>}
+      }}><Copy className="mr-2 h-4 w-4" /> {t('studio.copy_link')}</Button><ShareMediaButton quizId={id} title={title} isOpen={isOpen} className="rounded-full border-current bg-white/40" /></div>}
       <Button onClick={onDashboard} variant="outline" className="mt-4 rounded-full border-current bg-transparent">{isOpen ? t('studio.dashboard') : t('studio.invitations')}<ArrowRight className="ml-2 h-4 w-4" /></Button>
     </motion.div>
   );

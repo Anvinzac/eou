@@ -12,8 +12,11 @@ import { encodeGif } from '@/lib/shareMedia/encode/gif';
 import { encodeMp4 } from '@/lib/shareMedia/encode/mp4';
 import { pickVideoScale } from '@/lib/shareMedia/encode/support';
 import { downloadFiles } from '@/lib/shareMedia/share';
+import ShareMediaButton from '@/components/share/ShareMediaButton';
 
 type Scene = 'poster' | 'cover' | 'card' | 'gif' | 'video';
+
+const DEMO_QUIZ_ID = 'dev-fixture';
 
 const kindFor: Record<Scene, MediaKind> = { poster: 'poster', cover: 'carousel', card: 'carousel', gif: 'gif', video: 'video' };
 
@@ -66,6 +69,23 @@ export default function ShareMediaGallery() {
 
   useEffect(() => {
     void ensureExportFonts(quiz).then(() => setFontsReady((n) => n + 1));
+  }, [quiz]);
+
+  // Serves the current fixture as a take payload, so the real share sheet works here without the API.
+  useEffect(() => {
+    const original = window.fetch;
+    const payload = {
+      quiz: { id: DEMO_QUIZ_ID, title: quiz.title, appearance: quiz.appearance, is_open: true },
+      questions: quiz.questions.map((q) => ({ question_text: q.text, emoji: q.emoji, category: q.category, choices: q.choices })),
+    };
+    window.fetch = (input, init) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+      if (url.endsWith(`/quizzes/${DEMO_QUIZ_ID}`)) {
+        return Promise.resolve(new Response(JSON.stringify(payload), { headers: { 'Content-Type': 'application/json' } }));
+      }
+      return original(input, init);
+    };
+    return () => { window.fetch = original; };
   }, [quiz]);
 
   useEffect(() => {
@@ -185,6 +205,7 @@ export default function ShareMediaGallery() {
               <button key={kind} disabled={busy} className="rounded border px-3 py-1 disabled:opacity-50" onClick={() => run(kind)}>Export {kind}</button>
             ))}
             <button disabled={busy} className="rounded border px-3 py-1 disabled:opacity-50" onClick={downloadPreviewCards}>Download preview cards</button>
+            <ShareMediaButton key={fixtureId} quizId={DEMO_QUIZ_ID} title={quiz.title} isOpen size="sm" />
           </div>
           {busy && <progress className="w-full" value={progress} max={1} />}
           {result && (result.type.startsWith('video')

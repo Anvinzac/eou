@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { Copy, Plus, RefreshCw, Link2, ArrowLeft, BarChart3, LogOut, Eye, Globe, Lock, Pencil, Check, User, Settings, Minus, HeartHandshake, Swords } from 'lucide-react';
 import { generateCloudName } from '@/lib/nameGenerator';
 import PackManager from '@/components/dashboard/PackManager';
+import ShareMediaButton from '@/components/share/ShareMediaButton';
 
 type QuizRow = any;
 type CoupleSessionRow = any;
@@ -204,6 +205,7 @@ export default function Dashboard() {
                     <Copy className="mr-1 h-3 w-3" /> {t('dashboard_ui.copy_open')}
                   </Button>
                 )}
+                <ShareMediaButton quizId={selectedQuiz.id} title={selectedQuiz.title} isOpen={selectedQuiz.is_open} size="sm" />
               </div>
             </div>
 
