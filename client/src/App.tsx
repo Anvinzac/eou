@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +23,9 @@ import AdminLinks from "./views/admin/AdminLinks";
 import AdminErrors from "./views/admin/AdminErrors";
 import AdminStatus from "./views/admin/AdminStatus";
 import AdminSettings from "./views/admin/AdminSettings";
+
+// Dev-only workbench for share images and videos; compiled out of production builds.
+const ShareMediaGallery = import.meta.env.DEV ? lazy(() => import("./views/dev/ShareMediaGallery")) : null;
 
 const queryClient = new QueryClient();
 
@@ -51,6 +55,7 @@ const App = () => (
               <Route path="status" element={<AdminStatus />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
+            {ShareMediaGallery && <Route path="/dev/share-media" element={<Suspense fallback={null}><ShareMediaGallery /></Suspense>} />}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

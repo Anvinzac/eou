@@ -19,6 +19,10 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  // Share-media encoders load lazily; pre-bundling them avoids a dev reload on first export.
+  optimizeDeps: {
+    include: ["gifenc", "mediabunny", "qrcode", "fflate"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
