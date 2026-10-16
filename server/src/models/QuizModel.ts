@@ -80,6 +80,30 @@ export const QuizModel = {
     return data;
   },
 
+  /** Sets the share code only if the quiz has none yet; null means another request set one first. */
+  async setShareCode(id: string, code: string) {
+    const { data, error } = await supabaseAdmin
+      .from('quizzes')
+      .update({ share_code: code })
+      .eq('id', id)
+      .is('share_code', null)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async findByShareCode(code: string) {
+    const { data, error } = await supabaseAdmin
+      .from('quizzes')
+      .select('*')
+      .eq('share_code', code.toUpperCase())
+      .eq('is_active', true)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
   async getQuestions(quizId: string) {
     const { data, error } = await supabaseAdmin
       .from('quiz_questions')

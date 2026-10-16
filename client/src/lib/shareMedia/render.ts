@@ -11,7 +11,9 @@ const FADE_OUT = 0.2;
 
 function sceneFor(ctx: Ctx, quiz: ShareQuiz, format: ShareFormat): Scene {
   const area = format.safe;
-  return { ctx, quiz, look: getLook(quiz.appearance), format, area, s: Math.min(area.w, area.h) / 928 };
+  // Wide link cards scale by height; the square-ish content areas of posts and stories by their short side.
+  const s = format.id === 'link' ? area.h / 700 : Math.min(area.w, area.h) / 928;
+  return { ctx, quiz, look: getLook(quiz.appearance), format, area, s };
 }
 
 /**

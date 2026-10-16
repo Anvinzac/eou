@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import i18n from '@/i18n/config';
 import ShareMediaButton from '@/components/share/ShareMediaButton';
-import { quizzesApi, adminTelemetryApi } from '@/api';
+import { quizzesApi, adminTelemetryApi, shareApi } from '@/api';
 import { encodeGif } from '@/lib/shareMedia/encode/gif';
 import { pickVideoScale } from '@/lib/shareMedia/encode/support';
 import { downloadFiles } from '@/lib/shareMedia/share';
@@ -10,6 +10,7 @@ import { createRecordingContext } from './recordingContext';
 
 vi.mock('@/api', () => ({
   quizzesApi: { getTake: vi.fn() },
+  shareApi: { createLink: vi.fn() },
   adminTelemetryApi: { reportClientError: vi.fn(async () => ({})) },
 }));
 vi.mock('@/lib/shareMedia/encode/gif', () => ({ encodeGif: vi.fn() }));
@@ -36,6 +37,7 @@ beforeEach(async () => {
   sessionStorage.clear();
   await i18n.changeLanguage('en');
   vi.mocked(quizzesApi.getTake).mockResolvedValue(payload as Awaited<ReturnType<typeof quizzesApi.getTake>>);
+  vi.mocked(shareApi.createLink).mockResolvedValue({ code: 'ABCDEFG', url: 'https://go.eou.test/s/ABCDEFG' });
   vi.mocked(pickVideoScale).mockResolvedValue(1);
   vi.mocked(encodeGif).mockResolvedValue(new Blob(['gif'], { type: 'image/gif' }));
   HTMLCanvasElement.prototype.getContext = (() => createRecordingContext().ctx) as unknown as typeof originalGetContext;
@@ -76,6 +78,22 @@ describe('share as media', () => {
     fireEvent.click(screen.getByRole('button', { name: /download/i }));
     const [files] = vi.mocked(downloadFiles).mock.calls[0];
     expect(files.map((file) => file.name)).toEqual(['about-us-story.gif']);
+  });
+
+  it('puts the short link on exports, falling back to the quiz URL when it cannot be created', async () => {
+    await openSheet();
+    fireEvent.click(screen.getByRole('radio', { name: 'GIF' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+    await screen.findByRole('status');
+    expect(vi.mocked(encodeGif).mock.calls[0][0].quiz.shareUrl).toBe('https://go.eou.test/s/ABCDEFG');
+    cleanup();
+
+    vi.mocked(shareApi.createLink).mockRejectedValue(new Error('Share links are not configured'));
+    await openSheet();
+    fireEvent.click(screen.getByRole('radio', { name: 'GIF' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+    await waitFor(() => expect(encodeGif).toHaveBeenCalledTimes(2));
+    expect(vi.mocked(encodeGif).mock.calls[1][0].quiz.shareUrl).toBe(`${window.location.origin}/quiz/quiz-1`);
   });
 
   it('re-encodes a GIF that is too big for chat apps at a smaller size', async () => {

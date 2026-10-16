@@ -84,7 +84,8 @@ function paintHook(scene: Scene, local: number) {
     ctx.fillStyle = look.ink;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(quiz.labels.questionCount(quiz.questions.length), cx, area.y + area.h - 140 * s, area.w);
+    // Generic link-preview cards have no questions to count.
+    if (quiz.questions.length) ctx.fillText(quiz.labels.questionCount(quiz.questions.length), cx, area.y + area.h - 140 * s, area.w);
     drawBrand(ctx, look, cx, area.y + area.h - 40 * s, 40 * s);
   });
 }

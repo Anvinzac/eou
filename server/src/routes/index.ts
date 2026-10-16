@@ -12,6 +12,7 @@ import { AdminController } from '../controllers/AdminController.js';
 import { DistractorController } from '../controllers/DistractorController.js';
 import { CatalogController } from '../controllers/CatalogController.js';
 import { TelemetryController } from '../controllers/TelemetryController.js';
+import { ShareController } from '../controllers/ShareController.js';
 
 export const apiRouter = Router();
 
@@ -36,6 +37,7 @@ apiRouter.get('/quizzes/mine', requireAuth, asyncHandler(QuizController.listMine
 apiRouter.post('/quizzes/versus', requireAuth, asyncHandler(QuizController.createVersus));
 apiRouter.get('/quizzes/:id', asyncHandler(QuizController.getTake));
 apiRouter.patch('/quizzes/:id', requireAuth, asyncHandler(QuizController.patch));
+apiRouter.post('/quizzes/:id/share-link', requireAuth, asyncHandler(ShareController.createLink));
 
 // Invitations
 apiRouter.post('/quizzes/:id/invitations', requireAuth, asyncHandler(InvitationController.create));

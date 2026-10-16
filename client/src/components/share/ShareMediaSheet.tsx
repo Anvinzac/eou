@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Download, Loader2, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { adminTelemetryApi, quizzesApi } from '@/api';
+import { adminTelemetryApi, quizzesApi, shareApi } from '@/api';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
@@ -58,18 +58,22 @@ function SharePanel({ quizId, title }: { quizId: string; title: string }) {
   const [progress, setProgress] = useState(0);
   const [files, setFiles] = useState<File[]>([]);
   const job = useRef<AbortController | null>(null);
-  const shareUrl = `${window.location.origin}/quiz/${quizId}`;
+  // null until the short link request settles; the plain quiz URL if it can't be created.
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     quizzesApi.getTake(quizId)
       .then((data) => { if (!cancelled) setPayload(data); })
       .catch(() => { if (!cancelled) setLoadFailed(true); });
+    shareApi.createLink(quizId)
+      .then(({ url }) => { if (!cancelled) setShareUrl(url); })
+      .catch(() => { if (!cancelled) setShareUrl(`${window.location.origin}/quiz/${quizId}`); });
     return () => { cancelled = true; };
   }, [quizId]);
 
   const quiz = useMemo(
-    () => (payload
+    () => (payload && shareUrl
       ? toShareQuiz(payload, { hero, shareUrl, labels: buildShareLabels(t), categoryLabel: categoryLabeler(t) })
       : null),
     // `t` changes when the language does, so labels re-translate on a switch.
@@ -188,7 +192,7 @@ function SharePanel({ quizId, title }: { quizId: string; title: string }) {
 
   async function share() {
     try {
-      await shareFiles(files, { title: shareQuiz.title, text: `${t('share_media.share_text')} ${shareUrl}` });
+      await shareFiles(files, { title: shareQuiz.title, text: `${t('share_media.share_text')} ${shareQuiz.shareUrl}` });
     } catch {
       toast.error(t('share_media.failed'));
     }

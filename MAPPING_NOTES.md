@@ -29,10 +29,11 @@ Dashboard: embedded at `/admin` (aggregator-ready endpoints under `/api/admin/te
 
 ## Links (§5.4 — applicable)
 
-- **link.created** = `invitations` rows.
+- **link.created** = `invitations` rows, plus share links (`entity_type: 'share_link'`, `entity_id` = quiz id, `metadata.code`) — created the first time an owner opens "Share as image, GIF or video" on an open quiz.
 - **link.interacted** = `quiz_attempts` with metadata:
   - `interaction_kind: 'invite_attempt'` when `invitation_id` set
   - `interaction_kind: 'open_quiz_attempt'` when quiz `is_open`
+  - `interaction_kind: 'short_link_visit'` for a person opening `/s/:code` (`entity_type: 'share_link'`). Link-preview crawlers are not counted.
 - Apps without links would show N/A; eou **has** invitations.
 
 ## Errors (§5.5)
@@ -41,6 +42,7 @@ Definition (most user-meaningful available):
 1. Server unhandled / 5xx via `errorHandler` → `error.reported` (`source: server`)
 2. Client reports via `POST /api/admin/telemetry/client-error` (`source: client`)
 3. Versus integrity: `versusFlags.cheated` / `timedOut` on attempt submit → `error.reported` severity `warn` with `kind: versus_cheated|versus_timed_out`
+4. Share media (client reports): `kind: share_media_failed` (severity `error`) when an export fails; `kind: share_video_unsupported` (severity `info`, once per browser session) when the browser can't encode H.264 video
 
 **v1 is read-only** — no acknowledge/resolve writes.
 

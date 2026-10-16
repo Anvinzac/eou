@@ -83,6 +83,9 @@ export default function ShareMediaGallery() {
       if (url.endsWith(`/quizzes/${DEMO_QUIZ_ID}`)) {
         return Promise.resolve(new Response(JSON.stringify(payload), { headers: { 'Content-Type': 'application/json' } }));
       }
+      if (url.endsWith(`/quizzes/${DEMO_QUIZ_ID}/share-link`)) {
+        return Promise.resolve(new Response(JSON.stringify({ code: 'K7Q2XPA', url: quiz.shareUrl }), { headers: { 'Content-Type': 'application/json' } }));
+      }
       return original(input, init);
     };
     return () => { window.fetch = original; };

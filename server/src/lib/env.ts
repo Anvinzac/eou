@@ -7,6 +7,10 @@ dotenv.config({ path: path.resolve(here, '../../../.env') });
 dotenv.config({ path: path.resolve(here, '../../.env') });
 dotenv.config();
 
+function trimSlash(url: string) {
+  return url.replace(/\/+$/, '');
+}
+
 function required(name: string, fallback?: string): string {
   const value = process.env[name] ?? fallback;
   if (!value) {
@@ -30,4 +34,9 @@ export const env = {
     process.env.VITE_QWEN_API_BASE ||
     'https://dashscope.aliyuncs.com/compatible-mode/v1',
   qwenModel: process.env.QWEN_MODEL || process.env.VITE_QWEN_MODEL || 'qwen-plus',
+  isProduction: process.env.NODE_ENV === 'production',
+  /** Public origin that serves /s/:code and /og/*, e.g. https://api.example.com. */
+  shareBaseUrl: trimSlash(process.env.SHARE_BASE_URL || ''),
+  /** Public origin of the web app that short links redirect to. */
+  appPublicUrl: trimSlash(process.env.APP_PUBLIC_URL || process.env.CLIENT_ORIGIN || 'http://localhost:8080'),
 };

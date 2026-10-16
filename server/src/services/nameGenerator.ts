@@ -28,11 +28,22 @@ export function generateCloudName(initials?: string): string {
   return `${adj} ${noun} ${num}`;
 }
 
-export function generateInviteCode(): string {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+// No 0/O or 1/I, so codes survive being read aloud or typed from a screenshot.
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+function randomCode(length: number): string {
   let code = '';
-  for (let i = 0; i < 6; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
+  for (let i = 0; i < length; i++) {
+    code += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
   }
   return code;
+}
+
+export function generateInviteCode(): string {
+  return randomCode(6);
+}
+
+/** Code for a quiz's public short link, e.g. /s/K7Q2XPA. */
+export function generateShareCode(): string {
+  return randomCode(7);
 }

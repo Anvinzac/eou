@@ -7,6 +7,7 @@ export { coupleApi } from './couple';
 export { packsApi } from './packs';
 export { catalogApi } from './catalog';
 export { distractorsApi } from './distractors';
+export { shareApi } from './share';
 export { adminApi } from './admin';
 export { adminTelemetryApi, openTelemetryStream } from './adminTelemetry';
 export type { TelemetryEvent, DailyRollup, HealthSnapshot } from './adminTelemetry';
