@@ -16,6 +16,7 @@ supabase/.temp
 
 # Editor directories and files
 .qoder/
+.claude/
 .vscode/*
 !.vscode/extensions.json
 .idea
